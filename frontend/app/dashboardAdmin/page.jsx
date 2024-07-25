@@ -28,7 +28,7 @@ function Dashboard() {
         }
 
         const res = await axios.post(
-          "http://127.0.0.1:3333/profile",
+          "https://fullwash.site/profile",
           {},
           {
             headers: {
@@ -57,7 +57,7 @@ function Dashboard() {
         }
 
         const res = await axios.get(
-          "http://127.0.0.1:3333/reservas",
+          "https://fullwash.site/reservas",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -81,7 +81,7 @@ function Dashboard() {
       const token = cookies.token; // Obtener token de cookies
 
       await axios.put(
-        `http://127.0.0.1:3333/reservas/${id}`,
+        `https://fullwash.site/reservas/${id}`,
         { estado: newEstado },
         {
           headers: {

@@ -29,7 +29,7 @@ function Register() {
     setError(""); // Limpiar mensajes de error previos
 
     try {
-      const res = await axios.post("http://127.0.0.1:3333/users", user);
+      const res = await axios.post("https://fullwash.site/users", user);
       if (res.status === 200) {
         alert("Registro exitoso. Redirigiendo al login...");
         setTimeout(() => {

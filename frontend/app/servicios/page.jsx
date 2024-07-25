@@ -26,7 +26,7 @@ const Page = () => {
   useEffect(() => {
     async function fetchServiciosLavados() {
       try {
-        const response = await axios.get('http://127.0.0.1:3333/servicios?txtBuscar=lavados');
+        const response = await axios.get('https://fullwash.site/servicios?txtBuscar=lavados');
         if (response.status === 200) {
           setServiciosLavados(response.data);
         } else {
@@ -41,7 +41,7 @@ const Page = () => {
 
     async function fetchServiciosOtros() {
       try {
-        const response = await axios.get('http://127.0.0.1:3333/servicios?txtBuscar=otros');
+        const response = await axios.get('https://fullwash.site/servicios?txtBuscar=otros');
         if (response.status === 200) {
           setServiciosOtros(response.data);
         } else {

@@ -35,7 +35,7 @@ function DashboardCliente() {
         }
         
         const res = await axios.post(
-          "http://127.0.0.1:3333/profile",
+          "https://fullwash.site/profile",
           {},
           {
             headers: {
@@ -54,7 +54,7 @@ function DashboardCliente() {
 
     const fetchServicios = async () => {
       try {
-        const res = await axios.get("http://127.0.0.1:3333/servicios");
+        const res = await axios.get("https://fullwash.site/servicios");
         setServicios(res.data);
       } catch (error) {
         console.error("Error fetching services:", error.message);
@@ -76,7 +76,7 @@ function DashboardCliente() {
       }
 
       await axios.post(
-        "http://127.0.0.1:3333/reservas",
+        "https://fullwash.site/reservas",
         reservation,
         {
           headers: {
