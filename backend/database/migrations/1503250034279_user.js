@@ -11,6 +11,7 @@ class UserSchema extends Schema {
       table.integer('numero').notNullable().unique()
       table.string('email', 254).notNullable().unique()
       table.string('password', 60).notNullable()
+      table.string('rol')
       table.timestamps()
     })
   }
