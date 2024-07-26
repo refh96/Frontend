@@ -26,3 +26,5 @@ Run the following command to run startup migrations.
 ```js
 adonis migration:run
 ```
+Para el entorno de desarrollo en localhost se ocupo XAMPP Control Panel para correr apache y MYSQL y poder administrar la base de datos desde local 
+se crea una base de datos con el nombre que sale en el .env en este caso "backend" luego desde la terminal del proyecto usamos el comando adonis migration:run para crear las tablas y el comando adonis seed para rellenar la tabla de servicios para correr el proyecto usamos el coando adonis serve --dev y no olvides ejecutar el npm install para las dependencias del backend.
