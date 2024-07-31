@@ -1,4 +1,7 @@
 'use strict'
+
+const { type } = require("os");
+
 const User = use('App/Models/User')
 const { validateAll } = use('Validator')
 
@@ -68,10 +71,12 @@ class UserController {
   async login({ request, response, auth }) {
     let input = request.all();
     let token = await auth.withRefreshToken().attempt(input.email, input.password);
+    const user = await User.findBy('email', input.email);
     return response.json({
       res: true,
       token: token,
-      message: 'Bienvenido al sistema'
+      rol: user.rol,
+      message: 'Bienvenido al sistema',
     })
   }
   async getUser({ auth }) {

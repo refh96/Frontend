@@ -7,12 +7,13 @@ import { TextField, Button, Box, Typography } from "@mui/material";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
-function Register() {
+function registroRoles() {
   const [user, setUser] = useState({
     username: "",
     numero: "",
     email: "",
     password: "",
+    rol: "",
   });
   const [error, setError] = useState("");
   const router = useRouter();
@@ -21,23 +22,20 @@ function Register() {
     e.preventDefault();
 
     // Validaciones
-    if (!user.username || !user.numero || !user.email || !user.password) {
+    if (!user.username || !user.numero || !user.email || !user.password || !user.rol) {
       setError("Todos los campos son obligatorios.");
       return;
     }
 
-    setError(""); // Limpiar mensajes de error previos
+    setError("");
 
     try {
-      // Agregar el rol de usuario al objeto antes de enviarlo
-      const userWithRole = { ...user, rol: "usuario" };
-      
-      const res = await axios.post("https://fullwash.site/users", userWithRole);
+      const res = await axios.post("https://fullwash.site/users", user);
       if (res.status === 200) {
         alert("Registro exitoso. Redirigiendo al login...");
         setTimeout(() => {
-          router.push("/loginCliente");
-        }, 2000); // Redirige después de 2 segundos para que el mensaje sea visible
+          router.push("/loginAdmin");
+        }, 2000);
       }
     } catch (error) {
       alert("Error durante el registro. Inténtalo de nuevo.");
@@ -49,7 +47,7 @@ function Register() {
     <div>
       <Header/>
       <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '300px', margin: 'auto' }}>
-        <h1>Registro de usuarios</h1>
+        <h1>Registro Con roles</h1>
         {error && (
           <Typography color="error" variant="body2" sx={{ mb: 2 }}>
             {error}
@@ -81,6 +79,13 @@ function Register() {
           fullWidth
           onChange={(e) => setUser({ ...user, password: e.target.value })}
         />
+        <TextField
+          label="rol"
+          type="rol"
+          variant="outlined"
+          fullWidth
+          onChange={(e) => setUser({ ...user, rol: e.target.value })}
+        />
         <Button variant="contained" type="submit" fullWidth>
           Register
         </Button>
@@ -90,4 +95,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default registroRoles;

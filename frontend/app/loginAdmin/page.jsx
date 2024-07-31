@@ -20,18 +20,24 @@ function Login() {
     try {
       const res = await axios.post("https://fullwash.site/login", credentials);
       if (res.data.res) {
-        // Guardar el token en una cookie
-        setCookie(null, 'token', res.data.token.token, {
-          maxAge: 30 * 24 * 60 * 60, // 30 días
-          path: '/',
-          sameSite: 'None',
-          secure: true, // Asegúrate de usar HTTPS
-        });
-        alert("Login exitoso. Redirigiendo al Dashboard...");
-        router.push("/dashboardAdmin");
+        const { rol, token } = res.data;
+        if (rol === "administrador") {
+          // Guardar el token en una cookie
+          setCookie(null, 'token', token.token, {
+            maxAge: 30 * 24 * 60 * 60, // 30 días
+            path: '/',
+            sameSite: 'None',
+            secure: true,
+          });
+          alert("Login exitoso. Redirigiendo al Dashboard...");
+          router.push("/dashboardAdmin");
+        } else {
+          alert("Acceso denegado. Solo los administradores pueden acceder.");
+        }
       }
     } catch (error) {
-      console.error("Error during login:", error.message);
+      console.error("Error durante el login:", error.message);
+      alert("Hubo un error en el login. Por favor, inténtalo de nuevo.");
     }
   };
 

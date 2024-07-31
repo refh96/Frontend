@@ -32,6 +32,8 @@ function LoginCliente() {
       }
     } catch (error) {
       console.error("Error during login:", error.message);
+      alert("Hubo un error durante el Login Intentelo nuevamente");
+
     }
   };
 

@@ -121,6 +121,9 @@ function Dashboard() {
         <Button variant="contained" color="secondary" onClick={logout} sx={{ mt: 2 }}>
           Logout
         </Button>
+        <Button variant="contained" color="secondary" onClick={()=>router.push("../registroRoles")} sx={{ mt: 2 }}>
+          registroRoles
+        </Button>
 
         <TableContainer component={Paper} sx={{ mt: 4 }}>
           <Table>
@@ -147,7 +150,7 @@ function Dashboard() {
                       onChange={(e) => handleEstadoChange(reserva.id, e.target.value)}
                     >
                       <MenuItem value="pendiente">Pendiente</MenuItem>
-                      <MenuItem value="pendiente">Confirmado</MenuItem>
+                      <MenuItem value="confirmado">Confirmado</MenuItem>
                       <MenuItem value="completado">Completado</MenuItem>
                       <MenuItem value="cancelado">En proceso</MenuItem>
                     </Select>
