@@ -3,7 +3,8 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, MenuItem, Select } from "@mui/material";
+import { Button, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, MenuItem, Select, IconButton } from "@mui/material";
+import { Delete as DeleteIcon } from '@mui/icons-material'; // Icono de eliminar
 import { parseCookies, destroyCookie } from 'nookies';
 
 function Dashboard() {
@@ -99,6 +100,28 @@ function Dashboard() {
     }
   };
 
+  const handleDelete = async (id) => {
+    const confirmed = window.confirm("¿Estás seguro de que deseas eliminar esta reserva?");
+    if (!confirmed) return;
+
+    try {
+      const cookies = parseCookies(); // Obtener cookies
+      const token = cookies.token; // Obtener token de cookies
+
+      await axios.delete(`https://fullwash.site/reservas/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      alert("Reserva eliminada exitosamente");
+      // Actualizar la lista de reservas después de eliminar
+      setReservas(reservas.filter(reserva => reserva.id !== id));
+    } catch (error) {
+      console.error("Error deleting reserva:", error.message);
+    }
+  };
+
   const logout = async () => {
     try {
       destroyCookie(null, 'token', { path: '/' });
@@ -121,8 +144,11 @@ function Dashboard() {
         <Button variant="contained" color="secondary" onClick={logout} sx={{ mt: 2 }}>
           Logout
         </Button>
-        <Button variant="contained" color="secondary" onClick={()=>router.push("../registroRoles")} sx={{ mt: 2 }}>
-          registroRoles
+        <Button variant="contained" color="primary" onClick={() => router.push("../registroRoles")} sx={{ mt: 2 }}>
+          Registro de Usuarios con Roles
+        </Button>
+        <Button variant="contained" color="primary" onClick={() => router.push("../nuevoServicio")} sx={{ mt: 2 }}>
+          Crear Nuevo Servicio
         </Button>
 
         <TableContainer component={Paper} sx={{ mt: 4 }}>
@@ -151,12 +177,17 @@ function Dashboard() {
                     >
                       <MenuItem value="pendiente">Pendiente</MenuItem>
                       <MenuItem value="confirmado">Confirmado</MenuItem>
-                      <MenuItem value="completado">Completado</MenuItem>
-                      <MenuItem value="cancelado">En proceso</MenuItem>
+                      <MenuItem value="completado">En proceso</MenuItem>
+                      <MenuItem value="cancelado">Completado</MenuItem>
                     </Select>
                   </TableCell>
                   <TableCell>
-                    {/* Puedes agregar botones adicionales aquí si es necesario */}
+                    <IconButton
+                      color="error"
+                      onClick={() => handleDelete(reserva.id)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
