@@ -28,4 +28,5 @@ Route.group(() =>{
   Route.post('logout', 'UserController.logout');
   Route.post('profile', 'UserController.profile');
   Route.resource('reservas', 'ReservaController').apiOnly();
+  Route.get('reservas/user/:user_id', 'ReservaController.getReservasPorUsuario');
 }).middleware('auth');
