@@ -152,6 +152,9 @@ function HomePage() {
           </Typography>
           <Grid container spacing={2} justifyContent="center">
             <Grid item xs={12} sm={4}>
+              <Typography variant="h6" align="center" color="black" gutterBottom>
+                Limpieza detallada
+              </Typography>
               <img
                 src="https://www.tuningblog.eu/wp-content/uploads/2021/05/Dampfreiniger-autowaesche-aussen-lack-innen-interieur-5-min.gif"
                 alt="Proceso 1"
@@ -159,6 +162,9 @@ function HomePage() {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
+            <Typography variant="h6" align="center" color="black" gutterBottom>
+                Lavado externo completo
+              </Typography>
               <img
                 src="https://i.gifer.com/D3j.gif"
                 alt="Proceso 2"
@@ -166,6 +172,9 @@ function HomePage() {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
+              <Typography variant="h6" align="center" color="black" gutterBottom>
+                Limpieza de Vidrios
+              </Typography>
               <img
                 src="https://media.giphy.com/media/87wlWjovL0O6Q/giphy.gif"
                 alt="Proceso 3"

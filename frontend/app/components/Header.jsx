@@ -51,7 +51,8 @@ const Header = () => {
 
   return (
     <div>
-      <AppBar position="relative">
+      {/* Cambiar color de fondo a calipso */}
+      <AppBar position="relative" sx={{ backgroundColor: '#00ced1' }}>
         <Toolbar>
           <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
             <NoCrashIcon sx={{ mr: 1 }} /> {/* Ícono de auto */}
@@ -88,7 +89,16 @@ const Header = () => {
           ) : (
             <>
               {menuItems.map((item, index) => (
-                <Button key={index} color="inherit" onClick={() => handleNavigation(item.link)}>
+                <Button 
+                  key={index} 
+                  color="inherit" 
+                  onClick={() => handleNavigation(item.link)}
+                  sx={{ 
+                    borderRadius: '50px',  // Bordes circulares
+                    margin: '0 10px',      // Margen horizontal
+                    padding: '10px 20px'   // Padding ajustado
+                  }}
+                >
                   {item.label}
                 </Button>
               ))}

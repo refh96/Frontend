@@ -384,32 +384,31 @@ function DashboardCliente() {
                   <TableRow key={reserva.id}>
                     <TableCell>{reserva.id}</TableCell>
                     <TableCell>{reserva.servicio.nombre_servicio}</TableCell>
-                    <TableCell>{new Date(reserva.fecha).toLocaleDateString()}</TableCell>
+                    <TableCell>{new Date(reserva.fecha).toLocaleDateString('es-ES', { timeZone: 'UTC' })}</TableCell>
                     <TableCell>{reserva.hora}</TableCell>
                     <TableCell>{reserva.estado}</TableCell>
                     <TableCell>{reserva.tipo_vehiculo}</TableCell>
-                    <TableCell>
-                      <IconButton
-                        color="primary"
-                        onClick={() => handleEdit(reserva)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        color="error"
-                        onClick={() => handleDelete(reserva.id)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
+                  <TableCell>
+                    <IconButton
+                      color="primary"
+                      onClick={() => handleEdit(reserva)}
+                    >
+                    <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      color="error"
+                      onClick={() => handleDelete(reserva.id)}
+                    >
+                    <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+            ))}
+          </TableBody>
             </Table>
           </TableContainer>
         </Grid>
       </Grid>
-
       {/* Dialogo para editar reserva */}
       <Dialog open={editing} onClose={() => setEditing(false)}>
         <DialogTitle>Editar Reserva</DialogTitle>
