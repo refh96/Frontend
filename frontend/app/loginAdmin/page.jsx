@@ -42,9 +42,21 @@ function Login() {
   };
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header />
-      <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '300px', margin: 'auto' }}>
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          width: '300px',
+          margin: 'auto',
+          flexGrow: 1, // Esto permitirá que el Box ocupe el espacio disponible
+          justifyContent: 'center', // Centrar verticalmente
+        }}
+      >
         <h1>Login Administrador</h1>
         <TextField
           label="Email"
