@@ -22,6 +22,7 @@ const Header = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [anchorEl, setAnchorEl] = useState(null);
+  const [hoursAnchorEl, setHoursAnchorEl] = useState(null); // Para el menú de horarios
   const router = useRouter();
 
   // Obtener el día de la semana actual en español
@@ -36,12 +37,20 @@ const Header = () => {
     setAnchorEl(null);
   };
 
+  const handleHoursMenuOpen = (event) => {
+    setHoursAnchorEl(event.currentTarget);
+  };
+
+  const handleHoursMenuClose = () => {
+    setHoursAnchorEl(null);
+  };
+
   const menuItems = [
     { label: 'Inicio', link: '/' },
     { label: 'Servicios', link: '/servicios' },
     { label: 'Quienes somos', link: '/datos' },
     { label: 'Login', link: '/loginCliente' },
-    { label: 'Registro', link: '/register'}
+    { label: 'Registro', link: '/register' }
   ];
 
   const handleNavigation = (link) => {
@@ -55,13 +64,29 @@ const Header = () => {
       <AppBar position="relative" sx={{ backgroundColor: '#00ced1' }}>
         <Toolbar>
           <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-            <NoCrashIcon sx={{ mr: 1 }} /> {/* Ícono de auto */}
+            {/* Agregar logo a la izquierda */}
+            <img 
+              src="https://scontent.fccp1-1.fna.fbcdn.net/v/t39.30808-6/294385342_529412922312599_4218408641183798629_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=poSagWhRbwgQ7kNvgH1QiFS&_nc_ht=scontent.fccp1-1.fna&_nc_gid=AqjiheXzLlD06UWanMWrsrb&oh=00_AYAthGaDC3F1sROPmCtiJrPurR9Uc0T5DxCyiegRET_KmQ&oe=66FA056D"
+              alt="Logo"
+              style={{ width: '50px', height: '50px', marginRight: '10px', borderRadius: '50%' }}
+            />
             <Typography variant="h6">
               Full Wash Conce
             </Typography>
-            <Typography variant="body2" sx={{ ml: 2 }}>
+            <Button onClick={handleHoursMenuOpen} sx={{ ml: 2, color: 'white' }}>
               {dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1)}: {currentHours || 'Horario no disponible'}
-            </Typography>
+            </Button>
+            <Menu
+              anchorEl={hoursAnchorEl}
+              open={Boolean(hoursAnchorEl)}
+              onClose={handleHoursMenuClose}
+            >
+              {Object.entries(hours).map(([day, hour], index) => (
+                <MenuItem key={index} onClick={handleHoursMenuClose}>
+                  {day}: {hour}
+                </MenuItem>
+              ))}
+            </Menu>
           </Box>
           {isMobile ? (
             <>
@@ -111,3 +136,5 @@ const Header = () => {
 };
 
 export default Header;
+
+

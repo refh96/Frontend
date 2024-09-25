@@ -41,14 +41,25 @@ function Register() {
       }
     } catch (error) {
       alert("Error durante el registro. Inténtalo de nuevo.");
-      console.error("Error during registration:", error.message);
+      console.error("Error durante el registro:", error.message);
     }
   };
 
   return (
-    <div>
-      <Header/>
-      <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '300px', margin: 'auto' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Header />
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          flexGrow: 1, // Este hará que el contenido ocupe el espacio disponible
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          width: '300px',
+          margin: 'auto',
+        }}
+      >
         <h1>Registro de usuarios</h1>
         {error && (
           <Typography color="error" variant="body2" sx={{ mb: 2 }}>
@@ -85,7 +96,7 @@ function Register() {
           Register
         </Button>
       </Box>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

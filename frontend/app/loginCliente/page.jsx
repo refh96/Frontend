@@ -32,15 +32,25 @@ function LoginCliente() {
       }
     } catch (error) {
       console.error("Error during login:", error.message);
-      alert("Hubo un error durante el Login Intentelo nuevamente");
-
+      alert("Hubo un error durante el Login. Inténtelo nuevamente.");
     }
   };
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header />
-      <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '300px', margin: 'auto' }}>
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          flexGrow: 1, // Este hará que el contenido ocupe el espacio disponible
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          width: '300px',
+          margin: 'auto',
+        }}
+      >
         <h1>Login Usuario</h1>
         <TextField
           label="Email"

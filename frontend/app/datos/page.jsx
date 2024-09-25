@@ -5,9 +5,9 @@ import Footer from '../components/Footer';
 
 const DatosPage = () => {
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header />
-      <Container maxWidth="md">
+      <Container maxWidth="md" sx={{ flexGrow: 1 }}> {/* Añadido flexGrow: 1 para ocupar espacio */}
         <Box
           sx={{
             mt: 4,

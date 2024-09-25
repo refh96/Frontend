@@ -71,13 +71,12 @@ const Page = () => {
   const handleAddToOrder = () => {
     router.push('/loginCliente');
     handleCloseModal();
-    router.push('/loginCliente');
   };
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header />
-      <Container sx={{ marginTop: 4 }}>
+      <Container sx={{ marginTop: 4, flexGrow: 1 }}>
         <Typography variant="h4" align="center" gutterBottom>
           Nuestros Servicios
         </Typography>

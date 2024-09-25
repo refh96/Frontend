@@ -1,23 +1,47 @@
 import React from 'react';
-import { Container, Typography, Box, Link } from '@mui/material';
+import { Container, Typography, Box, Link, Grid } from '@mui/material';
 import FacebookIcon from '@mui/icons-material/Facebook';
 
 const Footer = () => {
   return (
     <footer>
-      <Container maxWidth="lg">
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, alignItems: 'right', color:'black' }}>
-          <Typography variant="body1" align='center'>
-            © 2024 Full Wash Conce Spa. Todos los derechos reservados.
-          </Typography>
-          <Link  href="https://www.facebook.com/FullWashconce" target="_blank" sx={{ color: 'black', mx: 1 }}>
-            <FacebookIcon />
-          </Link>
-          <Link href="https://www.tiktok.com/@fullwashconce" target="_blank" sx={{ color: 'black', mx: 1 }}>
-          <p>visita nuestro TikTok</p>
-          </Link>
-        </Box>
-      </Container>
+      <Box
+        sx={{
+          backgroundColor: '#00bcd4', // Color calipso
+          color: 'white',
+          py: 3,
+          mt: 4,
+          width: '100%',
+          textAlign: 'center',
+        }}
+      >
+        <Container maxWidth="lg">
+          <Grid container spacing={2} justifyContent="center" alignItems="center">
+            <Grid item xs={12} sm={6}>
+              <Typography variant="body1">
+                © 2024 Full Wash Conce Spa. Todos los derechos reservados.
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6} sx={{ textAlign: 'center' }}>
+              <Link
+                href="https://www.facebook.com/FullWashconce"
+                target="_blank"
+                sx={{ color: 'white', mx: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <FacebookIcon fontSize="large" sx={{ marginRight: '8px' }} />
+                <Typography variant="body1">Visita nuestro Facebook</Typography>
+              </Link>
+              <Link
+                href="https://www.tiktok.com/@fullwashconce"
+                target="_blank"
+                sx={{ color: 'white', mx: 1, display: 'block' }}
+              >
+                <Typography variant="body1">Visita nuestro TikTok</Typography>
+              </Link>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
     </footer>
   );
 };
