@@ -65,8 +65,8 @@ const Header = () => {
         <Toolbar>
           <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
             {/* Agregar logo a la izquierda */}
-            <img 
-              src="https://scontent.fccp1-1.fna.fbcdn.net/v/t39.30808-6/294385342_529412922312599_4218408641183798629_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=poSagWhRbwgQ7kNvgH1QiFS&_nc_ht=scontent.fccp1-1.fna&_nc_gid=AqjiheXzLlD06UWanMWrsrb&oh=00_AYAthGaDC3F1sROPmCtiJrPurR9Uc0T5DxCyiegRET_KmQ&oe=66FA056D"
+            <img
+              src="https://i.ibb.co/7CYX4zX/logo-full-wash.jpg"
               alt="Logo"
               style={{ width: '50px', height: '50px', marginRight: '10px', borderRadius: '50%' }}
             />
