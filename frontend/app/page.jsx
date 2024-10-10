@@ -54,12 +54,36 @@ function HomePage() {
 
   const items = [
     {
-      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuvomF20Usic150zY1pR-oD-UlMt-3lfctqQ&s',
+      img: 'https://i.ibb.co/mNLfbxZ/full-wash-propaganda.jpg',
       alt: 'imagen 1',
     },
     {
-      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4gg9XL1Fl_m-d3I3oVP4-LCab8VmI61iRIw&s',
+      img: 'https://i.ibb.co/kM48wnt/fullwash-servicios.jpg',
       alt: 'imagen 2',
+    },
+    {
+      img: 'https://i.ibb.co/q5N6f7z/full-wash-direccion.jpg',
+      alt: 'imagen 3',
+    },
+    {
+      img: 'https://i.ibb.co/JkGr1R2/subir-1.jpg',
+      alt: 'imagen 4',
+    },
+    {
+      img: 'https://i.ibb.co/4VRNfc4/subir-2.jpg',
+      alt: 'imagen 5',
+    },
+    {
+      img: 'https://i.ibb.co/Jdzcvw3/subir-3.png',
+      alt: 'imagen 6',
+    },
+    {
+      img: 'https://i.ibb.co/7RnTjBp/subir-4.png',
+      alt: 'imagen 7',
+    },
+    {
+      img: 'https://i.ibb.co/tsDpsnn/subir5.jpg',
+      alt: 'imagen 8',
     },
   ];
 
@@ -83,8 +107,7 @@ function HomePage() {
     <div
       style={{
         position: 'relative',
-        backgroundImage: 'url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXGOWszXrlaZHRcLffOEuXWHfnON-8S30IxQ&s")',
-        backgroundSize: '20%',
+        backgroundSize: '10%',
         backgroundPosition: 'center',
         backgroundRepeat: 'repeat',
         display: 'flex',
@@ -101,7 +124,7 @@ function HomePage() {
           left: 0,
           width: '100%',
           height: '100%',
-          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+          backgroundColor: 'rgba(255, 255, 255, 1)',
           zIndex: 1,
         }}
       />
@@ -121,7 +144,7 @@ function HomePage() {
             fontSize: '3rem',
           }}
         >
-          Bienvenido al Full Wash Tu servicio de confianza.
+          Tu servicio de confianza.
         </Typography>
         <div style={{ width: '100%', overflow: 'hidden', marginBottom: '20px', position: 'relative' }}>
           <Carousel
@@ -145,9 +168,8 @@ function HomePage() {
             ))}
           </Carousel>
         </div>
-        {/* Añadir GIFs aquí */}
         <Container sx={{ marginY: 4 }}>
-          <Typography variant="h4" align="center" color="blue" gutterBottom>
+          <Typography variant="h4" align="center" color="rgba(255, 255, 255, 1)" gutterBottom>
             Descubre Nuestro Proceso
           </Typography>
           <Grid container spacing={2} justifyContent="center">
@@ -178,6 +200,16 @@ function HomePage() {
               <img
                 src="https://media.giphy.com/media/87wlWjovL0O6Q/giphy.gif"
                 alt="Proceso 3"
+                style={{ width: '100%', borderRadius: '8px' }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <Typography variant="h6" align="center" color="black" gutterBottom>
+                Pulido de Focos
+              </Typography>
+              <img
+                src="https://www.mantencionexpress.cl/wp-content/uploads/2021/04/medetailing_pul-foco-1.jpg"
+                alt="Proceso 4"
                 style={{ width: '100%', borderRadius: '8px' }}
               />
             </Grid>

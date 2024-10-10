@@ -49,7 +49,7 @@ const Header = () => {
     { label: 'Inicio', link: '/' },
     { label: 'Servicios', link: '/servicios' },
     { label: 'Quienes somos', link: '/datos' },
-    { label: 'Login', link: '/loginCliente' },
+    { label: 'Mi Cuenta', link: '/dashboardCliente' },
     { label: 'Registro', link: '/register' }
   ];
 

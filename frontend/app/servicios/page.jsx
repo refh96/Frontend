@@ -69,7 +69,7 @@ const Page = () => {
   };
 
   const handleAddToOrder = () => {
-    router.push('/loginCliente');
+    router.push('/dashboardCliente');
     handleCloseModal();
   };
 
