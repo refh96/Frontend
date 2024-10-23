@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Button,
   Box,
@@ -31,6 +32,7 @@ function NuevoServicio() {
   const [servicios, setServicios] = useState([]);
   const [editingId, setEditingId] = useState(null); // Estado para manejar el modo de edición
   const [error, setError] = useState(null);
+  const router = useRouter();
 
   // Función para cargar los servicios existentes
   useEffect(() => {
@@ -155,7 +157,16 @@ function NuevoServicio() {
   };
 
   return (
+    
     <Box sx={{ flexGrow: 1, mt: 4 }}>
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={() => router.push('./dashboardAdmin')}
+        sx={{ mt: 2 }}
+      >
+        Volver
+      </Button>
       <Grid container spacing={2} justifyContent="center">
         <Grid item xs={12} md={4}>
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

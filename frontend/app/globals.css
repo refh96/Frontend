@@ -2,3 +2,11 @@ body {
 	background: #91d8ea;
 	color: white;
 }
+html, body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	background-color: white; /* Fondo blanco también para todo el documento */
+  }
+  

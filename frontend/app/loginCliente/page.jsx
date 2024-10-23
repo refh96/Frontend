@@ -3,7 +3,8 @@
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { TextField, Button, Box } from "@mui/material";
+import Link from 'next/link';  // Importar el componente Link
+import { TextField, Button, Box, Typography } from "@mui/material";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { setCookie } from 'nookies';
@@ -51,7 +52,18 @@ function LoginCliente() {
           margin: 'auto',
         }}
       >
-        <h1>Login Usuario</h1>
+        <Typography
+          variant="h1"
+          align="center"
+          sx={{
+            my: 4,
+            color: 'darkorange',
+            fontFamily: 'Helvetica',
+            fontSize: '3rem',
+          }}
+        >
+          Inicio Sesion
+        </Typography>
         <TextField
           label="Email"
           type="email"
@@ -69,6 +81,12 @@ function LoginCliente() {
         <Button variant="contained" type="submit" fullWidth>
           Login
         </Button>
+
+        {/* Texto para redirigir a la página de registro */}
+        <Typography align="center" color="black" sx={{ mt: 2 }}>
+          ¿No tienes cuenta? <Link href="./register" style={{ color: 'blue', textDecoration: 'none' }}>Regístrate aquí</Link>
+        </Typography>
+
       </Box>
       <Footer />
     </div>
@@ -76,3 +94,4 @@ function LoginCliente() {
 }
 
 export default LoginCliente;
+

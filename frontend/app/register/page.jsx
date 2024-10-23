@@ -60,14 +60,25 @@ function Register() {
           margin: 'auto',
         }}
       >
-        <h1>Registro de usuarios</h1>
+        <Typography
+          variant="h1"
+          align="center"
+          sx={{
+            my: 4,
+            color: 'darkorange',
+            fontFamily: 'Helvetica',
+            fontSize: '3rem',
+          }}
+        >
+          Registro De Usuarios
+        </Typography>
         {error && (
           <Typography color="error" variant="body2" sx={{ mb: 2 }}>
             {error}
           </Typography>
         )}
         <TextField
-          label="Username"
+          label="Nombre"
           variant="outlined"
           fullWidth
           onChange={(e) => setUser({ ...user, username: e.target.value })}
@@ -79,14 +90,14 @@ function Register() {
           onChange={(e) => setUser({ ...user, numero: e.target.value })}
         />
         <TextField
-          label="Email"
+          label="Correo"
           type="email"
           variant="outlined"
           fullWidth
           onChange={(e) => setUser({ ...user, email: e.target.value })}
         />
         <TextField
-          label="Password"
+          label="Contraseña"
           type="password"
           variant="outlined"
           fullWidth

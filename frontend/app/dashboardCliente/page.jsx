@@ -28,6 +28,8 @@ import {
 } from "@mui/material";
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { parseCookies, destroyCookie } from 'nookies';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 function DashboardCliente() {
   const [user, setUser] = useState({
@@ -37,6 +39,7 @@ function DashboardCliente() {
   });
   const [loading, setLoading] = useState(true);
   const [servicios, setServicios] = useState([]);
+  const [tipo_vehiculos, setTipoVehiculo] = useState([]);
   const [reservas, setReservas] = useState([]);
   const [reservation, setReservation] = useState({
     user_id: "",
@@ -44,7 +47,7 @@ function DashboardCliente() {
     fecha: "",
     hora: "",
     estado: "pendiente",
-    tipo_vehiculo: "",
+    tipo_vehiculo_id: "",
   });
   const [editing, setEditing] = useState(false);
   const [editReservation, setEditReservation] = useState(null);
@@ -94,6 +97,14 @@ function DashboardCliente() {
         console.error("Error fetching services:", error.message);
       }
     };
+    const fetchTipoVehiculo = async () => {
+      try {
+        const res = await axios.get("https://fullwash.site/tipo_vehiculos");
+        setTipoVehiculo(res.data);
+      } catch (error) {
+        console.error("Error fetching tipoVehiculo:", error.message);
+      }
+    };
 
     const fetchReservas = async () => {
       try {
@@ -128,6 +139,7 @@ function DashboardCliente() {
     }
 
     fetchServicios();
+    fetchTipoVehiculo();
   }, [user.id]);
 
   const handleSubmit = async (e) => {
@@ -158,7 +170,7 @@ function DashboardCliente() {
         fecha: "",
         hora: "",
         estado: "pendiente",
-        tipo_vehiculo: "",
+        tipo_vehiculo_id: "",
       });
 
       await fetchReservas();
@@ -210,7 +222,7 @@ function DashboardCliente() {
       fecha: reserva.fecha.slice(0, 10), // Asegura el formato YYYY-MM-DD
       hora: reserva.hora,
       estado: reserva.estado,
-      tipo_vehiculo: reserva.tipo_vehiculo,
+      tipo_vehiculo_id: reserva.tipo_vehiculo_id,
     });
     setEditing(true);
   };
@@ -296,6 +308,7 @@ function DashboardCliente() {
                   <TableCell>Hora</TableCell>
                   <TableCell>Estado</TableCell>
                   <TableCell>Tipo de Vehículo</TableCell>
+                  <TableCell>Total</TableCell>
                   <TableCell>Acciones</TableCell>
                 </TableRow>
               </TableHead>
@@ -306,7 +319,8 @@ function DashboardCliente() {
                     <TableCell>{new Date(reserva.fecha).toLocaleDateString('es-ES', { timeZone: 'UTC' })}</TableCell>
                     <TableCell>{reserva.hora}</TableCell>
                     <TableCell>{reserva.estado}</TableCell>
-                    <TableCell>{reserva.tipo_vehiculo}</TableCell>
+                    <TableCell>{reserva.tipo_vehiculo.nombre}</TableCell>
+                    <TableCell>{reserva.Total}</TableCell>
                     <TableCell>
                       <IconButton
                         color="primary"
@@ -330,10 +344,10 @@ function DashboardCliente() {
       case "perfil":
         return (
           <Box>
-            <Typography variant="h6">Perfil</Typography>
-            <Typography>Nombre: {user.username}</Typography>
-            <Typography>Email: {user.email}</Typography>
-            <Typography>Teléfono: {user.numero}</Typography>
+            <Typography color="black" variant="h6">Perfil</Typography>
+            <Typography color="black">Nombre: {user.username}</Typography>
+            <Typography color="black">Email: {user.email}</Typography>
+            <Typography color="black">Teléfono: {user.numero}</Typography>
             <Button onClick={() => setShowEditProfile(true)}>Editar Perfil</Button>
             <Button onClick={logout}>Cerrar Sesión</Button>
           </Box>
@@ -346,36 +360,28 @@ function DashboardCliente() {
   const handleDateChange = (e) => {
     const selectedDate = new Date(e.target.value);
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Resetea las horas de la fecha actual
+    
+    // Establecer las horas, minutos, segundos y milisegundos de hoy a 0 para comparar solo la fecha
+    today.setHours(0, 0, 0, 0);
   
+    // Verifica si la fecha seleccionada es anterior a hoy
     if (selectedDate < today) {
       alert("No puedes seleccionar una fecha anterior a hoy.");
-      setReservation(prev => ({ ...prev, fecha: "" }));
+      // No actualizar el estado si la fecha es inválida
     } else {
+      // Solo actualizar el estado si la fecha es válida
       setReservation(prev => ({ ...prev, fecha: e.target.value }));
     }
   };
   
+  
+
   const handleTimeChange = (e) => {
     const selectedTime = e.target.value;
-    const selectedDate = new Date(reservation.fecha);
-    const today = new Date();
-  
-    // Si la fecha seleccionada es hoy, restringir horas anteriores a la hora actual
-    if (selectedDate.toDateString() === today.toDateString()) {
-      const currentTime = `${today.getHours()}:${today.getMinutes()}`;
-      if (selectedTime < currentTime) {
-        alert("No puedes seleccionar una hora anterior a la actual.");
-        setReservation(prev => ({ ...prev, hora: "" }));
-      } else {
-        setReservation(prev => ({ ...prev, hora: selectedTime }));
-      }
-    } else {
-      // Si es una fecha futura, no restringir la hora
-      setReservation(prev => ({ ...prev, hora: selectedTime }));
-    }
+    // Ahora simplemente se actualiza la hora seleccionada sin restricciones
+    setReservation(prev => ({ ...prev, hora: selectedTime }));
   };
-  
+
   const handleUpdateProfile = async () => {
     try {
       const cookies = parseCookies();
@@ -410,158 +416,174 @@ function DashboardCliente() {
   };
 
   return (
-    <Box p={2}>
-      <Typography variant="h4" color="black">Dashboard</Typography>
-      {error && <Typography color="error">{error}</Typography>}
-      <Button variant="contained" onClick={() => setShowForm(true)}>
-        Nueva Reserva
-      </Button>
-      <Button variant="contained" onClick={() => setActiveScreen("reservas")}>
-        Mis Reservas
-      </Button>
-      <Button variant="contained" onClick={() => setActiveScreen("perfil")}>
-        Mi Perfil
-      </Button>
+    <Box display="flex" flexDirection="column" minHeight="100vh">
+      {/* Header */}
+      <Header />
 
-      {/* Formulario de Nueva Reserva */}
-      <Dialog open={showForm} onClose={() => setShowForm(false)}>
-        <DialogTitle>Nueva Reserva</DialogTitle>
-        <DialogContent>
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Servicio</InputLabel>
-            <Select
-              name="servicio_id"
-              value={reservation.servicio_id}
+      {/* Contenido Principal */}
+      <Box flex="1" p={2}>
+        <Typography variant="h4" color="black">Dashboard</Typography>
+        {error && <Typography color="error">{error}</Typography>}
+        <Button variant="contained" onClick={() => setShowForm(true)}>
+          Nueva Reserva
+        </Button>
+        <Button variant="contained" onClick={() => setActiveScreen("reservas")}>
+          Mis Reservas
+        </Button>
+        <Button variant="contained" onClick={() => setActiveScreen("perfil")}>
+          Mi Perfil
+        </Button>
+
+        {/* Formulario de Nueva Reserva */}
+        <Dialog open={showForm} onClose={() => setShowForm(false)}>
+          <DialogTitle>Nueva Reserva</DialogTitle>
+          <DialogContent>
+            <FormControl fullWidth margin="normal">
+              <InputLabel>Servicio</InputLabel>
+              <Select
+                name="servicio_id"
+                value={reservation.servicio_id}
+                onChange={handleChange}
+                required
+              >
+                {servicios.map(servicio => (
+                  <MenuItem key={servicio.id} value={servicio.id}>
+                    {servicio.nombre_servicio}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <TextField
+              type="date"
+              name="fecha"
+              value={reservation.fecha}
+              onChange={handleDateChange}
+              required
+              InputLabelProps={{ shrink: true }}
+              sx={{ marginTop: 2 }}
+            />
+            <TextField
+              type="time"
+              name="hora"
+              value={reservation.hora}
+              onChange={handleTimeChange}
+              required
+              sx={{ marginTop: 2 }}
+            />
+            <FormControl fullWidth margin="normal">
+              <InputLabel>Tipo vehiculo</InputLabel>
+              <Select
+                name="tipo_vehiculo_id"
+                value={reservation.tipo_vehiculo_id}
+                onChange={handleChange}
+                required
+              >
+                {tipo_vehiculos.map(tipo_vehiculo => (
+                  <MenuItem key={tipo_vehiculo.id} value={tipo_vehiculo.id}>
+                    {tipo_vehiculo.nombre}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setShowForm(false)}>Cancelar</Button>
+            <Button onClick={handleSubmit}>Guardar</Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Formulario de Edición de Reserva */}
+        <Dialog open={editing} onClose={() => setEditing(false)}>
+          <DialogTitle>Editar Reserva</DialogTitle>
+          <DialogContent>
+            <FormControl fullWidth margin="normal">
+              <InputLabel>Servicio</InputLabel>
+              <Select
+                name="servicio_id"
+                value={reservation.servicio_id}
+                onChange={handleChange}
+                required
+              >
+                {servicios.map(servicio => (
+                  <MenuItem key={servicio.id} value={servicio.id}>
+                    {servicio.nombre_servicio}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <TextField
+              type="date"
+              name="fecha"
+              value={reservation.fecha}
+              onChange={handleDateChange}
+              required
+              InputLabelProps={{ shrink: true }}
+              sx={{ marginTop: 2 }}
+            />
+            <TextField
+              type="time"
+              name="hora"
+              value={reservation.hora}
               onChange={handleChange}
               required
-            >
-              {servicios.map(servicio => (
-                <MenuItem key={servicio.id} value={servicio.id}>
-                  {servicio.nombre_servicio}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <TextField
-            type="date"
-            name="fecha"
-            value={reservation.fecha}
-            onChange={handleDateChange}
-            required
-            InputLabelProps={{ shrink: true }}
-            sx={{ marginTop: 2 }}
-          />
-          <TextField
-            type="time"
-            name="hora"
-            value={reservation.hora}
-            onChange={handleTimeChange}
-            required
-            sx={{ marginTop: 2 }}
-          />
-          <TextField
-            name="tipo_vehiculo"
-            value={reservation.tipo_vehiculo}
-            onChange={handleChange}
-            label="Tipo de Vehículo"
-            required
-            sx={{ marginTop: 2 }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowForm(false)}>Cancelar</Button>
-          <Button onClick={handleSubmit}>Guardar</Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Formulario de Edición de Reserva */}
-      <Dialog open={editing} onClose={() => setEditing(false)}>
-        <DialogTitle>Editar Reserva</DialogTitle>
-        <DialogContent>
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Servicio</InputLabel>
-            <Select
-              name="servicio_id"
-              value={reservation.servicio_id}
+              sx={{ marginTop: 2 }}
+            />
+            <TextField
+              name="tipo_vehiculo_id"
+              value={reservation.tipo_vehiculo_id}
               onChange={handleChange}
+              label="Tipo de Vehículo"
               required
-            >
-              {servicios.map(servicio => (
-                <MenuItem key={servicio.id} value={servicio.id}>
-                  {servicio.nombre_servicio}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <TextField
-            type="date"
-            name="fecha"
-            value={reservation.fecha}
-            onChange={handleDateChange}
-            required
-            InputLabelProps={{ shrink: true }}
-            sx={{ marginTop: 2 }}
-          />
-          <TextField
-            type="time"
-            name="hora"
-            value={reservation.hora}
-            onChange={handleChange}
-            required
-            sx={{ marginTop: 2 }}
-          />
-          <TextField
-            name="tipo_vehiculo"
-            value={reservation.tipo_vehiculo}
-            onChange={handleChange}
-            label="Tipo de Vehículo"
-            required
-            sx={{ marginTop: 2 }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setEditing(false)}>Cancelar</Button>
-          <Button onClick={handleUpdate}>Actualizar</Button>
-        </DialogActions>
-      </Dialog>
+              sx={{ marginTop: 2 }}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setEditing(false)}>Cancelar</Button>
+            <Button onClick={handleUpdate}>Actualizar</Button>
+          </DialogActions>
+        </Dialog>
 
-      {/* Formulario de Edición de Perfil */}
-      <Dialog open={showEditProfile} onClose={() => setShowEditProfile(false)}>
-        <DialogTitle>Editar Perfil</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Username"
-            value={user.username}
-            onChange={(e) => setUser({ ...user, username: e.target.value })}
-            fullWidth
-          />
-          <TextField
-            label="Email"
-            value={user.email}
-            onChange={(e) => setUser({ ...user, email: e.target.value })}
-            fullWidth
-          />
-          <TextField
-            label="Numero"
-            value={user.numero}
-            onChange={(e) => setUser({ ...user, numero: e.target.value })}
-            fullWidth
-          />
-          <TextField
-            label="Password"
-            value={user.password}
-            onChange={(e) => setUser({ ...user, password: e.target.value })}
-            fullWidth
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowEditProfile(false)}>Cancelar</Button>
-          <Button onClick={handleUpdateProfile}>Guardar</Button> {/* Llama a handleUpdateProfile */}
-        </DialogActions>
-      </Dialog>
+        {/* Formulario de Edición de Perfil */}
+        <Dialog open={showEditProfile} onClose={() => setShowEditProfile(false)}>
+          <DialogTitle>Editar Perfil</DialogTitle>
+          <DialogContent>
+            <TextField
+              label="Username"
+              value={user.username}
+              onChange={(e) => setUser({ ...user, username: e.target.value })}
+              fullWidth
+            />
+            <TextField
+              label="Email"
+              value={user.email}
+              onChange={(e) => setUser({ ...user, email: e.target.value })}
+              fullWidth
+            />
+            <TextField
+              label="Numero"
+              value={user.numero}
+              onChange={(e) => setUser({ ...user, numero: e.target.value })}
+              fullWidth
+            />
+            <TextField
+              label="Password"
+              value={user.password}
+              onChange={(e) => setUser({ ...user, password: e.target.value })}
+              fullWidth
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setShowEditProfile(false)}>Cancelar</Button>
+            <Button onClick={handleUpdateProfile}>Guardar</Button> {/* Llama a handleUpdateProfile */}
+          </DialogActions>
+        </Dialog>
 
-      {/* Renderiza la pantalla activa */}
-      {renderScreen()}
+        {/* Renderiza la pantalla activa */}
+        {renderScreen()}
+      </Box>
+
+      {/* Footer */}
+      <Footer />
     </Box>
   );
 }

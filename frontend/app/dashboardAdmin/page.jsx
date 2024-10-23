@@ -9,6 +9,7 @@ import { parseCookies, destroyCookie } from 'nookies';
 
 function Dashboard() {
   const [user, setUser] = useState({
+    id: "",
     username: "",
     email: "",
   });
@@ -38,7 +39,7 @@ function Dashboard() {
           }
         );
 
-        setUser(res.data);
+        setUser(res.data.user);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching profile:", error.message);

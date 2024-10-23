@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Typography, Box, Link, Grid } from '@mui/material';
 import FacebookIcon from '@mui/icons-material/Facebook';
-
+import InstagramIcon from '@mui/icons-material/Instagram';
 const Footer = () => {
   return (
     <footer>
@@ -32,12 +32,21 @@ const Footer = () => {
                 <Typography variant="body1">Visita nuestro Facebook</Typography>
               </Link>
               <Link
+                href="https://www.instagram.com/fullwashconce/"
+                target="_blank"
+                sx={{ color: 'white', mx: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <InstagramIcon fontSize="large" sx={{ marginRight: '8px' }} />
+                <Typography variant="body1">Visita nuestro Instagram</Typography>
+              </Link>
+              <Link
                 href="https://www.tiktok.com/@fullwashconce"
                 target="_blank"
-                sx={{ color: 'white', mx: 1, display: 'block' }}
+                sx={{ color: 'white', display: 'block', ml: 2 }}
               >
                 <Typography variant="body1">Visita nuestro TikTok</Typography>
               </Link>
+
             </Grid>
           </Grid>
         </Container>

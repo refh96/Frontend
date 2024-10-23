@@ -3,7 +3,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { TextField, Button, Box } from "@mui/material";
+import { TextField, Button, Box, Typography } from "@mui/material";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { setCookie } from 'nookies';
@@ -57,7 +57,18 @@ function Login() {
           justifyContent: 'center', // Centrar verticalmente
         }}
       >
-        <h1>Login Administrador</h1>
+        <Typography
+          variant="h1"
+          align="center"
+          sx={{
+            my: 4,
+            color: 'darkorange',
+            fontFamily: 'Helvetica',
+            fontSize: '3rem',
+          }}
+        >
+          Inicio Sesion Administrativo
+        </Typography>
         <TextField
           label="Email"
           type="email"

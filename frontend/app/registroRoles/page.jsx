@@ -4,8 +4,6 @@ import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { TextField, Button, Box, Typography } from "@mui/material";
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 function RegistroRoles() {
   const [user, setUser] = useState({
@@ -45,7 +43,15 @@ function RegistroRoles() {
 
   return (
     <div>
-      <Header/>
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={() => router.push('./dashboardAdmin')}
+        sx={{ mt: 2 }}
+      >
+        Volver
+      </Button>
+
       <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '300px', margin: 'auto' }}>
         <h1>Registro Con roles</h1>
         {error && (
@@ -90,7 +96,6 @@ function RegistroRoles() {
           Register
         </Button>
       </Box>
-      <Footer/>
     </div>
   );
 }

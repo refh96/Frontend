@@ -77,8 +77,29 @@ const Page = () => {
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header />
       <Container sx={{ marginTop: 4, flexGrow: 1 }}>
-        <Typography variant="h4" align="center" gutterBottom>
+      <Typography
+          variant="h2"
+          align="center"
+          sx={{
+            my: 4,
+            color: 'darkorange',
+            fontFamily: 'Helvetica',
+            fontSize: '3rem',
+          }}
+        >
           Nuestros Servicios
+        </Typography>
+        <Typography
+          variant="h5"
+          align="center"
+          sx={{
+            my: 4,
+            color: 'black',
+            fontFamily: 'Helvetica',
+            fontSize: '3rem',
+          }}
+        >
+              El Costo de los servicios varia dependiendo del tamaño o tipo de vehiculo
         </Typography>
         <Grid container spacing={4} justifyContent="center">
           <Grid item xs={12} md={6}>

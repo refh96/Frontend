@@ -9,13 +9,13 @@ import { useTheme } from '@mui/material/styles';
 
 // Horarios de atención
 const hours = {
-  Lunes: '10:00 AM - 7:00 PM',
-  Martes: '10:00 AM - 7:00 PM',
-  Miércoles: '10:00 AM - 7:00 PM',
-  Jueves: '10:00 AM - 7:00 PM',
-  Viernes: '10:00 AM - 7:00 PM',
-  Sábado: '10:00 AM - 7:00 PM',
-  Domingo: '10:00 AM - 7:00 PM'
+  Lunes: '09:00 AM - 06:00 PM',
+  Martes: '09:00 AM - 06:00 PM',
+  Miércoles: '09:00 AM - 06:00 PM',
+  Jueves: '09:00 AM - 06:00 PM',
+  Viernes: '09:00 AM - 06:00 PM',
+  Sábado: '09:00 AM - 06:00 PM',
+  Domingo: 'Cerrado'
 };
 
 const Header = () => {
@@ -71,7 +71,7 @@ const Header = () => {
               style={{ width: '50px', height: '50px', marginRight: '10px', borderRadius: '50%' }}
             />
             <Typography variant="h6">
-              Full Wash Conce
+              FULL WASH CONCE
             </Typography>
             <Button onClick={handleHoursMenuOpen} sx={{ ml: 2, color: 'white' }}>
               {dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1)}: {currentHours || 'Horario no disponible'}
