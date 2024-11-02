@@ -3,15 +3,16 @@
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { TextField, Button, Box, Typography } from "@mui/material";
-
+import { TextField, Button, Box, Typography, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 function RegistroRoles() {
   const [user, setUser] = useState({
     username: "",
     numero: "",
     email: "",
     password: "",
-    rol: "",
+    rol: "", // Asegúrate de que rol esté inicializado correctamente
   });
   const [error, setError] = useState("");
   const router = useRouter();
@@ -28,7 +29,7 @@ function RegistroRoles() {
     setError("");
 
     try {
-      const res = await axios.post("https://fullwash.site/users", user);
+      const res = await axios.post("http://127.0.0.1:3333/users", user);
       if (res.status === 200) {
         alert("Registro exitoso. Redirigiendo al login...");
         setTimeout(() => {
@@ -43,17 +44,30 @@ function RegistroRoles() {
 
   return (
     <div>
+
+      <Box display="flex" flexDirection="column" minHeight="100vh">
+      <Header />
       <Button
         variant="contained"
         color="secondary"
         onClick={() => router.push('./dashboardAdmin')}
-        sx={{ mt: 2 }}
+        sx={{ mt: 2, alignSelf: 'flex-start', fontSize: '0.75rem', padding: '4px 8px' }}
       >
         Volver
       </Button>
-
-      <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '300px', margin: 'auto' }}>
-        <h1>Registro Con roles</h1>
+      <Box flex="1" p={2}>
+        <Typography
+          variant="h1"
+          align="center"
+          sx={{
+            my: 4,
+            color: 'darkorange',
+            fontFamily: 'Helvetica',
+            fontSize: '3rem',
+          }}
+        >
+          Registro Roles
+        </Typography>
         {error && (
           <Typography color="error" variant="body2" sx={{ mb: 2 }}>
             {error}
@@ -85,16 +99,25 @@ function RegistroRoles() {
           fullWidth
           onChange={(e) => setUser({ ...user, password: e.target.value })}
         />
-        <TextField
-          label="rol"
-          type="rol"
-          variant="outlined"
-          fullWidth
-          onChange={(e) => setUser({ ...user, rol: e.target.value })}
-        />
+        
+        <FormControl fullWidth variant="outlined">
+          <InputLabel id="rol-label">Rol</InputLabel>
+          <Select
+            labelId="rol-label"
+            value={user.rol}
+            onChange={(e) => setUser({ ...user, rol: e.target.value })}
+            label="Rol"
+          >
+            <MenuItem value="usuario">Usuario</MenuItem>
+            <MenuItem value="administrador">Administrador</MenuItem>
+          </Select>
+        </FormControl>
+        
         <Button variant="contained" type="submit" fullWidth>
           Register
         </Button>
+        </Box>
+      <Footer />
       </Box>
     </div>
   );

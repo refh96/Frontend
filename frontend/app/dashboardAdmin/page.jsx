@@ -4,8 +4,10 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, MenuItem, Select, IconButton } from "@mui/material";
-import { Delete as DeleteIcon } from '@mui/icons-material'; // Icono de eliminar
+import { Delete as DeleteIcon } from '@mui/icons-material';
 import { parseCookies, destroyCookie } from 'nookies';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 function Dashboard() {
   const [user, setUser] = useState({
@@ -14,23 +16,23 @@ function Dashboard() {
     email: "",
   });
   const [reservas, setReservas] = useState([]);
+  const [estados, setEstados] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingReservas, setLoadingReservas] = useState(true);
-  const [estadoReservas, setEstadoReservas] = useState({});
   const router = useRouter();
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const cookies = parseCookies(); // Obtener cookies
-        const token = cookies.token; // Obtener token de cookies
+        const cookies = parseCookies();
+        const token = cookies.token;
         if (!token) {
           router.push("/loginAdmin");
           return;
         }
 
         const res = await axios.post(
-          "https://fullwash.site/profile",
+          "http://127.0.0.1:3333/profile",
           {},
           {
             headers: {
@@ -52,39 +54,63 @@ function Dashboard() {
   useEffect(() => {
     const fetchReservas = async () => {
       try {
-        const cookies = parseCookies(); // Obtener cookies
-        const token = cookies.token; // Obtener token de cookies
+        const cookies = parseCookies();
+        const token = cookies.token;
         if (!token) {
           return;
         }
 
         const res = await axios.get(
-          "https://fullwash.site/reservas",
+          "http://127.0.0.1:3333/reservas",
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-
-        setReservas(res.data);
+        setReservas(res.data.reservas);
         setLoadingReservas(false);
       } catch (error) {
         console.error("Error fetching reservas:", error.message);
       }
     };
+    const fetchEstados = async () => {
+      try {
+        const res = await axios.get("http://127.0.0.1:3333/estados");
+        setEstados(res.data); // Guardar los estados obtenidos
+      } catch (error) {
+        console.error("Error fetching estados:", error.message);
+      }
+    };
 
     fetchReservas();
+    fetchEstados();
   }, [router]);
 
   const handleEstadoChange = async (id, newEstado) => {
     try {
-      const cookies = parseCookies(); // Obtener cookies
-      const token = cookies.token; // Obtener token de cookies
+      const cookies = parseCookies();
+      const token = cookies.token;
 
+      // Busca la reserva específica para obtener el resto de los datos
+      const reservaToUpdate = reservas.find(reserva => reserva.id === id);
+
+      if (!reservaToUpdate) {
+        console.error("Reserva no encontrada");
+        return;
+      }
+
+      // Envía todos los campos necesarios
       await axios.put(
-        `https://fullwash.site/reservas/${id}`,
-        { estado: newEstado },
+        `http://127.0.0.1:3333/reservas/${id}`,
+        {
+          user_id: reservaToUpdate.user_id,
+          servicio_id: reservaToUpdate.servicio_id,
+          fecha: reservaToUpdate.fecha.slice(0, 10),
+          hora: reservaToUpdate.hora,
+          estado_id: newEstado, // Usar el ID del estado
+          tipo_vehiculo_id: reservaToUpdate.tipo_vehiculo_id
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -92,9 +118,8 @@ function Dashboard() {
         }
       );
 
-      // Actualizar estado local
-      setReservas(reservas.map(reserva => 
-        reserva.id === id ? { ...reserva, estado: newEstado } : reserva
+      setReservas(reservas.map(reserva =>
+        reserva.id === id ? { ...reserva, estado_id: newEstado } : reserva
       ));
     } catch (error) {
       console.error("Error updating estado:", error.message);
@@ -106,17 +131,16 @@ function Dashboard() {
     if (!confirmed) return;
 
     try {
-      const cookies = parseCookies(); // Obtener cookies
-      const token = cookies.token; // Obtener token de cookies
+      const cookies = parseCookies();
+      const token = cookies.token;
 
-      await axios.delete(`https://fullwash.site/reservas/${id}`, {
+      await axios.delete(`http://127.0.0.1:3333/reservas/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
       alert("Reserva eliminada exitosamente");
-      // Actualizar la lista de reservas después de eliminar
       setReservas(reservas.filter(reserva => reserva.id !== id));
     } catch (error) {
       console.error("Error deleting reserva:", error.message);
@@ -136,11 +160,13 @@ function Dashboard() {
 
   return (
     <div>
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
-        <Typography variant="h4">Dashboard</Typography>
+      <Box display="flex" flexDirection="column" minHeight="100vh">
+      <Header />
+      <Box flex="1" p={2}>
+       <Typography variant="h4" color="darkorange">Dashboard Administrativo</Typography>
         <Box sx={{ mb: 2 }}>
-          <Typography variant="body1">Email: {user.email}</Typography>
-          <Typography variant="body1">Username: {user.username}</Typography>
+          <Typography color="black" variant="body1">Email: {user.email}</Typography>
+          <Typography color="black" variant="body1">Username: {user.username}</Typography>
         </Box>
         <Button variant="contained" color="secondary" onClick={logout} sx={{ mt: 2 }}>
           Logout
@@ -149,38 +175,67 @@ function Dashboard() {
           Registro de Usuarios con Roles
         </Button>
         <Button variant="contained" color="primary" onClick={() => router.push("../nuevoServicio")} sx={{ mt: 2 }}>
-          Crear Nuevo Servicio
+          Administrar Servicios
+        </Button>
+        <Button variant="contained" color="primary" onClick={() => router.push("../estados")} sx={{ mt: 2 }}>
+          Administrar Estados
+        </Button>
+        <Button variant="contained" color="primary" onClick={() => router.push("../atributos")} sx={{ mt: 2 }}>
+          Administrar Atributos
+        </Button>
+        <Button variant="contained" color="primary" onClick={() => router.push("../tiposVehiculos")} sx={{ mt: 2 }}>
+          Administrar tipos de vehiculos
+        </Button>
+        <Button variant="contained" color="primary" onClick={() => router.push("../usuarios")} sx={{ mt: 2 }}>
+          Administrar usuarios
         </Button>
 
-        <TableContainer component={Paper} sx={{ mt: 4 }}>
+        <TableContainer component={Paper} sx={{ mt: 4, color: 'black' }}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>ID</TableCell>
                 <TableCell>Usuario</TableCell>
                 <TableCell>Servicio</TableCell>
                 <TableCell>Fecha</TableCell>
+                <TableCell>Hora</TableCell>
+                <TableCell>Tipo de Vehículo</TableCell>
+                <TableCell>Total</TableCell>
                 <TableCell>Estado</TableCell>
+                <TableCell>Servicios Extras</TableCell>
                 <TableCell>Acciones</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {reservas.map((reserva) => (
                 <TableRow key={reserva.id}>
-                  <TableCell>{reserva.id}</TableCell>
-                  <TableCell>{reserva.user.username}</TableCell>
-                  <TableCell>{reserva.servicio.nombre_servicio}</TableCell>
+                  <TableCell>{reserva.user ? reserva.user.username : "N/A"}</TableCell>
+                  <TableCell>{reserva.servicio ? reserva.servicio.nombre_servicio : "N/A"}</TableCell>
                   <TableCell>{new Date(reserva.fecha).toLocaleDateString()}</TableCell>
+                  <TableCell>{reserva.hora}</TableCell>
+                  <TableCell>{reserva.tipo_vehiculo ? reserva.tipo_vehiculo.nombre : "N/A"}</TableCell>
+                  <TableCell>{reserva.Total}</TableCell>
                   <TableCell>
                     <Select
-                      value={reserva.estado}
+                      value={reserva.estado_id}
                       onChange={(e) => handleEstadoChange(reserva.id, e.target.value)}
                     >
-                      <MenuItem value="pendiente">Pendiente</MenuItem>
-                      <MenuItem value="confirmado">Confirmado</MenuItem>
-                      <MenuItem value="completado">En proceso</MenuItem>
-                      <MenuItem value="cancelado">Completado</MenuItem>
+                      {estados.map((estado) => (
+                        <MenuItem key={estado.id} value={estado.id}>
+                          {estado.nombre}
+                        </MenuItem>
+                      ))}
                     </Select>
+                  </TableCell>
+                  <TableCell>
+                    {reserva.atributos && reserva.atributos.length > 0 ? (
+                      reserva.atributos.map(atributo => (
+                        <Typography key={atributo.id}>
+                          {atributo.nombre_atributo} - ${atributo.costo_atributo}
+                        </Typography>
+                      ))
+                    ) : (
+                      <Typography>No hay atributos</Typography>
+                    )}
                   </TableCell>
                   <TableCell>
                     <IconButton
@@ -195,6 +250,9 @@ function Dashboard() {
             </TableBody>
           </Table>
         </TableContainer>
+
+      </Box>
+      <Footer />
       </Box>
     </div>
   );

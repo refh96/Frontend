@@ -19,7 +19,7 @@ function LoginCliente() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("https://fullwash.site/login", credentials);
+      const res = await axios.post("http://127.0.0.1:3333/login", credentials);
       if (res.data.res) {
         // Guardar el token en una cookie
         setCookie(null, 'token', res.data.token.token, {

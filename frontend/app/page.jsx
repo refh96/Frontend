@@ -96,36 +96,14 @@ function HomePage() {
   };
 
   return (
-    <div
-      style={{
-        position: 'relative',
-        backgroundSize: '10%',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'repeat',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        minHeight: '100vh',
-        imageRendering: 'auto',
-      }}
+    <Box
+      display="flex"
+      flexDirection="column"
+      minHeight="100vh"
+      sx={{ margin: 0, padding: 0, width: '100%', overflow: 'hidden' }}
     >
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgba(255, 255, 255, 1)',
-          zIndex: 1,
-        }}
-      />
-      <Box
-        component="nav"
-        aria-label="My site"
-        sx={{ flexGrow: 1, width: '100%', maxWidth: '1500px', position: 'relative', zIndex: 2 }}
-      >
-        <Header />
+      <Header />
+      <Box flex="1" p={0} sx={{ width: '100%' }}>
         <div style={{ width: '100%', overflow: 'hidden', marginBottom: '10px', position: 'relative' }}>
           <Carousel
             autoPlay={true}
@@ -452,7 +430,7 @@ function HomePage() {
           <WhatsAppIcon />
         </IconButton>
       </Box>
-    </div>
+    </Box>
   );
 
 

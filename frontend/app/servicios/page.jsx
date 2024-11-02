@@ -26,14 +26,11 @@ const Page = () => {
   useEffect(() => {
     async function fetchServiciosLavados() {
       try {
-        const response = await axios.get('https://fullwash.site/servicios?txtBuscar=lavados');
-        if (response.status === 200) {
-          setServiciosLavados(response.data);
-        } else {
-          console.error('Error al obtener los servicios de lavados');
-        }
+        const response = await axios.get('http://127.0.0.1:3333/servicios?txtBuscar=lavados');
+        setServiciosLavados(response.data.data || []);
       } catch (error) {
-        console.error('Error en la solicitud de servicios de lavados:', error);
+        console.error('Error fetching Lavados services:', error);
+        setServiciosLavados([]);
       } finally {
         setLoading(false);
       }
@@ -41,14 +38,11 @@ const Page = () => {
 
     async function fetchServiciosOtros() {
       try {
-        const response = await axios.get('https://fullwash.site/servicios?txtBuscar=otros');
-        if (response.status === 200) {
-          setServiciosOtros(response.data);
-        } else {
-          console.error('Error al obtener los servicios otros');
-        }
+        const response = await axios.get('http://127.0.0.1:3333/servicios?txtBuscar=otros');
+        setServiciosOtros(response.data.data || []);
       } catch (error) {
-        console.error('Error en la solicitud de servicios otros:', error);
+        console.error('Error fetching Otros services:', error);
+        setServiciosOtros([]);
       } finally {
         setLoading(false);
       }
@@ -77,7 +71,7 @@ const Page = () => {
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header />
       <Container sx={{ marginTop: 4, flexGrow: 1 }}>
-      <Typography
+        <Typography
           variant="h2"
           align="center"
           sx={{
@@ -85,6 +79,7 @@ const Page = () => {
             color: 'darkorange',
             fontFamily: 'Helvetica',
             fontSize: '3rem',
+            fontWeight: 'bold',
           }}
         >
           Nuestros Servicios
@@ -94,77 +89,75 @@ const Page = () => {
           align="center"
           sx={{
             my: 4,
-            color: 'black',
+            color: 'gray',
             fontFamily: 'Helvetica',
-            fontSize: '3rem',
+            fontSize: '1.5rem',
           }}
         >
-              El Costo de los servicios varia dependiendo del tamaño o tipo de vehiculo
+          El costo de los servicios varía dependiendo del tamaño o tipo de vehículo
         </Typography>
         <Grid container spacing={4} justifyContent="center">
-          <Grid item xs={12} md={6}>
-            <Box
-              sx={{
-                textAlign: 'center',
-                padding: '20px',
-                color: 'black',
-                backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                borderRadius: '10px',
-              }}
-            >
-              <Typography variant="h5">Lavados de Vehículos</Typography>
-              {serviciosLavados.map((servicio) => (
-                <div
-                  key={servicio.id}
-                  style={{
-                    marginBottom: '20px',
-                    border: '1px solid #ccc',
-                    borderRadius: '8px',
-                    padding: '10px',
-                  }}
-                >
-                  <Typography variant="h6">{servicio.nombre_servicio}</Typography>
-                  <Typography variant="body1">{servicio.descripcion}</Typography>
-                  <Typography variant="body2">Precio: {servicio.precio}</Typography>
-                  <Button variant="contained" color="primary" onClick={() => handleOpenModal(servicio)}>
-                    Solicitar Servicio
-                  </Button>
-                </div>
-              ))}
-            </Box>
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <Box
-              sx={{
-                textAlign: 'center',
-                padding: '20px',
-                color: 'black',
-                backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                borderRadius: '10px',
-              }}
-            >
-              <Typography variant="h5">Otros Servicios</Typography>
-              {serviciosOtros.map((servicio) => (
-                <div
-                  key={servicio.id}
-                  style={{
-                    marginBottom: '20px',
-                    border: '1px solid #ccc',
-                    borderRadius: '8px',
-                    padding: '10px',
-                  }}
-                >
-                  <Typography variant="h6">{servicio.nombre_servicio}</Typography>
-                  <Typography variant="body1">{servicio.descripcion}</Typography>
-                  <Typography variant="body2">Precio: {servicio.precio}</Typography>
-                  <Button variant="contained" color="primary" onClick={() => handleOpenModal(servicio)}>
-                    Solicitar Servicio
-                  </Button>
-                </div>
-              ))}
-            </Box>
-          </Grid>
+          {[{ title: 'Lavados de Vehículos', servicios: serviciosLavados }, { title: 'Otros Servicios', servicios: serviciosOtros }].map((categoria, index) => (
+            <Grid item xs={12} md={6} key={index}>
+              <Box
+                sx={{
+                  textAlign: 'center',
+                  padding: '20px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                  borderRadius: '12px',
+                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                }}
+              >
+                <Typography variant="h5" sx={{ mb: 2, fontWeight: 'medium', color: 'darkblue' }}>
+                  {categoria.title}
+                </Typography>
+                {Array.isArray(categoria.servicios) && categoria.servicios.map((servicio) => (
+                  <Box
+                    key={servicio.id}
+                    sx={{
+                      mb: 3,
+                      border: '1px solid #e0e0e0',
+                      borderRadius: '8px',
+                      padding: '16px',
+                      backgroundColor: '#fafafa',
+                      transition: 'transform 0.3s ease',
+                      '&:hover': {
+                        transform: 'scale(1.02)',
+                      },
+                    }}
+                  >
+                    <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'black' }}>
+                      {servicio.nombre_servicio}
+                    </Typography>
+                    <Typography variant="body1" sx={{ color: 'gray' }}>
+                      {servicio.descripcion}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'black', mt: 1 }}>
+                      Desde Los: ${servicio.precio}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'gray', mt: 1 }}>
+                      Incluye:
+                    </Typography>
+                    <ul>
+                      {servicio.atributos.map((atributo) => (
+                        <li key={atributo.id} style={{ color: 'black', fontSize: '0.9rem' }}>
+                          {atributo.nombre_atributo} - Costo: ${atributo.costo_atributo}
+                        </li>
+                      ))}
+                    </ul>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      sx={{ mt: 2 }}
+                      onClick={() => handleOpenModal(servicio)}
+                    >
+                      Solicitar Servicio
+                    </Button>
+                  </Box>
+                ))}
+              </Box>
+            </Grid>
+          ))}
         </Grid>
       </Container>
 
@@ -174,7 +167,13 @@ const Page = () => {
             <>
               <Typography variant="h6">{selectedService.nombre_servicio}</Typography>
               <Typography variant="body1">{selectedService.descripcion}</Typography>
-              <Typography variant="body2">Precio: {selectedService.precio}</Typography>
+              <Typography variant="body2">Desde Los: ${selectedService.precio}</Typography>
+              <Typography variant="body2">Incluye:</Typography>
+              <ul>
+                {selectedService.atributos.map((atributo) => (
+                  <li key={atributo.id}>{atributo.nombre_atributo} - Costo: ${atributo.costo_atributo}</li>
+                ))}
+              </ul>
             </>
           )}
         </DialogContent>
