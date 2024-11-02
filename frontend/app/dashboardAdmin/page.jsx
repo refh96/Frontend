@@ -32,7 +32,7 @@ function Dashboard() {
         }
 
         const res = await axios.post(
-          "http://127.0.0.1:3333/profile",
+          "https://fullwash.site/profile",
           {},
           {
             headers: {
@@ -61,7 +61,7 @@ function Dashboard() {
         }
 
         const res = await axios.get(
-          "http://127.0.0.1:3333/reservas",
+          "https://fullwash.site/reservas",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -76,7 +76,7 @@ function Dashboard() {
     };
     const fetchEstados = async () => {
       try {
-        const res = await axios.get("http://127.0.0.1:3333/estados");
+        const res = await axios.get("https://fullwash.site/estados");
         setEstados(res.data); // Guardar los estados obtenidos
       } catch (error) {
         console.error("Error fetching estados:", error.message);
@@ -102,7 +102,7 @@ function Dashboard() {
 
       // Envía todos los campos necesarios
       await axios.put(
-        `http://127.0.0.1:3333/reservas/${id}`,
+        `https://fullwash.site/reservas/${id}`,
         {
           user_id: reservaToUpdate.user_id,
           servicio_id: reservaToUpdate.servicio_id,
@@ -134,7 +134,7 @@ function Dashboard() {
       const cookies = parseCookies();
       const token = cookies.token;
 
-      await axios.delete(`http://127.0.0.1:3333/reservas/${id}`, {
+      await axios.delete(`https://fullwash.site/reservas/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

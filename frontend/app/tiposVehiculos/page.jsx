@@ -38,7 +38,7 @@ function TiposDeVehiculo() {
 
   const fetchTiposDeVehiculo = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:3333/tipo_vehiculos");
+      const res = await axios.get("https://fullwash.site/tipo_vehiculos");
       setTiposVehiculo(res.data);
     } catch (error) {
       console.error("Error fetching vehicle types:", error.message);
@@ -64,7 +64,7 @@ function TiposDeVehiculo() {
     try {
       if (editingId) {
         await axios.put(
-          `http://127.0.0.1:3333/tipo_vehiculos/${editingId}`,
+          `https://fullwash.site/tipo_vehiculos/${editingId}`,
           tipoVehiculo,
           {
             headers: {
@@ -75,7 +75,7 @@ function TiposDeVehiculo() {
         alert("Tipo de vehículo editado exitosamente");
       } else {
         await axios.post(
-          "http://127.0.0.1:3333/tipo_vehiculos",
+          "https://fullwash.site/tipo_vehiculos",
           tipoVehiculo,
           {
             headers: {
@@ -108,7 +108,7 @@ function TiposDeVehiculo() {
         return;
       }
 
-      await axios.delete(`http://127.0.0.1:3333/tipo_vehiculos/${id}`, {
+      await axios.delete(`https://fullwash.site/tipo_vehiculos/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

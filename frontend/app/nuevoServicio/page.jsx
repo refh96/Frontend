@@ -47,7 +47,7 @@ function NuevoServicio() {
 
   const fetchServicios = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:3333/servicios");
+      const res = await axios.get("https://fullwash.site/servicios");
       setServicios(res.data.data);
     } catch (error) {
       console.error("Error fetching services:", error.message);
@@ -56,7 +56,7 @@ function NuevoServicio() {
 
   const fetchAtributos = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:3333/atributos");
+      const res = await axios.get("https://fullwash.site/atributos");
       if (res.data && Array.isArray(res.data)) {
         setAtributos(res.data);
       } else {
@@ -96,7 +96,7 @@ function NuevoServicio() {
     try {
       if (editingId) {
         await axios.put(
-          `http://127.0.0.1:3333/servicios/${editingId}`,
+          `https://fullwash.site/servicios/${editingId}`,
           servicio,
           {
             headers: {
@@ -107,7 +107,7 @@ function NuevoServicio() {
         alert("Servicio editado exitosamente");
       } else {
         await axios.post(
-          "http://127.0.0.1:3333/servicios",
+          "https://fullwash.site/servicios",
           servicio,
           {
             headers: {
@@ -146,7 +146,7 @@ function NuevoServicio() {
         return;
       }
 
-      await axios.delete(`http://127.0.0.1:3333/servicios/${id}`, {
+      await axios.delete(`https://fullwash.site/servicios/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

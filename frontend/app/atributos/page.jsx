@@ -38,7 +38,7 @@ function Atributos() {
 
   const fetchAtributos = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:3333/atributos");
+      const res = await axios.get("https://fullwash.site/atributos");
       setAtributos(res.data);
     } catch (error) {
       console.error("Error fetching attributes:", error.message);
@@ -64,7 +64,7 @@ function Atributos() {
     try {
       if (editingId) {
         await axios.put(
-          `http://127.0.0.1:3333/atributos/${editingId}`,
+          `https://fullwash.site/atributos/${editingId}`,
           atributo,
           {
             headers: {
@@ -75,7 +75,7 @@ function Atributos() {
         alert("Atributo editado exitosamente");
       } else {
         await axios.post(
-          "http://127.0.0.1:3333/atributos",
+          "https://fullwash.site/atributos",
           atributo,
           {
             headers: {
@@ -108,7 +108,7 @@ function Atributos() {
         return;
       }
 
-      await axios.delete(`http://127.0.0.1:3333/atributos/${id}`, {
+      await axios.delete(`https://fullwash.site/atributos/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

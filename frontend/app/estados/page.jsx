@@ -38,7 +38,7 @@ function Estados() {
 
   const fetchEstados = async () => {
     try {
-      const res = await axios.get('http://127.0.0.1:3333/estados');
+      const res = await axios.get('https://fullwash.site/estados');
       setEstados(res.data);
     } catch (error) {
       console.error('Error fetching states:', error.message);
@@ -63,14 +63,14 @@ function Estados() {
 
     try {
       if (editingId) {
-        await axios.put(`http://127.0.0.1:3333/estados/${editingId}`, estado, {
+        await axios.put(`https://fullwash.site/estados/${editingId}`, estado, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         alert('Estado editado exitosamente');
       } else {
-        await axios.post('http://127.0.0.1:3333/estados', estado, {
+        await axios.post('https://fullwash.site/estados', estado, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -99,7 +99,7 @@ function Estados() {
         return;
       }
 
-      await axios.delete(`http://127.0.0.1:3333/estados/${id}`, {
+      await axios.delete(`https://fullwash.site/estados/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

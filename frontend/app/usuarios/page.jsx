@@ -27,7 +27,7 @@ const AdminUsuarios = () => {
         // Función para obtener la lista de usuarios
         const fetchUsuarios = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:3333/users');
+                const response = await axios.get('https://fullwash.site/users');
                 setUsuarios(response.data);
             } catch (error) {
                 console.error('Error al obtener los usuarios:', error);
@@ -40,7 +40,7 @@ const AdminUsuarios = () => {
     // Función para manejar el cambio de rol
     const handleRoleChange = async (id, newRole) => {
         try {
-            await axios.put(`http://127.0.0.1:3333/users/${id}`, { rol: newRole });
+            await axios.put(`https://fullwash.site/users/${id}`, { rol: newRole });
             setUsuarios((prevUsuarios) =>
                 prevUsuarios.map((user) =>
                     user.id === id ? { ...user, rol: newRole } : user
@@ -58,7 +58,7 @@ const AdminUsuarios = () => {
         const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este usuario?');
         if (confirmDelete) {
             try {
-                await axios.delete(`http://127.0.0.1:3333/users/${id}`);
+                await axios.delete(`https://fullwash.site/users/${id}`);
                 setUsuarios((prevUsuarios) => prevUsuarios.filter((user) => user.id !== id));
                 alert('Usuario eliminado correctamente');
             } catch (error) {

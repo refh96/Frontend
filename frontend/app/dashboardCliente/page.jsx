@@ -74,7 +74,7 @@ function DashboardCliente() {
         }
 
         const res = await axios.post(
-          "http://127.0.0.1:3333/profile",
+          "https://fullwash.site/profile",
           {},
           {
             headers: {
@@ -97,7 +97,7 @@ function DashboardCliente() {
   useEffect(() => {
     const fetchServicios = async () => {
       try {
-        const res = await axios.get("http://127.0.0.1:3333/servicios");
+        const res = await axios.get("https://fullwash.site/servicios");
         setServicios(Array.isArray(res.data.data) ? res.data.data : []);
       } catch (error) {
         console.error("Error fetching services:", error.message);
@@ -106,7 +106,7 @@ function DashboardCliente() {
     };
     const fetchEstados = async () => {
       try {
-        const res = await axios.get("http://127.0.0.1:3333/estados");
+        const res = await axios.get("https://fullwash.site/estados");
         const estadoPendiente = res.data.find(estado => estado.nombre === "Pendiente");
         if (estadoPendiente) {
           setEstadoPendienteId(estadoPendiente.id);
@@ -118,7 +118,7 @@ function DashboardCliente() {
     };
     const fetchTipoVehiculo = async () => {
       try {
-        const res = await axios.get("http://127.0.0.1:3333/tipo_vehiculos");
+        const res = await axios.get("https://fullwash.site/tipo_vehiculos");
         setTipoVehiculo(res.data);
       } catch (error) {
         console.error("Error fetching tipoVehiculo:", error.message);
@@ -134,7 +134,7 @@ function DashboardCliente() {
         }
 
         const res = await axios.get(
-          `http://127.0.0.1:3333/reservas/user/${user.id}`,
+          `https://fullwash.site/reservas/user/${user.id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -158,7 +158,7 @@ function DashboardCliente() {
     }
     const fetchAtributos = async () => {
       try {
-        const res = await axios.get("http://127.0.0.1:3333/atributos");
+        const res = await axios.get("https://fullwash.site/atributos");
         setAtributos(res.data);
       } catch (error) {
         console.error("Error fetching attributes:", error.message);
@@ -202,7 +202,7 @@ function DashboardCliente() {
       };
 
       await axios.post(
-        "http://127.0.0.1:3333/reservas",
+        "https://fullwash.site/reservas",
         nuevaReserva,
         {
           headers: {
@@ -240,7 +240,7 @@ function DashboardCliente() {
       }
 
       const res = await axios.get(
-        `http://127.0.0.1:3333/reservas/user/${user.id}`,
+        `https://fullwash.site/reservas/user/${user.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -299,7 +299,7 @@ function DashboardCliente() {
       };
 
       await axios.put(
-        `http://127.0.0.1:3333/reservas/${editReservation.id}`,
+        `https://fullwash.site/reservas/${editReservation.id}`,
         updatedReservation,
         {
           headers: {
@@ -334,7 +334,7 @@ function DashboardCliente() {
         return;
       }
 
-      await axios.delete(`http://127.0.0.1:3333/reservas/${id}`, {
+      await axios.delete(`https://fullwash.site/reservas/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -483,7 +483,7 @@ function DashboardCliente() {
       }
 
       await axios.put(
-        `http://127.0.0.1:3333/users/${user.id}`, // Usa el ID del usuario
+        `https://fullwash.site/users/${user.id}`, // Usa el ID del usuario
         {
           username: user.username,
           email: user.email,
