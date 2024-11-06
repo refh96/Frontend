@@ -7,6 +7,7 @@ import { TextField, Button, Box, Typography } from "@mui/material";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { setCookie } from 'nookies';
+import Swal from 'sweetalert2';
 
 function Login() {
   const [credentials, setCredentials] = useState({
@@ -29,15 +30,30 @@ function Login() {
             sameSite: 'None',
             secure: true,
           });
-          alert("Login exitoso. Redirigiendo al Dashboard...");
+          Swal.fire({
+            title: 'Éxito!',
+            text: 'Login exitoso redirigiendo al Dashboard Administrativo',
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+          });
           router.push("/dashboardAdmin");
         } else {
-          alert("Acceso denegado. Solo los administradores pueden acceder.");
+          Swal.fire({
+            title: 'Error!',
+            text: 'Solo los Adminstradores pueden acceder',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+          });
         }
       }
     } catch (error) {
       console.error("Error durante el login:", error.message);
-      alert("Hubo un error en el login. Por favor, inténtalo de nuevo.");
+      Swal.fire({
+        title: 'Error!',
+        text: 'Hubo un error al iniciar sesion intente nuevamente',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      });
     }
   };
 

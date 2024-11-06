@@ -3,6 +3,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Swal from 'sweetalert2';
 import {
   Button,
   Box,
@@ -12,6 +13,10 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  List,
+  ListItem,
+  ListItemText,
+  Drawer,
   Table,
   TableBody,
   TableCell,
@@ -26,8 +31,13 @@ import {
   DialogContent,
   DialogTitle,
   ToggleButton,
-  ToggleButtonGroup
+  ToggleButtonGroup,
+  Avatar,
+  Skeleton,
+  AppBar,
+  Toolbar
 } from "@mui/material";
+import MenuIcon from '@mui/icons-material/Menu';
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { parseCookies, destroyCookie } from 'nookies';
 import Header from '../components/Header';
@@ -39,6 +49,7 @@ function DashboardCliente() {
     username: "",
     email: "",
   });
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [servicios, setServicios] = useState([]);
   const [tipo_vehiculos, setTipoVehiculo] = useState([]);
@@ -181,6 +192,12 @@ function DashboardCliente() {
       setReservation(prev => ({ ...prev, atributo_ids: [] }));
     }
   };
+  const handleAvatarClick = () => {
+    setActiveScreen('perfil'); // Cambia a la vista de perfil
+  };
+  const handleDrawerToggle = () => {
+    setDrawerOpen(!drawerOpen);
+  };
 
 
   const handleSubmit = async (e) => {
@@ -194,7 +211,6 @@ function DashboardCliente() {
         return;
       }
 
-      // Añadir estado_id antes de enviar la solicitud
       const nuevaReserva = {
         ...reservation,
         estado_id: estadoPendienteId,
@@ -211,13 +227,20 @@ function DashboardCliente() {
         }
       );
 
-      alert("Reserva creada exitosamente");
+      // Usa SweetAlert2 para mostrar la alerta de éxito
+      Swal.fire({
+        title: 'Éxito!',
+        text: 'Reserva creada exitosamente',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+      });
+
       setReservation({
         user_id: user.id,
         servicio_id: "",
         fecha: "",
         hora: "",
-        estado_id: estadoPendienteId, // Se asegura de restablecer con estado pendiente
+        estado_id: estadoPendienteId,
         tipo_vehiculo_id: "",
         atributo_ids: selectedAtributos,
       });
@@ -226,7 +249,14 @@ function DashboardCliente() {
       setShowForm(false);
     } catch (error) {
       console.error("Error creating reservation:", error.response?.data?.message || error.message);
-      setError(error.response?.data?.message || "Error al crear la reserva");
+
+      // Usa SweetAlert2 para mostrar la alerta de error
+      Swal.fire({
+        title: 'Error!',
+        text: error.response?.data?.message || "Error al crear la reserva",
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      });
     }
   };
 
@@ -282,7 +312,6 @@ function DashboardCliente() {
     setEditing(true);
   };
 
-
   const handleUpdate = async () => {
     setError(null);
     try {
@@ -293,9 +322,13 @@ function DashboardCliente() {
         return;
       }
 
+      // Asegúrate de que 'estado_id' corresponda al ID del estado "Pendiente" en tu base de datos.
+      const estadoPendienteId = 1; // Cambia esto al ID correcto para el estado "Pendiente"
+
       const updatedReservation = {
         ...reservation,
         atributo_ids: selectedAtributos,
+        estado_id: estadoPendienteId, // Establece el estado como "Pendiente"
       };
 
       await axios.put(
@@ -308,20 +341,39 @@ function DashboardCliente() {
         }
       );
 
-      alert("Reserva actualizada exitosamente");
+      Swal.fire({
+        title: 'Éxito!',
+        text: 'Reserva actualizada exitosamente',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+      });
+
       setEditing(false);
       setEditReservation(null);
       await fetchReservas();
     } catch (error) {
       console.error("Error updating reservation:", error.response?.data?.message || error.message);
-      setError(error.response?.data?.message || "Error al actualizar la reserva");
+      Swal.fire({
+        title: 'Error!',
+        text: error.response?.data?.message || "Error al actualizar la reserva",
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      });
     }
   };
 
 
   const handleDelete = async (id) => {
-    const confirmed = window.confirm("¿Estás seguro de que deseas eliminar la reserva?");
-    if (!confirmed) {
+    const confirmed = await Swal.fire({
+      title: 'Confirmar',
+      text: "¿Estás seguro de que deseas eliminar la reserva?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (!confirmed.isConfirmed) {
       return;
     }
 
@@ -340,11 +392,22 @@ function DashboardCliente() {
         },
       });
 
-      alert("Reserva eliminada exitosamente");
+      Swal.fire({
+        title: 'Éxito!',
+        text: 'Reserva eliminada exitosamente',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+      });
+
       await fetchReservas();
     } catch (error) {
       console.error("Error deleting reservation:", error.message);
-      setError("Error al eliminar la reserva");
+      Swal.fire({
+        title: 'Error!',
+        text: "Error al eliminar la reserva",
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      });
     }
   };
 
@@ -373,7 +436,7 @@ function DashboardCliente() {
                   <TableCell>Estado</TableCell>
                   <TableCell>Tipo de Vehículo</TableCell>
                   <TableCell>Total</TableCell>
-                  <TableCell>Servicios Extras</TableCell> {/* Nueva columna */}
+                  <TableCell>Servicios Extras</TableCell>
                   <TableCell>Acciones</TableCell>
                 </TableRow>
               </TableHead>
@@ -383,7 +446,7 @@ function DashboardCliente() {
                     <TableCell>{reserva.servicio.nombre_servicio}</TableCell>
                     <TableCell>{new Date(reserva.fecha).toLocaleDateString('es-ES', { timeZone: 'UTC' })}</TableCell>
                     <TableCell>{reserva.hora}</TableCell>
-                    <TableCell>{reserva.estado.nombre}</TableCell> {/* Estado actualizado */}
+                    <TableCell>{reserva.estado.nombre}</TableCell>
                     <TableCell>{reserva.tipo_vehiculo.nombre}</TableCell>
                     <TableCell>{reserva.Total}</TableCell>
                     <TableCell>
@@ -401,12 +464,14 @@ function DashboardCliente() {
                       <IconButton
                         color="primary"
                         onClick={() => handleEdit(reserva)}
+                        disabled={reserva.estado.nombre !== "Pendiente" && reserva.estado.nombre !== "Rechazado"}
                       >
                         <EditIcon />
                       </IconButton>
                       <IconButton
                         color="error"
                         onClick={() => handleDelete(reserva.id)}
+                        disabled={reserva.estado.nombre !== "Pendiente" && reserva.estado.nombre !== "Rechazado"} // Misma condición
                       >
                         <DeleteIcon />
                       </IconButton>
@@ -419,8 +484,11 @@ function DashboardCliente() {
         );
       case "perfil":
         return (
-          <Box>
+          <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" textAlign={"center"}>
             <Typography color="black" variant="h6">Perfil</Typography>
+            <Avatar sx={{ bgcolor: 'secondary.main', marginBottom: 2, alignItems:'center' }}>
+              {user.username.charAt(0)}
+            </Avatar>
             <Typography color="black">Nombre: {user.username}</Typography>
             <Typography color="black">Email: {user.email}</Typography>
             <Typography color="black">Teléfono: {user.numero}</Typography>
@@ -434,35 +502,41 @@ function DashboardCliente() {
   };
 
 
+
   const handleDateChange = (e) => {
     const selectedDateString = e.target.value; // Obtener el valor del input
     const [year, month, day] = selectedDateString.split('-').map(Number); // Separar año, mes y día
     const selectedDate = new Date(Date.UTC(year, month - 1, day)); // Crear la fecha seleccionada
     const today = new Date(); // Obtener la fecha actual
-    
+
     // Establecer horas, minutos, segundos y milisegundos de hoy a 0
     today.setHours(0, 0, 0, 0);
-    
+
     // Crear una fecha para ayer
     const yesterday = new Date(today);
     yesterday.setDate(today.getDate() - 1); // Restar un día
-  
+
     // Establecer horas, minutos, segundos y milisegundos de ayer a 0
     yesterday.setHours(0, 0, 0, 0);
-  
+
     console.log("Selected Date:", selectedDate);
     console.log("Today Date:", today);
     console.log("Yesterday Date:", yesterday);
-  
+
     // Verifica si la fecha seleccionada es anterior a ayer
     if (selectedDate < yesterday) {
-      alert("No puedes seleccionar una fecha anterior a ayer.");
+      Swal.fire({
+        title: 'Error!',
+        text: 'No Puedes Seleccionar una fecha anterior a Hoy',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      });
     } else {
       // Solo actualizar el estado si la fecha es válida
       setReservation(prev => ({ ...prev, fecha: selectedDateString }));
     }
   };
-  
+
 
 
 
@@ -497,7 +571,13 @@ function DashboardCliente() {
         }
       );
 
-      alert("Perfil actualizado exitosamente!");
+      Swal.fire({
+        title: '¡Éxito!',
+        text: 'Perfil actualizado exitosamente!',
+        icon: 'success', // Puedes usar 'success', 'error', 'warning', etc.
+        confirmButtonText: 'Aceptar',
+        backdrop: true, // Para oscurecer el fondo
+      });
       setShowEditProfile(false); // Cierra el formulario
     } catch (error) {
       console.error("Error updating profile:", error.message);
@@ -520,17 +600,38 @@ function DashboardCliente() {
 
       {/* Contenido Principal */}
       <Box flex="1" p={2}>
-        <Typography variant="h4" color="black">Dashboard</Typography>
-        {error && <Typography color="error">{error}</Typography>}
-        <Button variant="contained" onClick={() => setShowForm(true)}>
-          Nueva Reserva
-        </Button>
-        <Button variant="contained" onClick={() => setActiveScreen("reservas")}>
-          Mis Reservas
-        </Button>
-        <Button variant="contained" onClick={() => setActiveScreen("perfil")}>
-          Mi Perfil
-        </Button>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton edge="start" color="inherit" aria-label="menu" onClick={handleDrawerToggle}>
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" textAlign="center" sx={{ flexGrow: 1 }}>
+              Dashboard
+            </Typography>
+            <Avatar sx={{ bgcolor: 'secondary.main' }} onClick={handleAvatarClick}>
+              {user.username.charAt(0)}
+            </Avatar>
+          </Toolbar>
+        </AppBar>
+
+        {/* Drawer lateral */}
+        <Drawer anchor="left" open={drawerOpen} onClose={handleDrawerToggle}>
+          <List>
+            <ListItem button onClick={() => { setActiveScreen('reservas'); handleDrawerToggle(); }}>
+              <ListItemText primary="Mis Reservas" />
+            </ListItem>
+            <ListItem button onClick={() => { setActiveScreen('perfil'); handleDrawerToggle(); }}>
+              <ListItemText primary="Mi Perfil" />
+            </ListItem>
+            <ListItem button onClick={() => { setShowForm(true); handleDrawerToggle(); }}>
+              <ListItemText primary="Agendar Reserva" />
+            </ListItem>
+            <ListItem button onClick={() => { logout()}}>
+              <ListItemText primary="Cerrar sesion" />
+            </ListItem>
+            {/* Agrega más elementos de lista según sea necesario */}
+          </List>
+        </Drawer>
 
         {/* Formulario de Nueva Reserva */}
         <Dialog open={showForm} onClose={() => setShowForm(false)}>
@@ -552,16 +653,16 @@ function DashboardCliente() {
               </Select>
             </FormControl>
             <FormControl fullWidth margin="normal">
-            <Typography>Fecha</Typography>
-            <TextField
-              type="date"
-              name="fecha"
-              value={reservation.fecha}
-              onChange={handleDateChange}
-              required
-              InputLabelProps={{ shrink: true }}
-              sx={{ marginTop: 2 }}
-            />
+              <Typography>Fecha</Typography>
+              <TextField
+                type="date"
+                name="fecha"
+                value={reservation.fecha}
+                onChange={handleDateChange}
+                required
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: 2 }}
+              />
             </FormControl>
             <FormControl fullWidth margin="normal">
               <Typography id="hora-label">Hora</Typography>
@@ -580,7 +681,7 @@ function DashboardCliente() {
               </Select>
             </FormControl>
             <FormControl fullWidth margin="normal">
-              <Typography>Tipo vehiculo</Typography>
+              <Typography>Tipo Vehículo</Typography>
               <Select
                 name="tipo_vehiculo_id"
                 value={reservation.tipo_vehiculo_id}
@@ -645,7 +746,7 @@ function DashboardCliente() {
               type="time"
               name="hora"
               value={reservation.hora}
-              onChange={handleTimeChange} // Cambiado para usar la función correcta
+              onChange={handleTimeChange}
               required
               sx={{ marginTop: 2 }}
             />
@@ -687,38 +788,50 @@ function DashboardCliente() {
         <Dialog open={showEditProfile} onClose={() => setShowEditProfile(false)}>
           <DialogTitle>Editar Perfil</DialogTitle>
           <DialogContent>
-            <TextField
-              label="Username"
-              value={user.username}
-              onChange={(e) => setUser({ ...user, username: e.target.value })}
-              fullWidth
-            />
-            <TextField
-              label="Email"
-              value={user.email}
-              onChange={(e) => setUser({ ...user, email: e.target.value })}
-              fullWidth
-            />
-            <TextField
-              label="Numero"
-              value={user.numero}
-              onChange={(e) => setUser({ ...user, numero: e.target.value })}
-              fullWidth
-            />
-            <TextField
-              label="Password"
-              value={user.password}
-              onChange={(e) => setUser({ ...user, password: e.target.value })}
-              fullWidth
-            />
+            <FormControl fullWidth margin="normal">
+              <Typography>Nombre de Usuario</Typography>
+              <TextField
+                name="username"
+                value={user.username}
+                onChange={(e) => setUser({ ...user, username: e.target.value })}
+                required
+              />
+            </FormControl>
+            <FormControl fullWidth margin="normal">
+              <Typography>Email</Typography>
+              <TextField
+                type="email"
+                name="email"
+                value={user.email}
+                onChange={(e) => setUser({ ...user, email: e.target.value })}
+                required
+              />
+            </FormControl>
+            <FormControl fullWidth margin="normal">
+              <Typography>Número</Typography>
+              <TextField
+                name="numero"
+                value={user.numero}
+                onChange={(e) => setUser({ ...user, numero: e.target.value })}
+              />
+            </FormControl>
+            <FormControl fullWidth margin="normal">
+              <Typography>Contraseña</Typography>
+              <TextField
+                type="password"
+                name="password"
+                value={user.password}
+                onChange={(e) => setUser({ ...user, password: e.target.value })}
+              />
+            </FormControl>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setShowEditProfile(false)}>Cancelar</Button>
-            <Button onClick={handleUpdateProfile}>Guardar</Button>
+            <Button onClick={handleUpdateProfile}>Actualizar</Button>
           </DialogActions>
         </Dialog>
 
-        {/* Renderiza la pantalla activa */}
+        {/* Render de la pantalla seleccionada */}
         {renderScreen()}
       </Box>
 

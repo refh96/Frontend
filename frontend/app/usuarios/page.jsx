@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { useRouter } from "next/navigation";
 import {
     Box,
     Container,
@@ -22,7 +23,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 const AdminUsuarios = () => {
     const [usuarios, setUsuarios] = useState([]);
-
+    const router = useRouter();
     useEffect(() => {
         // Función para obtener la lista de usuarios
         const fetchUsuarios = async () => {

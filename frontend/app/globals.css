@@ -9,4 +9,6 @@ html, body {
 	height: 100%;
 	background-color: white; /* Fondo blanco también para todo el documento */
   }
-  
+.swal2-container {
+    z-index: 9999 !important; /* Un valor alto para asegurarte de que esté encima */
+}

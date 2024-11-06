@@ -8,6 +8,7 @@ import { TextField, Button, Box, Typography } from "@mui/material";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { setCookie } from 'nookies';
+import Swal from 'sweetalert2';
 
 function LoginCliente() {
   const [credentials, setCredentials] = useState({
@@ -28,12 +29,22 @@ function LoginCliente() {
           sameSite: 'None',
           secure: true, // Asegúrate de usar HTTPS
         });
-        alert("Login exitoso. Redirigiendo al Dashboard...");
+        Swal.fire({
+          title: 'Éxito!',
+          text: 'Login Exitoso Redirigiendo al Dashboard',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        });
         router.push("/dashboardCliente");
       }
     } catch (error) {
       console.error("Error during login:", error.message);
-      alert("Hubo un error durante el Login. Inténtelo nuevamente.");
+      Swal.fire({
+        title: 'Error!',
+        text: 'Hubo un error al iniciar sesion intente nuevamente',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      });
     }
   };
 

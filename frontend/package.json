@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "type": "module"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -32,6 +33,7 @@
     "react-slick": "^0.30.2",
     "resend": "^4.0.1-alpha.0",
     "slick-carousel": "^1.8.1",
+    "sweetalert2": "^11.14.5",
     "use-places-autocomplete": "^4.0.1"
   },
   "devDependencies": {

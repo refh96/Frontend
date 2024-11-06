@@ -1,6 +1,6 @@
 'use client';
-import React, { useState } from 'react';
-import { Box, Paper, Typography, Grid, Container, Button, Dialog, DialogActions, DialogContent, IconButton } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Paper, Skeleton, Typography, Grid, Container, Button, Dialog, DialogActions, DialogContent, IconButton } from '@mui/material';
 import Carousel from 'react-material-ui-carousel';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -10,6 +10,7 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 function HomePage() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const router = useRouter();
 
@@ -27,24 +28,24 @@ function HomePage() {
       alt: 'imagen 3',
     },
     {
-      img: 'https://i.ibb.co/JkGr1R2/subir-1.jpg',
+      img: 'https://i.ibb.co/yX9P3x5/fullwash-imagen.png',
       alt: 'imagen 4',
     },
     {
-      img: 'https://i.ibb.co/4VRNfc4/subir-2.jpg',
+      img: 'https://i.ibb.co/JkGr1R2/subir-1.jpg',
       alt: 'imagen 5',
     },
     {
       img: 'https://i.ibb.co/Jdzcvw3/subir-3.png',
-      alt: 'imagen 6',
-    },
-    {
-      img: 'https://i.ibb.co/7RnTjBp/subir-4.png',
       alt: 'imagen 7',
     },
     {
-      img: 'https://i.ibb.co/tsDpsnn/subir5.jpg',
+      img: 'https://i.ibb.co/7RnTjBp/subir-4.png',
       alt: 'imagen 8',
+    },
+    {
+      img: 'https://i.ibb.co/tsDpsnn/subir5.jpg',
+      alt: 'imagen 9',
     },
   ];
   const items1 = [
@@ -79,6 +80,13 @@ function HomePage() {
       alt: 'imagen 4',
     },
   ];
+  useEffect(() => {
+    // Simula la carga con un temporizador
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000); // Tiempo de carga de 2 segundos
+    return () => clearTimeout(timer);
+  }, []);
   const handleOpenModal = (servicio) => {
     setSelectedService(servicio);
     setOpenModal(true);
@@ -90,9 +98,8 @@ function HomePage() {
   };
 
   const handleAddToOrder = () => {
-    router.push('/loginCliente');
+    router.push('/dashboardCliente');
     handleCloseModal();
-    router.push('/loginCliente');
   };
 
   return (
@@ -104,121 +111,139 @@ function HomePage() {
     >
       <Header />
       <Box flex="1" p={0} sx={{ width: '100%' }}>
-        <div style={{ width: '100%', overflow: 'hidden', marginBottom: '10px', position: 'relative' }}>
-          <Carousel
-            autoPlay={true}
-            animation="slide"
-            timeout={500}
-            navButtonsAlwaysVisible={true}
-            indicatorContainerProps={{ sx: { mt: 2 } }}
-          >
-            {items.map((item, index) => (
-              <Paper
-                key={index}
-                style={{ height: '50vh', display: 'flex', alignItems: 'center', color: 'black' }}
-              >
-                <img
-                  src={item.img}
-                  alt={item.alt}
-                  style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                />
-              </Paper>
-            ))}
-          </Carousel>
+        <div style={{ display: 'flex', width: '100%', marginBottom: '10px', backgroundColor: '#f5f5f5', padding: '10px' }}>
+          <div style={{ width: '50%', overflow: 'hidden', position: 'relative', borderRadius: '8px', marginRight: '5px' }}>
+            <Carousel
+              autoPlay={true}
+              animation="slide"
+              timeout={500}
+              navButtonsAlwaysVisible={true}
+              indicatorContainerProps={{ sx: { mt: 2 } }}
+            >
+              {items.map((item, index) => (
+                <Paper
+                  key={index}
+                  style={{ height: '50vh', display: 'flex', alignItems: 'center', color: 'black' }}
+                >
+                  <img
+                    src={item.img}
+                    alt={item.alt}
+                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                  />
+                </Paper>
+              ))}
+            </Carousel>
+          </div>
+          <div style={{ width: '50%', overflow: 'hidden', position: 'relative', borderRadius: '8px', marginLeft: '5px' }}>
+            <Typography
+              variant="h1"
+              align="center"
+              sx={{
+                my: 4,
+                color: '#F05B3C',
+                fontFamily: 'Baloo, sans-serif',
+                fontSize: { xs: '2rem', md: '3rem' },
+                textShadow: '5px 8px 4px rgba(0, 0, 0, 0.4)',
+                transition: "transform 0.3s ease-in-out",
+                "&:hover": {
+                  transform: "scale(1.05)", // Agranda el botón un 5%
+                },
+              }}
+            >
+              REGISTRATE Y AGENDA CON NOSOTROS TU SERVICIO DE CONFIANZA
+            </Typography>
+            <Button
+              variant="contained"
+              color="success"
+              sx={{
+                borderRadius: "20px",     // Bordes redondeados
+                paddingX: 3,              // Padding horizontal
+                paddingY: 1.5,            // Padding vertical
+                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",  // Sombra suave
+                mx: "auto",
+                display: "block"
+              }}
+              onClick={handleAddToOrder}
+            >
+              Solicitar Servicio
+            </Button>
+
+
+
+          </div>
         </div>
+
+
+
         <Container sx={{ marginY: 4, textAlign: 'center' }}>
-          <Typography
-            variant="h1"
-            align="center"
-            sx={{
-              my: 4,
-              color: '#64F03C',
-              fontFamily: 'aria-label',
-              fontSize: '3rem',
-            }}
-          >
-            REGISTRATE Y AGENDA CON NOSOTROS TU SERVICIO DE CONFIANZA
-          </Typography>
           <Typography
             variant="h4"
             align="center"
             color="black"
             gutterBottom
             sx={{
-              backgroundColor: '#00ced1', // Fondo de color alrededor del texto
-              padding: '10px', // Espacio entre el texto y los bordes del fondo
-              borderRadius: '8px', // Bordes redondeados (opcional)
-              display: 'inline-block', // Mantiene el fondo solo alrededor del texto
-              border: '3px solid #00e5e5', // Borde con un color
+              backgroundColor: '#00ced1',
+              padding: '10px',
+              borderRadius: '8px',
+              display: 'inline-block',
+              border: '3px solid #00e5e5',
+              color: '#white',
               fontFamily: 'aria-label',
-              color: '#F05B3C'
+              textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)',
+              transition: "transform 0.3s ease-in-out",
+                "&:hover": {
+                  transform: "scale(1.05)", // Agranda el botón un 5%
+                },
             }}
           >
-            DESCUBRE NUESTRO PROCESO
+            DESCUBRE NUESTROS PROCESOS
           </Typography>
-          <Grid container spacing={2} justifyContent="center">
-            <Grid item xs={12} sm={4}>
-              <Typography variant="h6" align="center" color="black" gutterBottom>
-                LIMPIEZA DETALLADA
-              </Typography>
-              <img
-                src="https://www.tuningblog.eu/wp-content/uploads/2021/05/Dampfreiniger-autowaesche-aussen-lack-innen-interieur-5-min.gif"
-                alt="Proceso 1"
-                style={{ width: '100%', borderRadius: '8px' }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Typography variant="h6" align="center" color="black" gutterBottom>
-                LAVADO EXTERNO COMPLETO
-              </Typography>
-              <img
-                src="https://i.gifer.com/D3j.gif"
-                alt="Proceso 2"
-                style={{ width: '100%', borderRadius: '8px' }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Typography variant="h6" align="center" color="black" gutterBottom>
-                LIMPIEZA DE VIDRIOS Y PLASTICOS
-              </Typography>
-              <img
-                src="https://media.giphy.com/media/87wlWjovL0O6Q/giphy.gif"
-                alt="Proceso 3"
-                style={{ width: '100%', borderRadius: '8px' }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Typography variant="h6" align="center" color="black" gutterBottom>
-                PULIDO DE FOCOS
-              </Typography>
-              <img
-                src="https://www.mantencionexpress.cl/wp-content/uploads/2021/04/medetailing_pul-foco-1.jpg"
-                alt="Proceso 4"
-                style={{ width: '100%', borderRadius: '8px' }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Typography variant="h6" align="center" color="black" gutterBottom>
-                LAVADO DE MOTOR
-              </Typography>
-              <img
-                src="https://www.expertoautorecambios.es/magazine/wp-content/uploads/2017/10/el-lavado-del-motor.jpg"
-                alt="Proceso 5"
-                style={{ width: '100%', borderRadius: '8px' }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Typography variant="h6" align="center" color="black" gutterBottom>
-                HIDRATACION DE PLASTICOS INTERNOS Y EXTERNOS
-              </Typography>
-              <img
-                src="https://i.ytimg.com/vi/kpRPZUqvTtU/hqdefault.jpg"
-                alt="Proceso 6"
-                style={{ width: '100%', borderRadius: '8px' }}
-              />
-            </Grid>
+          <Grid container spacing={3} justifyContent="center">
+            {[
+              {
+                title: 'LIMPIEZA DETALLADA',
+                img: 'https://www.tuningblog.eu/wp-content/uploads/2021/05/Dampfreiniger-autowaesche-aussen-lack-innen-interieur-5-min.gif',
+              },
+              {
+                title: 'LAVADO EXTERNO COMPLETO',
+                img: 'https://i.gifer.com/D3j.gif',
+              },
+              {
+                title: 'LIMPIEZA DE VIDRIOS Y PLÁSTICOS',
+                img: 'https://media.giphy.com/media/87wlWjovL0O6Q/giphy.gif',
+              },
+              {
+                title: 'PULIDO DE FOCOS',
+                img: 'https://www.mantencionexpress.cl/wp-content/uploads/2021/04/medetailing_pul-foco-1.jpg',
+              },
+              {
+                title: 'LAVADO DE MOTOR',
+                img: 'https://www.expertoautorecambios.es/magazine/wp-content/uploads/2017/10/el-lavado-del-motor.jpg',
+              },
+              {
+                title: 'HIDRATACIÓN DE PLÁSTICOS INTERNOS Y EXTERNOS',
+                img: 'https://i.ytimg.com/vi/kpRPZUqvTtU/hqdefault.jpg',
+              },
+            ].map((item, index) => (
+              <Grid item xs={12} sm={6} md={4} key={index} sx={{transition: "transform 0.3s ease-in-out",
+                "&:hover": {
+                  transform: "scale(1.05)", // Agranda el botón un 5%
+                },}}>
+                <div style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', borderRadius: '8px', overflow: 'hidden', transition: 'transform 0.3s', cursor: 'pointer' }}>
+                  <Typography variant="h6" align="center" color="black" gutterBottom sx={{ backgroundColor: '#f5f5f5', padding: '8px', fontWeight: 'bold' }}>
+                    {item.title}
+                  </Typography>
+                  <img
+                    src={item.img}
+                    alt={item.title}
+                    style={{ width: '100%', height: '250px', objectFit: 'cover' }}
+                  />
+                </div>
+              </Grid>
+            ))}
           </Grid>
         </Container>
+
 
         {/* Sección de Opiniones de Clientes */}
         <Container sx={{ marginY: 4 }}>
@@ -226,7 +251,10 @@ function HomePage() {
             RECOMENDACION DE CLIENTES
           </Typography>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={3} sx={{transition: "transform 0.3s ease-in-out",
+                "&:hover": {
+                  transform: "scale(1.05)", // Agranda el botón un 5%
+                },}}>
               <Paper elevation={3} sx={{ padding: 2, textAlign: 'center' }}>
                 <Typography variant="h6" gutterBottom>
                   Sal Yesenia
@@ -236,7 +264,10 @@ function HomePage() {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={3} sx={{transition: "transform 0.3s ease-in-out",
+                "&:hover": {
+                  transform: "scale(1.05)", // Agranda el botón un 5%
+                },}}>
               <Paper elevation={3} sx={{ padding: 2, textAlign: 'center' }}>
                 <Typography variant="h6" gutterBottom>
                   Jacqueline Jara
@@ -247,7 +278,10 @@ function HomePage() {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={3} sx={{transition: "transform 0.3s ease-in-out",
+                "&:hover": {
+                  transform: "scale(1.05)", // Agranda el botón un 5%
+                },}}>
               <Paper elevation={3} sx={{ padding: 2, textAlign: 'center' }}>
                 <Typography variant="h6" gutterBottom>
                   Pipo To
@@ -257,7 +291,10 @@ function HomePage() {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={3} sx={{transition: "transform 0.3s ease-in-out",
+                "&:hover": {
+                  transform: "scale(1.05)", // Agranda el botón un 5%
+                },}}>
               <Paper elevation={3} sx={{ padding: 2, textAlign: 'center' }}>
                 <Typography variant="h6" gutterBottom>
                   Braulio Francisco Coronado Olivera
@@ -352,9 +389,9 @@ function HomePage() {
             </Grid>
           </Grid>
         </Container>
-        <Container sx={{ marginY: 4 }}>
-          <Grid>
-            <Grid item xs={12} sm={12} md={4}>
+        <Container sx={{ marginY: 4, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Grid container spacing={3} sx={{ maxWidth: 800 }}>
+            <Grid item xs={12}>
               <div
                 style={{
                   textAlign: 'center',
@@ -364,34 +401,35 @@ function HomePage() {
                   borderRadius: '10px',
                 }}
               >
-                <Typography variant="h4">Visitanos</Typography>
-                <video
-                  width="50%"
-                  height="315"
-                  controls
-                  style={{ border: 'none', overflow: 'hidden' }}
-                >
-                  <source src="/video.mp4" type="video/mp4" />
-                  Tu navegador no soporta el elemento de video.
-                </video>
-                <video
-                  width="50%"
-                  height="315"
-                  controls
-                  style={{ border: 'none', overflow: 'hidden' }}
-                >
-                  <source src="/video2.mp4" type="video/mp4" />
-                  Tu navegador no soporta el elemento de video.
-                </video>
-                <video
-                  width="50%"
-                  height="315"
-                  controls
-                  style={{ border: 'none', overflow: 'hidden' }}
-                >
-                  <source src="/video3.mp4" type="video/mp4" />
-                  Tu navegador no soporta el elemento de video.
-                </video>
+                <Typography variant="h4">Visita Nuestras Redes Sociales Para Mas Contenido</Typography>
+                
+
+                <Grid container spacing={2} justifyContent="center">
+                  {isLoading ? (
+                    Array.from(new Array(3)).map((_, index) => (
+                      <Grid item xs={12} sm={6} md={4} key={index}>
+                        <Skeleton variant="rectangular" width="100%" height={180} />
+                      </Grid>
+                    ))
+                  ) : (
+                    ['video.mp4', 'video2.mp4', 'video3.mp4','video4.mp4','video5.mp4', 'video6.mp4'].map((src, index) => (
+                      <Grid item xs={12} sm={6} md={4} key={index} sx={{transition: "transform 0.3s ease-in-out",
+                        "&:hover": {
+                          transform: "scale(1.90)", // Agranda el botón un 5%
+                        },}}>
+                        <video
+                          width="100%"
+                          height="180"
+                          controls
+                          style={{ border: 'none', overflow: 'hidden', marginBottom: '16px' }}
+                        >
+                          <source src={src} type="video/mp4" />
+                          Tu navegador no soporta el elemento de video.
+                        </video>
+                      </Grid>
+                    ))
+                  )}
+                </Grid>
               </div>
             </Grid>
           </Grid>
