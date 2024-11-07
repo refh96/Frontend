@@ -247,15 +247,19 @@ function NuevoServicio() {
                   onChange={handleChange}
                   required
                 />
-                <TextField
-                  fullWidth
-                  margin="normal"
-                  label="Categoría"
-                  name="categoria"
-                  value={servicio.categoria}
-                  onChange={handleChange}
-                  required
-                />
+                 <FormControl fullWidth margin="normal">
+                  <InputLabel>Categoría</InputLabel>
+                  <Select
+                    value={servicio.categoria}
+                    name="categoria"
+                    onChange={handleChange}
+                    label="Categoría"
+                    required
+                  >
+                    <MenuItem value="Lavados">Lavados</MenuItem>
+                    <MenuItem value="Otros">Otros</MenuItem>
+                  </Select>
+                </FormControl>
                 <FormControl fullWidth margin="normal">
                   <InputLabel>Atributos</InputLabel>
                   <Select
