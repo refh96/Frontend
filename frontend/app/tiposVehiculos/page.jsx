@@ -1,6 +1,6 @@
 'use client';
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   Button,
@@ -29,12 +29,50 @@ function TiposDeVehiculo() {
   });
   const [tiposVehiculo, setTiposVehiculo] = useState([]);
   const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(true); // Estado de carga
   const [error, setError] = useState(null);
   const router = useRouter();
+  const formRef = useRef(null); // Referencia al formulario
+
 
   useEffect(() => {
-    fetchTiposDeVehiculo();
-  }, []);
+    const verifyUser = async () => {
+      try {
+        const cookies = parseCookies();
+        const token = cookies.token;
+
+        if (!token) {
+          router.push("/loginAdmin");
+          return;
+        }
+
+        const res = await axios.post(
+          "https://fullwash.site/profile",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const userRole = res.data.user.rol;
+        if (userRole !== "administrador") {
+          router.push("/loginCliente");
+          return;
+        }
+
+        setLoading(false); // Detener el estado de carga si es administrador
+        fetchTiposDeVehiculo();
+      } catch (error) {
+        console.error("Error verifying user:", error.message);
+        router.push("/loginAdmin");
+      }
+    };
+
+    verifyUser();
+  }, [router]);
+  
 
   const fetchTiposDeVehiculo = async () => {
     try {
@@ -128,6 +166,8 @@ function TiposDeVehiculo() {
       costo: tipoVehiculo.costo,
     });
     setEditingId(tipoVehiculo.id);
+    formRef.current.scrollIntoView({ behavior: "smooth" }); // Mueve el scroll al formulario
+
   };
 
   return (
@@ -145,7 +185,7 @@ function TiposDeVehiculo() {
       <Box sx={{ flexGrow: 1, mt: 4 }}>
         <Grid container spacing={2} justifyContent="center">
           <Grid item xs={12} md={4}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Box ref={formRef} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <Typography variant="h4" color="darkorange" gutterBottom>
                 {editingId ? "Editar Tipo de Vehículo" : "Nuevo Tipo de Vehículo"}
               </Typography>

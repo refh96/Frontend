@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { TextField, Button, Box, Typography } from "@mui/material";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Swal from 'sweetalert2';
 
 function Register() {
   const [user, setUser] = useState({
@@ -14,33 +15,73 @@ function Register() {
     email: "",
     password: "",
   });
-  const [error, setError] = useState("");
   const router = useRouter();
+
+  const validateEmail = (email) => {
+    // Expresión regular para validar el formato de un correo electrónico
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validaciones
+    // Validaciones en el frontend
     if (!user.username || !user.numero || !user.email || !user.password) {
-      setError("Todos los campos son obligatorios.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Todos los campos son obligatorios.',
+        confirmButtonText: 'Ok',
+      });
       return;
     }
 
-    setError(""); // Limpiar mensajes de error previos
+    if (user.numero.length < 9) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'El número debe tener al menos 9 dígitos.',
+        confirmButtonText: 'Ok',
+      });
+      return;
+    }
+
+    if (!validateEmail(user.email)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Por favor, ingrese un correo electrónico válido.',
+        confirmButtonText: 'Ok',
+      });
+      return;
+    }
 
     try {
       // Agregar el rol de usuario al objeto antes de enviarlo
       const userWithRole = { ...user, rol: "usuario" };
-      
+
       const res = await axios.post("https://fullwash.site/users", userWithRole);
       if (res.status === 200) {
-        alert("Registro exitoso. Redirigiendo al login...");
+        Swal.fire({
+          icon: 'success',
+          title: 'Registro exitoso',
+          text: 'Redirigiendo al login...',
+          showConfirmButton: false,
+          timer: 2000,
+        });
         setTimeout(() => {
           router.push("/loginCliente");
         }, 2000); // Redirige después de 2 segundos para que el mensaje sea visible
       }
     } catch (error) {
-      alert("Error durante el registro. Inténtalo de nuevo.");
+      // Mostrar el mensaje de error específico que proviene del backend, si existe
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error.response?.data?.message || 'Error durante el registro. Inténtalo de nuevo.',
+        confirmButtonText: 'Ok',
+      });
       console.error("Error durante el registro:", error.message);
     }
   };
@@ -72,11 +113,6 @@ function Register() {
         >
           Registro De Usuarios
         </Typography>
-        {error && (
-          <Typography color="error" variant="body2" sx={{ mb: 2 }}>
-            {error}
-          </Typography>
-        )}
         <TextField
           label="Nombre"
           variant="outlined"

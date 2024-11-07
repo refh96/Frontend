@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from "next/navigation";
+import { parseCookies } from 'nookies';
 import {
     Box,
     Container,
@@ -19,11 +20,14 @@ import {
     InputLabel,
 } from '@mui/material';
 import axios from 'axios';
+
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 const AdminUsuarios = () => {
+    const [loading, setLoading] = useState(true); // Estado de carga
     const [usuarios, setUsuarios] = useState([]);
     const router = useRouter();
+    
     useEffect(() => {
         // Función para obtener la lista de usuarios
         const fetchUsuarios = async () => {
@@ -34,9 +38,43 @@ const AdminUsuarios = () => {
                 console.error('Error al obtener los usuarios:', error);
             }
         };
-
-        fetchUsuarios();
-    }, []);
+        const verifyUser = async () => {
+          try {
+            const cookies = parseCookies();
+            const token = cookies.token;
+    
+            if (!token) {
+              router.push("/loginAdmin");
+              return;
+            }
+    
+            const res = await axios.post(
+              "https://fullwash.site/profile",
+              {},
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+    
+            const userRole = res.data.user.rol;
+            if (userRole !== "administrador") {
+              router.push("/loginCliente");
+              return;
+            }
+    
+            setLoading(false); // Detener el estado de carga si es administrador
+            fetchUsuarios();
+            } catch (error) {
+            console.error("Error verifying user:", error.message);
+            router.push("/loginAdmin");
+          }
+        };
+    
+        verifyUser();
+      }, [router]);
+    
 
     // Función para manejar el cambio de rol
     const handleRoleChange = async (id, newRole) => {

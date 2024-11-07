@@ -1,8 +1,9 @@
 'use client';
 
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { parseCookies } from 'nookies';
 import { TextField, Button, Box, Typography, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -16,6 +17,45 @@ function RegistroRoles() {
   });
   const [error, setError] = useState("");
   const router = useRouter();
+  const [loading, setLoading] = useState(true); // Estado de carga
+
+  useEffect(() => {
+    const verifyUser = async () => {
+      try {
+        const cookies = parseCookies();
+        const token = cookies.token;
+
+        if (!token) {
+          router.push("/loginAdmin");
+          return;
+        }
+
+        const res = await axios.post(
+          "https://fullwash.site/profile",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const userRole = res.data.user.rol;
+        if (userRole !== "administrador") {
+          router.push("/loginCliente");
+          return;
+        }
+
+        setLoading(false); // Detener el estado de carga si es administrador
+      } catch (error) {
+        console.error("Error verifying user:", error.message);
+        router.push("/loginAdmin");
+      }
+    };
+
+    verifyUser();
+  }, [router]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();

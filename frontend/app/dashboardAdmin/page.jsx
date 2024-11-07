@@ -17,9 +17,15 @@ import {
   MenuItem,
   Select,
   IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
   List,
   ListItem,
   ListItemText,
+  TextField,
   Drawer,
   Avatar,
   AppBar,
@@ -41,9 +47,12 @@ function Dashboard() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [reservas, setReservas] = useState([]);
   const [estados, setEstados] = useState([]);
+  const [activeScreen, setActiveScreen] = useState(false);
+  const [showEditProfile, setShowEditProfile] = useState(false); // Para mostrar el formulario de edición de perfil
   const [loading, setLoading] = useState(true);
   const [loadingReservas, setLoadingReservas] = useState(true);
   const router = useRouter();
+  
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -54,7 +63,7 @@ function Dashboard() {
           router.push("/loginAdmin");
           return;
         }
-
+  
         const res = await axios.post(
           "https://fullwash.site/profile",
           {},
@@ -64,18 +73,29 @@ function Dashboard() {
             },
           }
         );
-
+  
+        // Comprobar si el usuario tiene rol de administrador
+        const userRole = res.data.user.rol;  // Asumiendo que el rol se encuentra en res.data.user.role
+        if (userRole !== "administrador") {
+          // Si no es administrador, redirigir al login de cliente
+          router.push("/loginCliente");
+          return;
+        }
+  
         setUser(res.data.user);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching profile:", error.message);
+        router.push("/loginAdmin"); // Si ocurre un error, también redirigir al login de admin
       }
     };
-
+  
     fetchProfile();
   }, [router]);
+  
 
   useEffect(() => {
+    
     const fetchReservas = async () => {
       try {
         const cookies = parseCookies();
@@ -90,8 +110,11 @@ function Dashboard() {
             headers: {
               Authorization: `Bearer ${token}`,
             },
+            
           }
+          
         );
+        
         setReservas(res.data.reservas);
         setLoadingReservas(false);
       } catch (error) {
@@ -110,6 +133,7 @@ function Dashboard() {
     fetchReservas();
     fetchEstados();
   }, [router]);
+  
 
   const handleAvatarClick = () => {
     setActiveScreen('perfil'); // Cambia a la vista de perfil
@@ -186,8 +210,70 @@ function Dashboard() {
       console.error("Error during logout:", error.message);
     }
   };
+  
 
-  if (loading || loadingReservas) return <p>Loading...</p>;
+  const renderScreen = () => {
+    switch (activeScreen) {
+      case "perfil":
+        return (
+          <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" textAlign={"center"}>
+            <Typography color="black" variant="h6">Perfil</Typography>
+            <Avatar sx={{ bgcolor: 'secondary.main', marginBottom: 2, alignItems:'center' }}>
+              {user.username.charAt(0)}
+            </Avatar>
+            <Typography color="black">Nombre: {user.username}</Typography>
+            <Typography color="black">Email: {user.email}</Typography>
+            <Typography color="black">Teléfono: {user.numero}</Typography>
+            <Button onClick={() => setShowEditProfile(true)}>Editar Perfil</Button>
+            <Button onClick={logout}>Cerrar Sesión</Button>
+          </Box>
+        );
+      default:
+        return null;
+    }
+  };
+  const handleUpdateProfile = async () => {
+    try {
+      const cookies = parseCookies();
+      const token = cookies.token;
+
+      if (!token) {
+        router.push("/loginCliente");
+        return;
+      }
+
+      await axios.put(
+        `https://fullwash.site/users/${user.id}`, // Usa el ID del usuario
+        {
+          username: user.username,
+          email: user.email,
+          numero: user.numero,
+          password: user.password, // Actualiza la contraseña si se desea cambiar
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      Swal.fire({
+        title: '¡Éxito!',
+        text: 'Perfil actualizado exitosamente!',
+        icon: 'success', // Puedes usar 'success', 'error', 'warning', etc.
+        confirmButtonText: 'Aceptar',
+        backdrop: true, // Para oscurecer el fondo
+      });
+      setShowEditProfile(false); // Cierra el formulario
+    } catch (error) {
+      console.error("Error updating profile:", error.message);
+      alert("Error al actualizar el perfil");
+    }
+  };
+
+
+  if (loading || loadingReservas)  return <p>Loading...</p>;
+
 
   return (
     <div>
@@ -296,7 +382,54 @@ function Dashboard() {
               </TableBody>
             </Table>
           </TableContainer>
+          {/* Formulario de Edición de Perfil */}
+        <Dialog open={showEditProfile} onClose={() => setShowEditProfile(false)}>
+          <DialogTitle>Editar Perfil</DialogTitle>
+          <DialogContent>
+            <FormControl fullWidth margin="normal">
+              <Typography>Nombre de Usuario</Typography>
+              <TextField
+                name="username"
+                value={user.username}
+                onChange={(e) => setUser({ ...user, username: e.target.value })}
+                required
+              />
+            </FormControl>
+            <FormControl fullWidth margin="normal">
+              <Typography>Email</Typography>
+              <TextField
+                type="email"
+                name="email"
+                value={user.email}
+                onChange={(e) => setUser({ ...user, email: e.target.value })}
+                required
+              />
+            </FormControl>
+            <FormControl fullWidth margin="normal">
+              <Typography>Número</Typography>
+              <TextField
+                name="numero"
+                value={user.numero}
+                onChange={(e) => setUser({ ...user, numero: e.target.value })}
+              />
+            </FormControl>
+            <FormControl fullWidth margin="normal">
+              <Typography>Contraseña</Typography>
+              <TextField
+                type="password"
+                name="password"
+                value={user.password}
+                onChange={(e) => setUser({ ...user, password: e.target.value })}
+              />
+            </FormControl>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setShowEditProfile(false)}>Cancelar</Button>
+            <Button onClick={handleUpdateProfile}>Actualizar</Button>
+          </DialogActions>
+        </Dialog>
 
+        {renderScreen()}
         </Box>
         <Footer />
       </Box>

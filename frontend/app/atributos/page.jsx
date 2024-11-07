@@ -1,6 +1,6 @@
 'use client';
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   Button,
@@ -27,14 +27,51 @@ function Atributos() {
     nombre_atributo: "",
     costo_atributo: "",
   });
+  
   const [atributos, setAtributos] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true); // Estado de carga
   const router = useRouter();
+  const formRef = useRef(null); // Referencia al formulario
 
   useEffect(() => {
-    fetchAtributos();
-  }, []);
+    const verifyUser = async () => {
+      try {
+        const cookies = parseCookies();
+        const token = cookies.token;
+
+        if (!token) {
+          router.push("/loginAdmin");
+          return;
+        }
+
+        const res = await axios.post(
+          "https://fullwash.site/profile",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const userRole = res.data.user.rol;
+        if (userRole !== "administrador") {
+          router.push("/loginCliente");
+          return;
+        }
+
+        setLoading(false); // Detener el estado de carga si es administrador
+        fetchAtributos(); // Cargar los atributos después de verificar el rol
+      } catch (error) {
+        console.error("Error verifying user:", error.message);
+        router.push("/loginAdmin");
+      }
+    };
+
+    verifyUser();
+  }, [router]);
 
   const fetchAtributos = async () => {
     try {
@@ -128,7 +165,10 @@ function Atributos() {
       costo_atributo: atributo.costo_atributo,
     });
     setEditingId(atributo.id);
+    formRef.current.scrollIntoView({ behavior: "smooth" });
   };
+
+  if (loading) return <p>Loading...</p>; // Mostrar mensaje de carga mientras se verifica el rol
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
@@ -145,7 +185,10 @@ function Atributos() {
       <Box sx={{ flexGrow: 1, mt: 4 }}>
         <Grid container spacing={2} justifyContent="center">
           <Grid item xs={12} md={4}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Box
+              ref={formRef}
+              sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+            >
               <Typography variant="h4" color="darkorange" gutterBottom>
                 {editingId ? "Editar Atributo" : "Nuevo Atributo"}
               </Typography>
