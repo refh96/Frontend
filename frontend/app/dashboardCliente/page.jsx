@@ -435,20 +435,19 @@ function DashboardCliente() {
                   <TableCell>Hora</TableCell>
                   <TableCell>Estado</TableCell>
                   <TableCell>Tipo de Vehículo</TableCell>
-                  <TableCell>Total</TableCell>
                   <TableCell>Servicios Extras</TableCell>
+                  <TableCell>Total</TableCell>
                   <TableCell>Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {Array.isArray(reservas) && reservas.map((reserva) => (
                   <TableRow key={reserva.id}>
-                    <TableCell>{reserva.servicio.nombre_servicio}</TableCell>
+                    <TableCell>  {reserva.servicio.nombre_servicio} - ${reserva.servicio.precio}</TableCell>
                     <TableCell>{new Date(reserva.fecha).toLocaleDateString('es-ES', { timeZone: 'UTC' })}</TableCell>
                     <TableCell>{reserva.hora}</TableCell>
                     <TableCell>{reserva.estado.nombre}</TableCell>
-                    <TableCell>{reserva.tipo_vehiculo.nombre}</TableCell>
-                    <TableCell>{reserva.Total}</TableCell>
+                    <TableCell>{reserva.tipo_vehiculo.nombre} - ${reserva.tipo_vehiculo.costo}</TableCell>
                     <TableCell>
                       {reserva.atributos && reserva.atributos.length > 0 ? (
                         reserva.atributos.map(atributo => (
@@ -460,6 +459,7 @@ function DashboardCliente() {
                         <Typography>No hay atributos</Typography>
                       )}
                     </TableCell>
+                    <TableCell>{reserva.Total}</TableCell>
                     <TableCell>
                       <IconButton
                         color="primary"

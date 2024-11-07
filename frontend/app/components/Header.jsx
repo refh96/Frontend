@@ -61,7 +61,7 @@ const Header = () => {
   return (
     <div>
       {/* Cambiar color de fondo a calipso */}
-      <AppBar position="relative" sx={{ backgroundColor: '#00ced1' }}>
+      <AppBar position="relative" sx={{ backgroundColor: '#3CB3DE' }}>
         <Toolbar>
           <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
             {/* Agregar logo a la izquierda */}

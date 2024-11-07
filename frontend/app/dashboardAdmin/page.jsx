@@ -245,9 +245,9 @@ function Dashboard() {
                   <TableCell>Fecha</TableCell>
                   <TableCell>Hora</TableCell>
                   <TableCell>Tipo de Vehículo</TableCell>
-                  <TableCell>Total</TableCell>
                   <TableCell>Estado</TableCell>
                   <TableCell>Servicios Extras</TableCell>
+                  <TableCell>Total</TableCell>
                   <TableCell>Acciones</TableCell>
                 </TableRow>
               </TableHead>
@@ -255,11 +255,10 @@ function Dashboard() {
                 {reservas.map((reserva) => (
                   <TableRow key={reserva.id}>
                     <TableCell>{reserva.user ? reserva.user.username : "N/A"}</TableCell>
-                    <TableCell>{reserva.servicio ? reserva.servicio.nombre_servicio : "N/A"}</TableCell>
+                    <TableCell>  {reserva.servicio ? reserva.servicio.nombre_servicio : "N/A"} - ${reserva.servicio ? reserva.servicio.precio : "N/A"}</TableCell>
                     <TableCell>{new Date(reserva.fecha).toLocaleDateString()}</TableCell>
                     <TableCell>{reserva.hora}</TableCell>
-                    <TableCell>{reserva.tipo_vehiculo ? reserva.tipo_vehiculo.nombre : "N/A"}</TableCell>
-                    <TableCell>{reserva.Total}</TableCell>
+                    <TableCell>{reserva.tipo_vehiculo ? reserva.tipo_vehiculo.nombre : "N/A"} - ${reserva.tipo_vehiculo ? reserva.tipo_vehiculo.costo : "N/A"}</TableCell>
                     <TableCell>
                       <Select
                         value={reserva.estado_id}
@@ -283,6 +282,7 @@ function Dashboard() {
                         <Typography>No hay atributos</Typography>
                       )}
                     </TableCell>
+                    <TableCell>{reserva.Total}</TableCell>
                     <TableCell>
                       <IconButton
                         color="error"
