@@ -25,7 +25,7 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Validaciones en el frontend
     if (!user.username || !user.numero || !user.email || !user.password) {
       Swal.fire({
@@ -36,7 +36,7 @@ function Register() {
       });
       return;
     }
-
+  
     if (user.numero.length < 9) {
       Swal.fire({
         icon: 'error',
@@ -46,7 +46,7 @@ function Register() {
       });
       return;
     }
-
+  
     if (!validateEmail(user.email)) {
       Swal.fire({
         icon: 'error',
@@ -56,26 +56,48 @@ function Register() {
       });
       return;
     }
-
+  
     try {
       // Agregar el rol de usuario al objeto antes de enviarlo
       const userWithRole = { ...user, rol: "usuario" };
-
+  
       const res = await axios.post("https://fullwash.site/users", userWithRole);
+  
+      // Verificar si la respuesta contiene un error a pesar del status 200
       if (res.status === 200) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro exitoso',
-          text: 'Redirigiendo al login...',
-          showConfirmButton: false,
-          timer: 2000,
-        });
-        setTimeout(() => {
-          router.push("/loginCliente");
-        }, 2000); // Redirige después de 2 segundos para que el mensaje sea visible
+        // Si el backend devuelve un mensaje de error a pesar de ser un status 200
+        if (res.data && res.data.length > 0 && res.data[0].message) {
+          let errorMessage = res.data[0].message;
+  
+          // Personalizar el mensaje de error
+          if (errorMessage.includes("unique validation failed on numero")) {
+            errorMessage = "Este número ya está en uso.";
+          } else if (errorMessage.includes("unique validation failed on email")) {
+            errorMessage = "Este correo electrónico ya está en uso.";
+          }
+  
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: errorMessage,
+            confirmButtonText: 'Ok',
+          });
+        } else {
+          // Si no hay error en la respuesta, proceder con el éxito
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro exitoso',
+            text: 'Redirigiendo al login...',
+            showConfirmButton: false,
+            timer: 2000,
+          });
+          setTimeout(() => {
+            router.push("/loginCliente");
+          }, 2000); // Redirige después de 2 segundos para que el mensaje sea visible
+        }
       }
     } catch (error) {
-      // Mostrar el mensaje de error específico que proviene del backend, si existe
+      // Si el backend devuelve un error, pero con un código de estado distinto, mostrar el error
       Swal.fire({
         icon: 'error',
         title: 'Error',
@@ -85,6 +107,8 @@ function Register() {
       console.error("Error durante el registro:", error.message);
     }
   };
+  
+  
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>

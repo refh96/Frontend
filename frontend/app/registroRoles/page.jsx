@@ -7,7 +7,14 @@ import { parseCookies } from 'nookies';
 import { TextField, Button, Box, Typography, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Swal from 'sweetalert2';
+
 function RegistroRoles() {
+  const validateEmail = (email) => {
+    // Expresión regular para validar el formato de un correo electrónico
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
   const [user, setUser] = useState({
     username: "",
     numero: "",
@@ -59,33 +66,94 @@ function RegistroRoles() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Validaciones
+  
+    // Validaciones en el frontend
     if (!user.username || !user.numero || !user.email || !user.password || !user.rol) {
-      setError("Todos los campos son obligatorios.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Todos los campos son obligatorios.',
+        confirmButtonText: 'Ok',
+      });
       return;
     }
-
-    setError("");
-
+  
+    if (user.numero.length < 9) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'El número debe tener al menos 9 dígitos.',
+        confirmButtonText: 'Ok',
+      });
+      return;
+    }
+  
+    if (!validateEmail(user.email)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Por favor, ingrese un correo electrónico válido.',
+        confirmButtonText: 'Ok',
+      });
+      return;
+    }
+  
     try {
-      const res = await axios.post("https://fullwash.site/users", user);
+      const userWith = { ...user };
+
+      const res = await axios.post("https://fullwash.site/users", userWith);
+
+  
+  
+      // Verificar si la respuesta contiene un error a pesar del status 200
       if (res.status === 200) {
-        alert("Registro exitoso. Redirigiendo al login...");
-        setTimeout(() => {
-          router.push("/loginAdmin");
-        }, 2000);
+        // Si el backend devuelve un mensaje de error a pesar de ser un status 200
+        if (res.data && res.data.length > 0 && res.data[0].message) {
+          let errorMessage = res.data[0].message;
+  
+          // Personalizar el mensaje de error
+          if (errorMessage.includes("unique validation failed on numero")) {
+            errorMessage = "Este número ya está en uso.";
+          } else if (errorMessage.includes("unique validation failed on email")) {
+            errorMessage = "Este correo electrónico ya está en uso.";
+          }
+  
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: errorMessage,
+            confirmButtonText: 'Ok',
+          });
+        } else {
+          // Si no hay error en la respuesta, proceder con el éxito
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro exitoso',
+            text: 'Redirigiendo al login...',
+            showConfirmButton: false,
+            timer: 2000,
+          });
+          setTimeout(() => {
+            router.push("/loginCliente");
+          }, 2000); // Redirige después de 2 segundos para que el mensaje sea visible
+        }
       }
     } catch (error) {
-      alert("Error durante el registro. Inténtalo de nuevo.");
-      console.error("Error during registration:", error.message);
+      // Si el backend devuelve un error, pero con un código de estado distinto, mostrar el error
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error.response?.data?.message || 'Error durante el registro. Inténtalo de nuevo.',
+        confirmButtonText: 'Ok',
+      });
+      console.error("Error durante el registro:", error.message);
     }
   };
 
   return (
     <div>
 
-      <Box display="flex" flexDirection="column" minHeight="100vh">
+      <Box display="flex" flexDirection="column" minHeight="100vh" >
       <Header />
       <Button
         variant="contained"
@@ -95,7 +163,7 @@ function RegistroRoles() {
       >
         Volver
       </Button>
-      <Box flex="1" p={2}>
+      <Box flex="1" p={2} component="form" onSubmit={handleSubmit}>
         <Typography
           variant="h1"
           align="center"
