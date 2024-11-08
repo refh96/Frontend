@@ -136,8 +136,9 @@ function Dashboard() {
   
 
   const handleAvatarClick = () => {
-    setActiveScreen('perfil'); // Cambia a la vista de perfil
+    setActiveScreen(activeScreen === 'perfil' ? null : 'perfil');
   };
+  
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
   };
