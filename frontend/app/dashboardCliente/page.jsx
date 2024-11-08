@@ -72,6 +72,7 @@ function DashboardCliente() {
   const [activeScreen, setActiveScreen] = useState("reservas");
   const [showForm, setShowForm] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false); // Para mostrar el formulario de edición de perfil
+  const [sortCriteria, setSortCriteria] = useState({ field: "servicio.nombre_servicio", direction: "asc" });
   const router = useRouter();
 
   useEffect(() => {
@@ -314,6 +315,15 @@ function DashboardCliente() {
 
   const handleUpdate = async () => {
     setError(null);
+    if (!selectedAtributos || selectedAtributos.length === 0) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'Si no deseas Servicios Extra selecciona Sin Servicios Extra.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      });
+      return; // Detener la ejecución si no se seleccionan atributos
+    }
     try {
       const cookies = parseCookies();
       const token = cookies.token;
@@ -430,20 +440,20 @@ function DashboardCliente() {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Servicio</TableCell>
-                  <TableCell>Fecha</TableCell>
-                  <TableCell>Hora</TableCell>
-                  <TableCell>Estado</TableCell>
-                  <TableCell>Tipo de Vehículo</TableCell>
+                  <TableCell onClick={() => handleSort("servicio.nombre_servicio")}>Servicio</TableCell>
+                  <TableCell onClick={() => handleSort("fecha")}>Fecha</TableCell>
+                  <TableCell onClick={() => handleSort("hora")}>Hora</TableCell>
+                  <TableCell onClick={() => handleSort("estado.nombre")}>Estado</TableCell>
+                  <TableCell onClick={() => handleSort("tipo_vehiculo.nombre")}>Tipo de Vehículo</TableCell>
                   <TableCell>Servicios Extras</TableCell>
-                  <TableCell>Total</TableCell>
+                  <TableCell onClick={() => handleSort("Total")}>Total</TableCell>
                   <TableCell>Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {Array.isArray(reservas) && reservas.map((reserva) => (
+                {Array.isArray(reservas) && sortReservas(reservas).map((reserva) => (
                   <TableRow key={reserva.id}>
-                    <TableCell>  {reserva.servicio.nombre_servicio} - ${reserva.servicio.precio}</TableCell>
+                    <TableCell>{reserva.servicio.nombre_servicio} - ${reserva.servicio.precio}</TableCell>
                     <TableCell>{new Date(reserva.fecha).toLocaleDateString('es-ES', { timeZone: 'UTC' })}</TableCell>
                     <TableCell>{reserva.hora}</TableCell>
                     <TableCell>{reserva.estado.nombre}</TableCell>
@@ -471,7 +481,7 @@ function DashboardCliente() {
                       <IconButton
                         color="error"
                         onClick={() => handleDelete(reserva.id)}
-                        disabled={reserva.estado.nombre !== "Pendiente" && reserva.estado.nombre !== "Rechazado"} // Misma condición
+                        disabled={reserva.estado.nombre !== "Pendiente" && reserva.estado.nombre !== "Rechazado"}
                       >
                         <DeleteIcon />
                       </IconButton>
@@ -500,7 +510,30 @@ function DashboardCliente() {
         return null;
     }
   };
-
+  
+  const handleSort = (field) => {
+    setSortCriteria(prev => ({
+      field,
+      direction: prev.field === field && prev.direction === "asc" ? "desc" : "asc"
+    }));
+  };
+  const sortReservas = (reservas) => {
+    return reservas.sort((a, b) => {
+      const fieldA = getNestedField(a, sortCriteria.field);
+      const fieldB = getNestedField(b, sortCriteria.field);
+  
+      if (fieldA < fieldB) return sortCriteria.direction === "asc" ? -1 : 1;
+      if (fieldA > fieldB) return sortCriteria.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  };
+  
+  // Función auxiliar para obtener campos anidados, como "servicio.nombre_servicio"
+  const getNestedField = (obj, path) => {
+    return path.split('.').reduce((acc, key) => acc && acc[key], obj);
+  };
+  
+  
 
 
   const handleDateChange = (e) => {
@@ -647,7 +680,7 @@ function DashboardCliente() {
               >
                 {Array.isArray(servicios) && servicios.map(servicio => (
                   <MenuItem key={servicio.id} value={servicio.id}>
-                    {servicio.nombre_servicio}
+                    {servicio.nombre_servicio}- ${servicio.precio}
                   </MenuItem>
                 ))}
               </Select>
@@ -690,7 +723,7 @@ function DashboardCliente() {
               >
                 {tipo_vehiculos.map(tipo_vehiculo => (
                   <MenuItem key={tipo_vehiculo.id} value={tipo_vehiculo.id}>
-                    {tipo_vehiculo.nombre}
+                    {tipo_vehiculo.nombre} - ${tipo_vehiculo.costo}
                   </MenuItem>
                 ))}
               </Select>
@@ -719,7 +752,7 @@ function DashboardCliente() {
           <DialogTitle>Editar Reserva</DialogTitle>
           <DialogContent>
             <FormControl fullWidth margin="normal">
-              <InputLabel>Servicio</InputLabel>
+              <Typography>Servicio</Typography>
               <Select
                 name="servicio_id"
                 value={reservation.servicio_id}
@@ -728,11 +761,12 @@ function DashboardCliente() {
               >
                 {servicios.map(servicio => (
                   <MenuItem key={servicio.id} value={servicio.id}>
-                    {servicio.nombre_servicio}
+                    {servicio.nombre_servicio}- ${servicio.precio}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
+            <Typography>Fecha</Typography>
             <TextField
               type="date"
               name="fecha"
@@ -742,16 +776,24 @@ function DashboardCliente() {
               InputLabelProps={{ shrink: true }}
               sx={{ marginTop: 2 }}
             />
-            <TextField
-              type="time"
-              name="hora"
-              value={reservation.hora}
-              onChange={handleTimeChange}
-              required
-              sx={{ marginTop: 2 }}
-            />
             <FormControl fullWidth margin="normal">
-              <InputLabel>Tipo Vehículo</InputLabel>
+              <Typography id="hora-label">Hora</Typography>
+              <Select
+                labelId="hora-label"
+                name="hora"
+                value={reservation.hora}
+                onChange={handleTimeChange}
+                required
+              >
+                {generarHorasDisponibles().map((hora) => (
+                  <MenuItem key={hora} value={hora}>
+                    {hora}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl fullWidth margin="normal">
+              <Typography>Tipo Vehículo</Typography>
               <Select
                 name="tipo_vehiculo_id"
                 value={reservation.tipo_vehiculo_id}
@@ -760,12 +802,12 @@ function DashboardCliente() {
               >
                 {tipo_vehiculos.map(tipo_vehiculo => (
                   <MenuItem key={tipo_vehiculo.id} value={tipo_vehiculo.id}>
-                    {tipo_vehiculo.nombre}
+                    {tipo_vehiculo.nombre}- ${tipo_vehiculo.costo}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
-            <Typography variant="h6" margin="normal">Selecciona los Atributos:</Typography>
+            <Typography variant="h6" margin="normal">Servicios Extra:</Typography>
             <ToggleButtonGroup
               value={selectedAtributos}
               onChange={handleAtributoToggle}
@@ -773,7 +815,7 @@ function DashboardCliente() {
             >
               {atributos.map((atributo) => (
                 <ToggleButton key={atributo.id} value={atributo.id} aria-label={atributo.nombre_atributo}>
-                  {atributo.nombre_atributo}
+                  {atributo.nombre_atributo}- ${atributo.costo_atributo}
                 </ToggleButton>
               ))}
             </ToggleButtonGroup>
