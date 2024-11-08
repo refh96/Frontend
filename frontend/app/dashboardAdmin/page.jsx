@@ -155,6 +155,9 @@ function Dashboard() {
         console.error("Reserva no encontrada");
         return;
       }
+      const atributoIds = reservaToUpdate.atributos
+      ? reservaToUpdate.atributos.map(atributo => atributo.id)
+      : [];
 
       // Envía todos los campos necesarios
       await axios.put(
@@ -165,7 +168,8 @@ function Dashboard() {
           fecha: reservaToUpdate.fecha.slice(0, 10),
           hora: reservaToUpdate.hora,
           estado_id: newEstado, // Usar el ID del estado
-          tipo_vehiculo_id: reservaToUpdate.tipo_vehiculo_id
+          tipo_vehiculo_id: reservaToUpdate.tipo_vehiculo_id,
+          atributo_ids: atributoIds
         },
         {
           headers: {

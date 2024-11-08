@@ -182,17 +182,8 @@ function DashboardCliente() {
     fetchAtributos();
     fetchEstados();
   }, [user.id]);
+  
 
-  const handleAtributoToggle = (event, newAtributos) => {
-    if (newAtributos.length > 0) {
-      setSelectedAtributos(newAtributos);
-      setReservation(prev => ({ ...prev, atributo_ids: newAtributos }));
-    } else {
-      // Si no hay atributos seleccionados, restablece la lista
-      setSelectedAtributos([]);
-      setReservation(prev => ({ ...prev, atributo_ids: [] }));
-    }
-  };
   const handleAvatarClick = () => {
     setActiveScreen('perfil'); // Cambia a la vista de perfil
   };
@@ -289,6 +280,17 @@ function DashboardCliente() {
       setReservas([]);
     }
   };
+  const handleAtributoToggle = (event, newAtributos) => {
+    if (newAtributos.length > 0) {
+      setSelectedAtributos(newAtributos);
+      setReservation(prev => ({ ...prev, atributo_ids: newAtributos }));
+      console.log(newAtributos)
+    } else {
+      // Si no hay atributos seleccionados, restablece la lista
+      setSelectedAtributos([]);
+      setReservation(prev => ({ ...prev, atributo_ids: [] }));
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -337,7 +339,7 @@ function DashboardCliente() {
 
       const updatedReservation = {
         ...reservation,
-        atributo_ids: selectedAtributos,
+        atributos: selectedAtributos,
         estado_id: estadoPendienteId, // Establece el estado como "Pendiente"
       };
 
@@ -781,7 +783,7 @@ function DashboardCliente() {
               <Select
                 labelId="hora-label"
                 name="hora"
-                value={reservation.hora}
+                value={reservation.hora ? reservation.hora.slice(0, 5) : ''}
                 onChange={handleTimeChange}
                 required
               >
