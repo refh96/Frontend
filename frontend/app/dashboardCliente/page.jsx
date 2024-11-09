@@ -476,14 +476,14 @@ function DashboardCliente() {
                       <IconButton
                         color="primary"
                         onClick={() => handleEdit(reserva)}
-                        disabled={reserva.estado.nombre !== "Pendiente" && reserva.estado.nombre !== "Rechazado"}
+                        disabled={reserva.estado.nombre !== "Pendiente" && reserva.estado.nombre !== "Rechazado" && reserva.estado.nombre !== "Aprobado"}
                       >
                         <EditIcon />
                       </IconButton>
                       <IconButton
                         color="error"
                         onClick={() => handleDelete(reserva.id)}
-                        disabled={reserva.estado.nombre !== "Pendiente" && reserva.estado.nombre !== "Rechazado"}
+                        disabled={reserva.estado.nombre !== "Pendiente" && reserva.estado.nombre !== "Rechazado" && reserva.estado.nombre !== "Aprobado"}
                       >
                         <DeleteIcon />
                       </IconButton>
