@@ -111,112 +111,114 @@ function HomePage() {
     >
       <Header />
       <Box flex="1" p={0} sx={{ width: '100%' }}>
-      <div
-  style={{
-    display: 'flex',
-    flexDirection: 'row',  // En pantallas grandes, los elementos estarán en una fila
-    width: '100%',
-    marginBottom: '10px',
-    backgroundColor: '#f5f5f5',
-    padding: '10px',
-    flexWrap: 'wrap',  // Permite que los elementos se acomoden en pantallas pequeñas
-  }}
->
-<div
-  style={{
-    flex: '1 1 100%',  // En pantallas pequeñas, cada div ocupará el 100% del espacio
-    maxWidth: '100%',
-    overflow: 'hidden',
-    position: 'relative',
-    borderRadius: '8px',
-    marginBottom: '10px',  // Añadido para espaciado en pantallas pequeñas
-    marginLeft: '5px',     // Añadido margen a la izquierda
-    marginRight: '25px',    // Añadido margen a la derecha
-  }}
->
-  <Carousel
-    autoPlay
-    animation="fade"
-    timeout={700}
-    indicators={true}
-    navButtonsAlwaysInvisible={true}
-    indicatorContainerProps={{
-      style: { marginTop: '15px' },
-    }}
-  >
-    {items.map((item, index) => (
-      <Paper
-        key={index}
-        style={{
-          height: '50vh',
-          display: 'flex',
-          alignItems: 'center',
-          backgroundColor: 'transparent',
-          boxShadow: 'none',
-        }}
-        elevation={0}
-      >
-        <img
-          src={item.img}
-          alt={item.alt}
+        <div
           style={{
+            display: 'flex',
+            flexDirection: 'row',  // En pantallas grandes, los elementos estarán en una fila
             width: '100%',
-            height: '100%',
-            objectFit: 'contain',
-            borderRadius: '15px',
+            marginBottom: '10px',
+            backgroundColor: '#f5f5f5',
+            padding: '10px',
+            flexWrap: 'wrap',  // Permite que los elementos se acomoden en pantallas pequeñas
           }}
-        />
-      </Paper>
-    ))}
-  </Carousel>
-</div>
+        >
+          <div
+            style={{
+              flex: '1 1 100%',  // En pantallas pequeñas, cada div ocupará el 100% del espacio
+              maxWidth: '100%',
+              overflow: 'hidden',
+              position: 'relative',
+              borderRadius: '8px',
+              borderBlockStyle: 'box',
+              marginBottom: '10px',  // Añadido para espaciado en pantallas pequeñas
+              marginLeft: '5px',     // Añadido margen a la izquierda
+              marginRight: '25px',    // Añadido margen a la derecha
+            }}
+          >
+            <Carousel
+              autoPlay
+              animation="fade"
+              timeout={700}
+              indicators={true}
+              navButtonsAlwaysInvisible={true}
+              indicatorContainerProps={{
+                style: { marginTop: '15px' },
+              }}
+            >
+              {items.map((item, index) => (
+                <Paper
+                  key={index}
+                  style={{
+                    height: '50vh',
+                    display: 'flex',
+                    alignItems: 'center',
+                    backgroundColor: 'transparent',
+                    boxShadow: 'none',
+                  }}
+                  elevation={0}
+                >
+                  <img
+                    src={item.img}
+                    alt={item.alt}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain',
+                      borderRadius: '20px', // Ajusta el valor para más o menos curvatura
+                    }}
+                  />
+                </Paper>
+              ))}
+            </Carousel>
+
+          </div>
 
 
-  <div
-    style={{
-      flex: '1 1 100%',  // En pantallas pequeñas, este div ocupará el 100% del espacio
-      maxWidth: '100%',
-      overflow: 'hidden',
-      position: 'relative',
-      borderRadius: '8px',
-      marginBottom: '10px', // Añadido para espaciado en pantallas pequeñas
-    }}
-  >
-    <Typography
-      variant="h1"
-      align="center"
-      textAlign="center"
-      sx={{
-        my: 4,
-        color: '#F05B3C',
-        fontFamily: 'Baloo, sans-serif',
-        fontSize: { xs: '2rem', md: '3rem' },
-        textShadow: '5px 8px 4px rgba(0, 0, 0, 0.4)',
-        transition: "transform 0.3s ease-in-out",
-        "&:hover": {
-          transform: "scale(1.05)", // Agranda el botón un 5%
-        },
-      }}
-    >
-      REGISTRATE Y AGENDA CON NOSOTROS TU SERVICIO DE CONFIANZA
-    </Typography>
-    <Button
-      variant="contained"
-      color="success"
-      sx={{
-        borderRadius: "20px",     // Bordes redondeados
-        paddingX: 3,              // Padding horizontal
-        paddingY: 1.5,            // Padding vertical
-        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",  // Sombra suave
-        mx: "auto",
-        display: "block"
-      }}
-      onClick={handleAddToOrder}
-    >
-      Solicitar Servicio
-    </Button>
-  </div>
-</div>
+          <div
+            style={{
+              flex: '1 1 100%',  // En pantallas pequeñas, este div ocupará el 100% del espacio
+              maxWidth: '100%',
+              overflow: 'hidden',
+              position: 'relative',
+              borderRadius: '8px',
+              marginBottom: '10px', // Añadido para espaciado en pantallas pequeñas
+            }}
+          >
+            <Typography
+              variant="h1"
+              align="center"
+              textAlign="center"
+              sx={{
+                my: 4,
+                color: '#F05B3C',
+                fontFamily: 'Baloo, sans-serif',
+                fontSize: { xs: '2rem', md: '3rem' },
+                textShadow: '5px 8px 4px rgba(0, 0, 0, 0.4)',
+                transition: "transform 0.3s ease-in-out",
+                "&:hover": {
+                  transform: "scale(1.05)", // Agranda el botón un 5%
+                },
+              }}
+            >
+              REGISTRATE Y AGENDA CON NOSOTROS TU SERVICIO DE CONFIANZA
+            </Typography>
+            <Button
+              variant="contained"
+              color="success"
+              sx={{
+                borderRadius: "20px",     // Bordes redondeados
+                paddingX: 3,              // Padding horizontal
+                paddingY: 1.5,            // Padding vertical
+                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",  // Sombra suave
+                mx: "auto",
+                display: "block"
+              }}
+              onClick={handleAddToOrder}
+            >
+              Solicitar Servicio
+            </Button>
+          </div>
+        </div>
 
 
 
@@ -293,108 +295,114 @@ function HomePage() {
 
 
         {/* Sección de Opiniones de Clientes */}
-        <Container sx={{ marginY: 4 }}>
-          <Typography variant="h4" align="center" color="black" gutterBottom>
-            RECOMENDACION DE CLIENTES
+        <Container
+          sx={{
+            marginY: 4,
+            paddingX: 3,
+            paddingY: 4,
+            backgroundColor: '#f5f5f5',
+            borderRadius: '10px',
+            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+          }}
+        >
+          <Typography variant="h4" align="center" color="text.primary" gutterBottom>
+            RECOMENDACIONES DE CLIENTES
           </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6} md={3} sx={{
-              transition: "transform 0.3s ease-in-out",
-              "&:hover": {
-                transform: "scale(1.05)", // Agranda el botón un 5%
-              },
-            }}>
-              <Paper elevation={3} sx={{ padding: 2, textAlign: 'center' }}>
-                <Typography variant="h6" gutterBottom>
-                  Sal Yesenia
-                </Typography>
-                <Typography variant="body1">
-                  Excelente servicio recomendado 100% 👍👍👏👏
-                </Typography>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3} sx={{
-              transition: "transform 0.3s ease-in-out",
-              "&:hover": {
-                transform: "scale(1.05)", // Agranda el botón un 5%
-              },
-            }}>
-              <Paper elevation={3} sx={{ padding: 2, textAlign: 'center' }}>
-                <Typography variant="h6" gutterBottom>
-                  Jacqueline Jara
-                </Typography>
-                <Typography variant="body1">
-                  Quedamos muy conformes con el trabajo realizado en nuestra casa de cumpleaños party house.
-                  Excelente servicio!
-                </Typography>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3} sx={{
-              transition: "transform 0.3s ease-in-out",
-              "&:hover": {
-                transform: "scale(1.05)", // Agranda el botón un 5%
-              },
-            }}>
-              <Paper elevation={3} sx={{ padding: 2, textAlign: 'center' }}>
-                <Typography variant="h6" gutterBottom>
-                  Pipo To
-                </Typography>
-                <Typography variant="body1">
-                  Excelente servicio, barato y rápido.
-                </Typography>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3} sx={{
-              transition: "transform 0.3s ease-in-out",
-              "&:hover": {
-                transform: "scale(1.05)", // Agranda el botón un 5%
-              },
-            }}>
-              <Paper elevation={3} sx={{ padding: 2, textAlign: 'center' }}>
-                <Typography variant="h6" gutterBottom>
-                  Braulio Francisco Coronado Olivera
-                </Typography>
-                <Typography variant="body1">
-                  Excelente servicio, muy rápido, económico y las alfombras quedan como nuevas.
-                </Typography>
-              </Paper>
-            </Grid>
-          </Grid>
-        </Container>
-        <Container sx={{ marginY: 4 }}>
-          <Grid container spacing={4} direction="column">
-            {/* Sección de Productos que Utilizamos */}
-            <Grid item xs={12}>
-              <div
-                style={{
-                  padding: '40px 20px',
-                  textAlign: 'center',
-                  color: 'white',
-                  backgroundColor: '#2E86C1', // Color de fondo para productos
-                  borderRadius: '10px',
+          <Grid container spacing={3} justifyContent="center">
+            {[
+              { name: 'Sal Yesenia', text: 'Excelente servicio recomendado 100% 👍👍👏👏' },
+              { name: 'Jacqueline Jara', text: 'Quedamos muy conformes con el trabajo realizado en nuestra casa de cumpleaños party house. ¡Excelente servicio!' },
+              { name: 'Pipo To', text: 'Excelente servicio, barato y rápido.' },
+              { name: 'Braulio Francisco Coronado Olivera', text: 'Excelente servicio, muy rápido, económico y las alfombras quedan como nuevas.' },
+              { name: 'Esteban Venegas Alvial', text: 'Muy buen servicio, con muy buena atención 100% recomendado.' },
+              { name: 'Esteban Rodríguez García', text: 'Buena atención. Dejan los vehículos impecables.' },
+            ].map((client, index) => (
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={4}
+                key={index}
+                sx={{
+                  transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+                  '&:hover': {
+                    transform: 'scale(1.05)',
+                    boxShadow: '0px 6px 16px rgba(0, 0, 0, 0.2)',
+                  },
                 }}
               >
-                <Typography variant="h4">PRODUCTOS QUE UTILIZAMOS</Typography>
-                <Typography variant="body1" sx={{ marginTop: 2 }}>
+                <Paper
+                  elevation={3}
+                  sx={{
+                    padding: 3,
+                    textAlign: 'center',
+                    borderRadius: '12px',
+                    backgroundColor: '#ffffff',
+                    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                  }}
+                >
+                  <Typography variant="h6" fontWeight="bold" gutterBottom>
+                    {client.name}
+                  </Typography>
+                  <Typography variant="body1" color="text.secondary">
+                    {client.text}
+                  </Typography>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+
+        <Container sx={{ marginY: 4, paddingX: 2 }}>
+          <Grid container spacing={4} direction="column" alignItems="center">
+            {/* Sección de Productos que Utilizamos */}
+            <Grid item xs={12} sx={{ width: '100%', maxWidth: 800 }}>
+              <div
+                style={{
+                  padding: '30px 20px',
+                  textAlign: 'center',
+                  color: 'white',
+                  backgroundColor: '#2E86C1',
+                  borderRadius: '15px',
+                  boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                }}
+              >
+                <Typography variant="h4" sx={{ marginBottom: 1 }}>PRODUCTOS QUE UTILIZAMOS</Typography>
+                <Typography variant="body1" sx={{ marginY: 2 }}>
                   Utilizamos productos de alta calidad, específicos para mantener la pintura, los interiores y los vidrios de tu vehículo en óptimas condiciones.
                 </Typography>
                 <div style={{ width: '100%', overflow: 'hidden', marginBottom: '10px', position: 'relative' }}>
                   <Carousel
-                    autoPlay={true}
+                    autoPlay
                     animation="slide"
                     timeout={500}
-                    navButtonsAlwaysVisible={true}
+                    navButtonsAlwaysVisible
                     indicatorContainerProps={{ sx: { mt: 2 } }}
                   >
                     {items2.map((item, index) => (
                       <Paper
                         key={index}
-                        style={{ height: '50vh', display: 'flex', alignItems: 'center', color: 'black', backgroundColor: '#2E86C1', borderStyle: 'groove' }}
+                        sx={{
+                          height: { xs: '40vh', md: '50vh' },
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'black',
+                          backgroundColor: '#2E86C1',
+                          boxShadow: 'none',
+                          borderRadius: '10px',
+                          overflow: 'hidden',
+                        }}
                       >
                         <img
                           src={item.img}
                           alt={item.alt}
-                          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'contain',
+                            borderRadius: '10px',
+                          }}
                         />
                       </Paper>
                     ))}
@@ -404,37 +412,53 @@ function HomePage() {
             </Grid>
 
             {/* Sección de Herramientas que Utilizamos */}
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{ width: '100%', maxWidth: 800 }}>
               <div
                 style={{
-                  padding: '40px 20px',
+                  padding: '30px 20px',
                   textAlign: 'center',
                   color: 'white',
-                  backgroundColor: '#58D68D', // Color de fondo para herramientas
-                  borderRadius: '10px',
+                  backgroundColor: '#58D68D',
+                  borderRadius: '15px',
+                  boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
                 }}
               >
-                <Typography variant="h4">HERRAMIENTAS QUE UTILIZAMOS</Typography>
-                <Typography variant="body1" sx={{ marginTop: 2 }}>
+                <Typography variant="h4" sx={{ marginBottom: 1 }}>HERRAMIENTAS QUE UTILIZAMOS</Typography>
+                <Typography variant="body1" sx={{ marginY: 2 }}>
                   Contamos con herramientas de última tecnología para asegurar un lavado profundo y detallado en cada vehículo.
                 </Typography>
                 <div style={{ width: '100%', overflow: 'hidden', marginBottom: '10px', position: 'relative' }}>
                   <Carousel
-                    autoPlay={true}
+                    autoPlay
                     animation="slide"
                     timeout={500}
-                    navButtonsAlwaysVisible={true}
+                    navButtonsAlwaysVisible
                     indicatorContainerProps={{ sx: { mt: 2 } }}
                   >
                     {items1.map((item, index) => (
                       <Paper
                         key={index}
-                        style={{ height: '50vh', display: 'flex', alignItems: 'center', color: 'black', backgroundColor: '#58D68D', borderStyle: 'groove' }}
+                        sx={{
+                          height: { xs: '40vh', md: '50vh' },
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'black',
+                          backgroundColor: '#58D68D',
+                          boxShadow: 'none',
+                          borderRadius: '10px',
+                          overflow: 'hidden',
+                        }}
                       >
                         <img
                           src={item.img}
                           alt={item.alt}
-                          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'contain',
+                            borderRadius: '10px',
+                          }}
                         />
                       </Paper>
                     ))}
@@ -444,7 +468,18 @@ function HomePage() {
             </Grid>
           </Grid>
         </Container>
-        <Container sx={{ marginY: 4, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Container
+          sx={{
+            marginY: 4,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(245, 245, 245, 0.9)',
+            borderRadius: '15px',
+            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+            padding: '20px',
+          }}
+        >
           <Grid container spacing={3} sx={{ maxWidth: 800 }}>
             <Grid item xs={12}>
               <div
@@ -453,11 +488,13 @@ function HomePage() {
                   padding: '20px',
                   color: 'black',
                   backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                  borderRadius: '10px',
+                  borderRadius: '15px',
+                  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
                 }}
               >
-                <Typography variant="h4">Visita Nuestras Redes Sociales Para Mas Contenido</Typography>
-
+                <Typography variant="h4" sx={{ marginBottom: '16px', fontFamily: 'Arial, sans-serif' }}>
+                  Visita Nuestras Redes Sociales Para Más Contenido
+                </Typography>
 
                 <Grid container spacing={2} justifyContent="center">
                   {isLoading ? (
@@ -468,17 +505,29 @@ function HomePage() {
                     ))
                   ) : (
                     ['video.mp4', 'video2.mp4', 'video3.mp4', 'video4.mp4', 'video5.mp4', 'video6.mp4'].map((src, index) => (
-                      <Grid item xs={12} sm={6} md={4} key={index} sx={{
-                        transition: "transform 0.3s ease-in-out",
-                        "&:hover": {
-                          transform: "scale(1.90)", // Agranda el botón un 5%
-                        },
-                      }}>
+                      <Grid
+                        item
+                        xs={12}
+                        sm={6}
+                        md={4}
+                        key={index}
+                        sx={{
+                          transition: 'transform 0.3s ease-in-out',
+                          '&:hover': {
+                            transform: 'scale(1.05)', // Sutil aumento al hacer hover
+                          },
+                        }}
+                      >
                         <video
                           width="100%"
                           height="180"
                           controls
-                          style={{ border: 'none', overflow: 'hidden', marginBottom: '16px' }}
+                          style={{
+                            borderRadius: '10px',
+                            overflow: 'hidden',
+                            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
+                            marginBottom: '16px',
+                          }}
                         >
                           <source src={src} type="video/mp4" />
                           Tu navegador no soporta el elemento de video.
@@ -491,6 +540,7 @@ function HomePage() {
             </Grid>
           </Grid>
         </Container>
+
         <Dialog open={openModal} onClose={handleCloseModal}>
           <DialogContent>
             {selectedService && (
