@@ -1,8 +1,9 @@
+'use client';
 import React from 'react';
 import { Box, Container, Typography, Grid, Button, Link } from '@mui/material';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-
+import MapComponent from '../components/MapComponent'; 
 const DatosPage = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -93,6 +94,7 @@ const DatosPage = () => {
             <Typography variant="h6" component="h3" color="text.primary">
               Nos Ubicamos en Las heras 1430, Concepción, Chile 
             </Typography>
+            <MapComponent />
             <Link
               href="https://maps.app.goo.gl/S8QvPH4RAwHtPQJg9?g_st=iw"
               target="_blank"

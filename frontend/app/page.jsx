@@ -43,10 +43,6 @@ function HomePage() {
       img: 'https://i.ibb.co/7RnTjBp/subir-4.png',
       alt: 'imagen 8',
     },
-    {
-      img: 'https://i.ibb.co/tsDpsnn/subir5.jpg',
-      alt: 'imagen 9',
-    },
   ];
   const items1 = [
     {
@@ -60,6 +56,10 @@ function HomePage() {
     {
       img: 'https://i.ibb.co/sPWQ1kD/compresor-de-aire.jpg',
       alt: 'imagen 3',
+    },
+    {
+      img: 'https://i.ibb.co/6H7HXYP/pulidoras.png',
+      alt: 'imagen 4',
     },
   ];
   const items2 = [
@@ -101,6 +101,42 @@ function HomePage() {
     router.push('/dashboardCliente');
     handleCloseModal();
   };
+
+  const processItems = [
+    {
+      title: 'LIMPIEZA DETALLADA',
+      img: 'https://www.tuningblog.eu/wp-content/uploads/2021/05/Dampfreiniger-autowaesche-aussen-lack-innen-interieur-5-min.gif',
+      description: 'Este proceso incluye una limpieza profunda y detallada de cada rincón del vehículo mediante herramientas que permiten sacar el polvo y suciedad de todos los lugares',
+    },
+    {
+      title: 'LAVADO EXTERNO COMPLETO',
+      img: 'https://i.gifer.com/D3j.gif',
+      description: 'Este lavado cubre la limpieza externa completa del vehículo desde el techo hacia abajo, rendijas, etc...',
+    },
+    {
+      title: 'LIMPIEZA DE VIDRIOS Y PLÁSTICOS',
+      img: 'https://media.giphy.com/media/87wlWjovL0O6Q/giphy.gif',
+      description: 'Este proceso incluye una limpieza detallada de los vidrios y los plásticos...',
+    },
+    {
+      title: 'PULIDO DE FOCOS',
+      img: 'https://www.mantencionexpress.cl/wp-content/uploads/2021/04/medetailing_pul-foco-1.jpg',
+      description: 'Mediante herramientas y un proceso profesional dejamos tus focos como nuevos',
+    },
+    {
+      title: 'LAVADO DE MOTOR',
+      img: 'https://www.expertoautorecambios.es/magazine/wp-content/uploads/2017/10/el-lavado-del-motor.jpg',
+      description: 'Sacamos toda la suciedad de su motor y lo dejamos como nuevo',
+    },
+    {
+      title: 'HIDRATACIÓN DE PLÁSTICOS\n INTERNOS Y EXTERNOS',
+      img: 'https://i.ytimg.com/vi/kpRPZUqvTtU/hqdefault.jpg',
+      description: 'Utilizamos productos de alta gama para darle una renovacion y brillo a sus plasticos',
+    },
+    // Agrega los demás elementos de proceso con descripciones
+  ];
+
+  
 
   return (
     <Box
@@ -184,24 +220,32 @@ function HomePage() {
               marginBottom: '10px', // Añadido para espaciado en pantallas pequeñas
             }}
           >
-            <Typography
-              variant="h1"
-              align="center"
-              textAlign="center"
-              sx={{
-                my: 4,
-                color: '#F05B3C',
-                fontFamily: 'Baloo, sans-serif',
-                fontSize: { xs: '2rem', md: '3rem' },
-                textShadow: '5px 8px 4px rgba(0, 0, 0, 0.4)',
-                transition: "transform 0.3s ease-in-out",
-                "&:hover": {
-                  transform: "scale(1.05)", // Agranda el botón un 5%
-                },
-              }}
-            >
-              REGISTRATE Y AGENDA CON NOSOTROS TU SERVICIO DE CONFIANZA
-            </Typography>
+    <Typography
+  variant="h1"
+  align="center"
+  textAlign="center"
+  sx={{
+    my: 4,
+    color: '#F05B3C',
+    fontFamily: 'Baloo, sans-serif',
+    fontSize: { xs: '2rem', md: '3rem' },
+    textShadow: '5px 8px 4px rgba(0, 0, 0, 0.4)',
+    fontWeight: 'bold', // Hace el texto más grueso
+    transition: "transform 0.3s ease-in-out",
+    "&:hover": {
+      transform: "scale(1.05)",
+    },
+    animation: 'bounce 1.5s ease-in-out infinite', // Animación de rebote
+  }}
+>
+  {`REGISTRATE Y AGENDA CON NOSOTROS\n TU SERVICIO DE \nCONFIANZA`.split('\n').map((line, idx) => (
+    <React.Fragment key={idx}>
+      {line}
+      {idx < 2 && <br />}
+    </React.Fragment>
+  ))}
+</Typography>
+
             <Button
               variant="contained"
               color="success"
@@ -223,75 +267,101 @@ function HomePage() {
 
 
         <Container sx={{ marginY: 4, textAlign: 'center' }}>
-          <Typography
-            variant="h4"
-            align="center"
-            color="black"
-            gutterBottom
-            sx={{
-              backgroundColor: '#00ced1',
-              padding: '10px',
-              borderRadius: '8px',
-              display: 'inline-block',
-              border: '3px solid #00e5e5',
-              color: '#white',
-              fontFamily: 'aria-label',
-              textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)',
-              transition: "transform 0.3s ease-in-out",
-              "&:hover": {
-                transform: "scale(1.05)", // Agranda el botón un 5%
-              },
-            }}
-          >
-            DESCUBRE NUESTROS PROCESOS
-          </Typography>
-          <Grid container spacing={3} justifyContent="center">
-            {[
-              {
-                title: 'LIMPIEZA DETALLADA',
-                img: 'https://www.tuningblog.eu/wp-content/uploads/2021/05/Dampfreiniger-autowaesche-aussen-lack-innen-interieur-5-min.gif',
-              },
-              {
-                title: 'LAVADO EXTERNO COMPLETO',
-                img: 'https://i.gifer.com/D3j.gif',
-              },
-              {
-                title: 'LIMPIEZA DE VIDRIOS Y PLÁSTICOS',
-                img: 'https://media.giphy.com/media/87wlWjovL0O6Q/giphy.gif',
-              },
-              {
-                title: 'PULIDO DE FOCOS',
-                img: 'https://www.mantencionexpress.cl/wp-content/uploads/2021/04/medetailing_pul-foco-1.jpg',
-              },
-              {
-                title: 'LAVADO DE MOTOR',
-                img: 'https://www.expertoautorecambios.es/magazine/wp-content/uploads/2017/10/el-lavado-del-motor.jpg',
-              },
-              {
-                title: 'HIDRATACIÓN DE PLÁSTICOS INTERNOS Y EXTERNOS',
-                img: 'https://i.ytimg.com/vi/kpRPZUqvTtU/hqdefault.jpg',
-              },
-            ].map((item, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index} sx={{
-                transition: "transform 0.3s ease-in-out",
-                "&:hover": {
-                  transform: "scale(1.05)", // Agranda el botón un 5%
-                },
-              }}>
-                <div style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', borderRadius: '8px', overflow: 'hidden', transition: 'transform 0.3s', cursor: 'pointer' }}>
-                  <Typography variant="h6" align="center" color="black" gutterBottom sx={{ backgroundColor: '#f5f5f5', padding: '8px', fontWeight: 'bold' }}>
-                    {item.title}
-                  </Typography>
-                  <img
-                    src={item.img}
-                    alt={item.title}
-                    style={{ width: '100%', height: '250px', objectFit: 'cover' }}
-                  />
-                </div>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
+  <Typography
+    variant="h4"
+    align="center"
+    color="black"
+    gutterBottom
+    sx={{
+      backgroundColor: '#00ced1',
+      padding: '10px',
+      borderRadius: '8px',
+      display: 'inline-block',
+      border: '3px solid #00e5e5',
+      color: '#white',
+      fontFamily: 'arial',
+      textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)',
+      transition: "transform 0.3s ease-in-out",
+      "&:hover": {
+        transform: "scale(1.05)",
+      },
+    }}
+  >
+    DESCUBRE NUESTROS PROCESOS
+  </Typography>
+  
+<Grid
+  container
+  spacing={3}
+  justifyContent="center"
+  sx={{
+    flexDirection: { xs: 'row', sm: 'row', md: 'row', lg: 'row' },
+    overflowX: { xs: 'auto', sm: 'visible' },
+    display: 'flex',
+    flexWrap: { xs: 'wrap', sm: 'wrap' },
+    paddingX: { xs: 1 },
+  }}
+>
+  {processItems.map((item, index) => (
+    <Grid
+      item
+      xs={6}
+      sm={6}
+      md={4}
+      key={index}
+      sx={{
+        transition: "transform 0.3s ease-in-out",
+        minWidth: { xs: '45%' },
+        "&:hover": {
+          transform: "scale(1.05)",
+        },
+      }}
+      onClick={() => handleOpenModal(item)} // Agrega el evento onClick
+    >
+      <div
+        style={{
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+          borderRadius: '8px',
+          overflow: 'hidden',
+          transition: 'transform 0.3s',
+          cursor: 'pointer',
+        }}
+      >
+        <Typography
+          variant="h6"
+          align="center"
+          color="black"
+          gutterBottom
+          sx={{
+            backgroundColor: '#f5f5f5',
+            padding: '8px',
+            fontWeight: 'bold',
+            height: '60px',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: { xs: '0.85rem', sm: '1rem', md: '1.1rem' },
+          }}
+        >
+          {item.title}
+        </Typography>
+        <img
+          src={item.img}
+          alt={item.title}
+          style={{
+            width: '100%',
+            height: '200px',
+            objectFit: 'cover',
+          }}
+        />
+      </div>
+    </Grid>
+  ))}
+</Grid>
+</Container>
 
 
         {/* Sección de Opiniones de Clientes */}
@@ -542,38 +612,49 @@ function HomePage() {
         </Container>
 
         <Dialog open={openModal} onClose={handleCloseModal}>
-          <DialogContent>
-            {selectedService && (
-              <>
-                <Typography variant="h6">{selectedService.nombre_servicio}</Typography>
-                <Typography variant="body1">{selectedService.descripcion}</Typography>
-                <Typography variant="body2">Precio: {selectedService.precio}</Typography>
-              </>
-            )}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseModal} color="primary">
-              Cancelar
-            </Button>
-            <Button onClick={handleAddToOrder} color="primary">
-              Solicitar
-            </Button>
-          </DialogActions>
-        </Dialog>
+  <DialogContent>
+    {selectedService && (
+      <>
+        <Typography variant="h6" gutterBottom>
+          {selectedService.title}
+        </Typography>
+        <Typography variant="body1" paragraph>
+          {selectedService.description}
+        </Typography>
+        <img
+          src={selectedService.img}
+          alt={selectedService.title}
+          style={{
+            width: '100%',
+            maxHeight: '300px',
+            objectFit: 'cover',
+            borderRadius: '8px',
+          }}
+        />
+      </>
+    )}
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCloseModal} color="primary">
+      Cerrar
+    </Button>
+  </DialogActions>
+</Dialog>
         <Footer />
         <IconButton
-          style={{
-            position: 'fixed',
-            bottom: 16,
-            right: 16,
-            backgroundColor: '#25D366',
-            color: 'white',
-            zIndex: 1000,
-          }}
-          onClick={() => window.open('https://wa.me/56992646017?text=¡Hola, me comunico desde su pagina web!')}
-        >
-          <WhatsAppIcon />
-        </IconButton>
+  style={{
+    position: 'fixed',
+    bottom: 16,
+    right: 16,
+    backgroundColor: '#25D366',
+    color: 'white',
+    zIndex: 1000,
+  }}
+  onClick={() => window.open('https://wa.me/56992646017?text=¡Hola, me comunico desde su pagina web!')}
+>
+  <WhatsAppIcon style={{ fontSize: 50 }} /> {/* Ajusta el tamaño aquí */}
+</IconButton>
+
       </Box>
     </Box>
   );

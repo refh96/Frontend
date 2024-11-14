@@ -56,6 +56,7 @@ function DashboardCliente() {
   const [reservas, setReservas] = useState([]);
   const [atributos, setAtributos] = useState([]); // Para almacenar los atributos
   const [selectedAtributos, setSelectedAtributos] = useState([]); // Atributos seleccionados
+  const [total, setTotal] = useState(0); // Estado para el total
   const [reservation, setReservation] = useState({
     user_id: "",
     servicio_id: "",
@@ -182,7 +183,28 @@ function DashboardCliente() {
     fetchAtributos();
     fetchEstados();
   }, [user.id]);
-  
+
+  useEffect(() => {
+    if (reservation) {
+      setSelectedAtributos(reservation.atributo_ids || []);
+    }
+  }, [reservation]);
+  useEffect(() => {
+    const servicio = servicios.find(s => s.id === reservation.servicio_id);
+    const tipoVehiculo = tipo_vehiculos.find(t => t.id === reservation.tipo_vehiculo_id);
+    const atributosSeleccionados = atributos.filter(a => selectedAtributos.includes(a.id));
+
+    // Suma los costos del servicio, tipo de vehículo y atributos seleccionados
+    const nuevoTotal =
+      (servicio ? servicio.precio : 0) +
+      (tipoVehiculo ? tipoVehiculo.costo : 0) +
+      atributosSeleccionados.reduce((acc, atributo) => acc + atributo.costo_atributo, 0);
+
+    setTotal(nuevoTotal);
+  }, [reservation.servicio_id, reservation.tipo_vehiculo_id, selectedAtributos]);
+
+
+
 
   const handleAvatarClick = () => {
     setActiveScreen('perfil'); // Cambia a la vista de perfil
@@ -234,7 +256,7 @@ function DashboardCliente() {
         hora: "",
         estado_id: estadoPendienteId,
         tipo_vehiculo_id: "",
-        atributo_ids: selectedAtributos,
+        atributos: selectedAtributos,
       });
 
       await fetchReservas();
@@ -280,21 +302,25 @@ function DashboardCliente() {
       setReservas([]);
     }
   };
-  const handleAtributoToggle = (event, newAtributos) => {
-    if (newAtributos.length > 0) {
-      setSelectedAtributos(newAtributos);
-      setReservation(prev => ({ ...prev, atributo_ids: newAtributos }));
-      console.log(newAtributos)
-    } else {
-      // Si no hay atributos seleccionados, restablece la lista
-      setSelectedAtributos([]);
-      setReservation(prev => ({ ...prev, atributo_ids: [] }));
-    }
+
+  const handleAtributoToggle = (event) => {
+    const { value } = event.target;
+    setSelectedAtributos(value);
+    setReservation((prev) => ({
+      ...prev,
+      atributo_ids: value,
+    }));
   };
+
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setReservation(prev => ({ ...prev, [name]: value }));
+    setReservation((prev) => ({
+      ...prev,
+      [name]: value, // Actualiza el campo correspondiente de la reserva
+    }));
   };
 
   const handleEdit = (reserva) => {
@@ -302,18 +328,20 @@ function DashboardCliente() {
     setReservation({
       user_id: reserva.user_id,
       servicio_id: reserva.servicio_id,
-      fecha: reserva.fecha.slice(0, 10), // Asegura el formato YYYY-MM-DD
+      fecha: reserva.fecha.slice(0, 10),
       hora: reserva.hora,
       estado_id: reserva.estado_id,
       tipo_vehiculo_id: reserva.tipo_vehiculo_id,
-      atributo_ids: reserva.atributo_ids,
+      atributo_ids: reserva.atributos.map((atributo) => atributo.id), // Extrae los IDs de los atributos
     });
 
-    // Establece los atributos seleccionados
-    setSelectedAtributos(reserva.atributo_ids);
-
+    // Inicializa `selectedAtributos` con los IDs de los atributos de la reserva
+    setSelectedAtributos(reserva.atributos.map((atributo) => atributo.id));
     setEditing(true);
   };
+
+
+
 
   const handleUpdate = async () => {
     setError(null);
@@ -498,7 +526,7 @@ function DashboardCliente() {
         return (
           <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" textAlign={"center"}>
             <Typography color="black" variant="h6">Perfil</Typography>
-            <Avatar sx={{ bgcolor: 'secondary.main', marginBottom: 2, alignItems:'center' }}>
+            <Avatar sx={{ bgcolor: 'secondary.main', marginBottom: 2, alignItems: 'center' }}>
               {user.username.charAt(0)}
             </Avatar>
             <Typography color="black">Nombre: {user.username}</Typography>
@@ -512,7 +540,7 @@ function DashboardCliente() {
         return null;
     }
   };
-  
+
   const handleSort = (field) => {
     setSortCriteria(prev => ({
       field,
@@ -523,19 +551,19 @@ function DashboardCliente() {
     return reservas.sort((a, b) => {
       const fieldA = getNestedField(a, sortCriteria.field);
       const fieldB = getNestedField(b, sortCriteria.field);
-  
+
       if (fieldA < fieldB) return sortCriteria.direction === "asc" ? -1 : 1;
       if (fieldA > fieldB) return sortCriteria.direction === "asc" ? 1 : -1;
       return 0;
     });
   };
-  
+
   // Función auxiliar para obtener campos anidados, como "servicio.nombre_servicio"
   const getNestedField = (obj, path) => {
     return path.split('.').reduce((acc, key) => acc && acc[key], obj);
   };
-  
-  
+
+
 
 
   const handleDateChange = (e) => {
@@ -652,16 +680,16 @@ function DashboardCliente() {
         {/* Drawer lateral */}
         <Drawer anchor="left" open={drawerOpen} onClose={handleDrawerToggle}>
           <List>
+            <ListItem button onClick={() => { setShowForm(true); handleDrawerToggle(); }}>
+              <ListItemText primary="Crear Nueva Reserva" />
+            </ListItem>
             <ListItem button onClick={() => { setActiveScreen('reservas'); handleDrawerToggle(); }}>
               <ListItemText primary="Mis Reservas" />
             </ListItem>
             <ListItem button onClick={() => { setActiveScreen('perfil'); handleDrawerToggle(); }}>
               <ListItemText primary="Mi Perfil" />
             </ListItem>
-            <ListItem button onClick={() => { setShowForm(true); handleDrawerToggle(); }}>
-              <ListItemText primary="Agendar Reserva" />
-            </ListItem>
-            <ListItem button onClick={() => { logout()}}>
+            <ListItem button onClick={() => { logout() }}>
               <ListItemText primary="Cerrar sesion" />
             </ListItem>
             {/* Agrega más elementos de lista según sea necesario */}
@@ -673,8 +701,9 @@ function DashboardCliente() {
           <DialogTitle>Nueva Reserva</DialogTitle>
           <DialogContent>
             <FormControl fullWidth margin="normal">
-              <Typography>Servicio</Typography>
+              <Typography textAlign={'center'}>Servicio</Typography>
               <Select
+                align='center'
                 name="servicio_id"
                 value={reservation.servicio_id}
                 onChange={handleChange}
@@ -687,9 +716,14 @@ function DashboardCliente() {
                 ))}
               </Select>
             </FormControl>
-            <FormControl fullWidth margin="normal">
-              <Typography>Fecha</Typography>
+            <FormControl
+              fullWidth
+              margin="normal"
+              sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+              <Typography textAlign="center">Fecha</Typography>
               <TextField
+                align="center"
                 type="date"
                 name="fecha"
                 value={reservation.fecha}
@@ -699,9 +733,11 @@ function DashboardCliente() {
                 sx={{ marginTop: 2 }}
               />
             </FormControl>
+
             <FormControl fullWidth margin="normal">
-              <Typography id="hora-label">Hora</Typography>
+              <Typography id="hora-label" textAlign={'center'}>Hora</Typography>
               <Select
+                align='center'
                 labelId="hora-label"
                 name="hora"
                 value={reservation.hora}
@@ -716,8 +752,9 @@ function DashboardCliente() {
               </Select>
             </FormControl>
             <FormControl fullWidth margin="normal">
-              <Typography>Tipo Vehículo</Typography>
+              <Typography textAlign={'center'}>Tipo Vehículo</Typography>
               <Select
+                align='center'
                 name="tipo_vehiculo_id"
                 value={reservation.tipo_vehiculo_id}
                 onChange={handleChange}
@@ -730,18 +767,28 @@ function DashboardCliente() {
                 ))}
               </Select>
             </FormControl>
-            <Typography variant="h6" margin="normal">Servicios Extras:</Typography>
-            <ToggleButtonGroup
-              value={selectedAtributos}
-              onChange={handleAtributoToggle}
-              aria-label="atributos"
-            >
-              {atributos.map((atributo) => (
-                <ToggleButton key={atributo.id} value={atributo.id} aria-label={atributo.nombre_atributo}>
-                  {atributo.nombre_atributo} - ${atributo.costo_atributo}
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
+
+            <Typography variant="h6" margin="normal" textAlign={'center'}>Servicios Extra:</Typography>
+            <FormControl fullWidth margin="normal">
+              <Select
+                align='center'
+                multiple
+                value={selectedAtributos}
+                onChange={handleAtributoToggle}
+                renderValue={(selected) => selected.map(id => {
+                  const atributo = atributos.find(a => a.id === id);
+                  return atributo ? `${atributo.nombre_atributo} - $${atributo.costo_atributo}` : '';
+                }).join(', ')}
+              >
+                {atributos.map(atributo => (
+                  <MenuItem key={atributo.id} value={atributo.id}>
+                    {atributo.nombre_atributo} - ${atributo.costo_atributo}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Typography variant="h5" >Total: ${total}</Typography>
+
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setShowForm(false)}>Cancelar</Button>
@@ -754,8 +801,9 @@ function DashboardCliente() {
           <DialogTitle>Editar Reserva</DialogTitle>
           <DialogContent>
             <FormControl fullWidth margin="normal">
-              <Typography>Servicio</Typography>
+              <Typography textAlign={'center'}>Servicio</Typography>
               <Select
+                align='center'
                 name="servicio_id"
                 value={reservation.servicio_id}
                 onChange={handleChange}
@@ -768,19 +816,27 @@ function DashboardCliente() {
                 ))}
               </Select>
             </FormControl>
-            <Typography>Fecha</Typography>
-            <TextField
-              type="date"
-              name="fecha"
-              value={reservation.fecha}
-              onChange={handleDateChange}
-              required
-              InputLabelProps={{ shrink: true }}
-              sx={{ marginTop: 2 }}
-            />
+            <FormControl
+              fullWidth
+              margin="normal"
+              sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+              <Typography textAlign="center">Fecha</Typography>
+              <TextField
+                align="center"
+                type="date"
+                name="fecha"
+                value={reservation.fecha}
+                onChange={handleDateChange}
+                required
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: 2 }}
+              />
+            </FormControl>
             <FormControl fullWidth margin="normal">
-              <Typography id="hora-label">Hora</Typography>
+              <Typography id="hora-label" textAlign={'center'}>Hora</Typography>
               <Select
+                align='center'
                 labelId="hora-label"
                 name="hora"
                 value={reservation.hora ? reservation.hora.slice(0, 5) : ''}
@@ -795,8 +851,9 @@ function DashboardCliente() {
               </Select>
             </FormControl>
             <FormControl fullWidth margin="normal">
-              <Typography>Tipo Vehículo</Typography>
+              <Typography textAlign={'center'}>Tipo Vehículo</Typography>
               <Select
+                align='center'
                 name="tipo_vehiculo_id"
                 value={reservation.tipo_vehiculo_id}
                 onChange={handleChange}
@@ -804,23 +861,37 @@ function DashboardCliente() {
               >
                 {tipo_vehiculos.map(tipo_vehiculo => (
                   <MenuItem key={tipo_vehiculo.id} value={tipo_vehiculo.id}>
-                    {tipo_vehiculo.nombre}- ${tipo_vehiculo.costo}
+                    {tipo_vehiculo.nombre} - ${tipo_vehiculo.costo}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
-            <Typography variant="h6" margin="normal">Servicios Extra:</Typography>
-            <ToggleButtonGroup
-              value={selectedAtributos}
-              onChange={handleAtributoToggle}
-              aria-label="atributos"
-            >
-              {atributos.map((atributo) => (
-                <ToggleButton key={atributo.id} value={atributo.id} aria-label={atributo.nombre_atributo}>
-                  {atributo.nombre_atributo}- ${atributo.costo_atributo}
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
+
+            <Typography variant="h6" margin="normal" textAlign={'center'}>Servicios Extra:</Typography>
+            <FormControl fullWidth margin="normal">
+              <Select
+                multiple
+                align='center'
+                value={selectedAtributos}
+                onChange={handleAtributoToggle}
+                renderValue={(selected) =>
+                  selected
+                    .map((id) => {
+                      const atributo = atributos.find((a) => a.id === id);
+                      return atributo ? `${atributo.nombre_atributo} - $${atributo.costo_atributo}` : '';
+                    })
+                    .join(', ')
+                }
+              >
+                {atributos.map((atributo) => (
+                  <MenuItem key={atributo.id} value={atributo.id}>
+                    {atributo.nombre_atributo} - ${atributo.costo_atributo}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <Typography variant="h5">Total: ${total}</Typography>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setEditing(false)}>Cancelar</Button>

@@ -12,3 +12,11 @@ html, body {
 .swal2-container {
     z-index: 9999 !important; /* Un valor alto para asegurarte de que esté encima */
 }
+@keyframes bounce {
+	0%, 100% {
+	  transform: translateY(0);
+	}
+	50% {
+	  transform: translateY(-10px); /* Rebote hacia arriba */
+	}
+  }
