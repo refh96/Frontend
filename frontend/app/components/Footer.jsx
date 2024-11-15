@@ -1,7 +1,8 @@
 import React from 'react';
-import { Container, Typography, Box, Link, Grid } from '@mui/material';
+import { Container, Typography, Box, Link, Grid, Button } from '@mui/material';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
+
 const Footer = () => {
   return (
     <footer>
@@ -21,6 +22,19 @@ const Footer = () => {
               <Typography variant="body1">
                 © 2024 Full Wash Conce Spa. Todos los derechos reservados.
               </Typography>
+              <Button
+                component="a"
+                href="/dashboardAdmin"
+                variant="text"
+                sx={{
+                  color: 'white',
+                  mt: 2,
+                  display: 'block',
+                  textTransform: 'none',
+                }}
+              >
+                Admin
+              </Button>
             </Grid>
             <Grid item xs={12} sm={6} sx={{ textAlign: 'center' }}>
               <Link
@@ -46,7 +60,6 @@ const Footer = () => {
               >
                 <Typography variant="body1">Visita nuestro TikTok</Typography>
               </Link>
-
             </Grid>
           </Grid>
         </Container>
