@@ -16,32 +16,20 @@ function HomePage() {
 
   const items = [
     {
-      img: 'https://i.ibb.co/mNLfbxZ/full-wash-propaganda.jpg',
+      img: 'https://i.ibb.co/7R5fLvY/prueba-3.jpg',
       alt: 'imagen 1',
     },
     {
-      img: 'https://i.ibb.co/kM48wnt/fullwash-servicios.jpg',
+      img: 'https://i.ibb.co/CMsS5PF/prueba5.jpg',
       alt: 'imagen 2',
     },
     {
-      img: 'https://i.ibb.co/q5N6f7z/full-wash-direccion.jpg',
+      img: 'https://i.ibb.co/SVNvtz4/fullwash1.png',
       alt: 'imagen 3',
     },
     {
-      img: 'https://i.ibb.co/yX9P3x5/fullwash-imagen.png',
+      img: 'https://i.ibb.co/GFPg5Pj/vehiculo-1.jpg',
       alt: 'imagen 4',
-    },
-    {
-      img: 'https://i.ibb.co/JkGr1R2/subir-1.jpg',
-      alt: 'imagen 5',
-    },
-    {
-      img: 'https://i.ibb.co/Jdzcvw3/subir-3.png',
-      alt: 'imagen 7',
-    },
-    {
-      img: 'https://i.ibb.co/7RnTjBp/subir-4.png',
-      alt: 'imagen 8',
     },
   ];
   const items1 = [
@@ -136,7 +124,7 @@ function HomePage() {
     // Agrega los demás elementos de proceso con descripciones
   ];
 
-  
+
 
   return (
     <Box
@@ -160,15 +148,13 @@ function HomePage() {
         >
           <div
             style={{
-              flex: '1 1 100%',  // En pantallas pequeñas, cada div ocupará el 100% del espacio
-              maxWidth: '100%',
+              width: '100%',  // Hace que el carrusel ocupe todo el ancho de la pantalla
+              height: '100%', // Hace que el carrusel ocupe todo el alto de la pantalla
               overflow: 'hidden',
               position: 'relative',
               borderRadius: '8px',
-              borderBlockStyle: 'box',
-              marginBottom: '10px',  // Añadido para espaciado en pantallas pequeñas
-              marginLeft: '5px',     // Añadido margen a la izquierda
-              marginRight: '25px',    // Añadido margen a la derecha
+              marginBottom: '10px',
+              marginRight: '20px', // Añade margen a la derecha
             }}
           >
             <Carousel
@@ -185,9 +171,10 @@ function HomePage() {
                 <Paper
                   key={index}
                   style={{
-                    height: '50vh',
+                    height: '100%',  // Hace que el Paper ocupe todo el alto del contenedor
                     display: 'flex',
                     alignItems: 'center',
+                    justifyContent: 'center',
                     backgroundColor: 'transparent',
                     boxShadow: 'none',
                   }}
@@ -197,17 +184,18 @@ function HomePage() {
                     src={item.img}
                     alt={item.alt}
                     style={{
-                      width: '100%',
+                      width: '96%',
                       height: '100%',
-                      objectFit: 'contain',
-                      borderRadius: '20px', // Ajusta el valor para más o menos curvatura
+                      objectFit: 'contain',  // La imagen cubre todo el contenedor sin deformarse
+                      borderRadius: '20px', // Ajusta la curvatura de los bordes según prefieras
                     }}
                   />
                 </Paper>
               ))}
             </Carousel>
-
           </div>
+
+
 
 
           <div
@@ -220,31 +208,33 @@ function HomePage() {
               marginBottom: '10px', // Añadido para espaciado en pantallas pequeñas
             }}
           >
-    <Typography
-  variant="h1"
-  align="center"
-  textAlign="center"
-  sx={{
-    my: 4,
-    color: '#F05B3C',
-    fontFamily: 'Baloo, sans-serif',
-    fontSize: { xs: '2rem', md: '3rem' },
-    textShadow: '5px 8px 4px rgba(0, 0, 0, 0.4)',
-    fontWeight: 'bold', // Hace el texto más grueso
-    transition: "transform 0.3s ease-in-out",
-    "&:hover": {
-      transform: "scale(1.05)",
-    },
-    animation: 'bounce 1.5s ease-in-out infinite', // Animación de rebote
-  }}
->
-  {`REGISTRATE Y AGENDA CON NOSOTROS\n TU SERVICIO DE \nCONFIANZA`.split('\n').map((line, idx) => (
-    <React.Fragment key={idx}>
-      {line}
-      {idx < 2 && <br />}
-    </React.Fragment>
-  ))}
-</Typography>
+            <Typography
+              variant="h1"
+              align="center"
+              sx={{
+                my: 4,
+                color: '#F05B3C',
+                fontFamily: 'Baloo, sans-serif',
+                fontSize: { xs: '2rem', md: '3rem' },
+                textShadow: '5px 8px 4px rgba(0, 0, 0, 0.4)',
+                fontWeight: 'bold',
+                boxSizing: 'border-box', // Asegura que el padding y margin no causen desbordamiento
+                paddingLeft: { xs: 2, sm: 4 }, // Ajusta el padding según el tamaño de pantalla
+                paddingRight: { xs: 2, sm: 4 },
+                transition: "transform 0.3s ease-in-out",
+                "&:hover": {
+                  transform: "scale(1.05)",
+                },
+                animation: 'bounce 1.5s ease-in-out infinite',
+              }}
+            >
+              {`REGISTRATE Y AGENDA CON NOSOTROS\n TU SERVICIO DE \nCONFIANZA`.split('\n').map((line, idx) => (
+                <React.Fragment key={idx}>
+                  {line}
+                  {idx < 2 && <br />}
+                </React.Fragment>
+              ))}
+            </Typography>
 
             <Button
               variant="contained"
@@ -259,7 +249,7 @@ function HomePage() {
               }}
               onClick={handleAddToOrder}
             >
-              Solicitar Servicio
+              Agendar Servicio
             </Button>
           </div>
         </div>
@@ -267,101 +257,101 @@ function HomePage() {
 
 
         <Container sx={{ marginY: 4, textAlign: 'center' }}>
-  <Typography
-    variant="h4"
-    align="center"
-    color="black"
-    gutterBottom
-    sx={{
-      backgroundColor: '#00ced1',
-      padding: '10px',
-      borderRadius: '8px',
-      display: 'inline-block',
-      border: '3px solid #00e5e5',
-      color: '#white',
-      fontFamily: 'arial',
-      textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)',
-      transition: "transform 0.3s ease-in-out",
-      "&:hover": {
-        transform: "scale(1.05)",
-      },
-    }}
-  >
-    DESCUBRE NUESTROS PROCESOS
-  </Typography>
-  
-<Grid
-  container
-  spacing={3}
-  justifyContent="center"
-  sx={{
-    flexDirection: { xs: 'row', sm: 'row', md: 'row', lg: 'row' },
-    overflowX: { xs: 'auto', sm: 'visible' },
-    display: 'flex',
-    flexWrap: { xs: 'wrap', sm: 'wrap' },
-    paddingX: { xs: 1 },
-  }}
->
-  {processItems.map((item, index) => (
-    <Grid
-      item
-      xs={6}
-      sm={6}
-      md={4}
-      key={index}
-      sx={{
-        transition: "transform 0.3s ease-in-out",
-        minWidth: { xs: '45%' },
-        "&:hover": {
-          transform: "scale(1.05)",
-        },
-      }}
-      onClick={() => handleOpenModal(item)} // Agrega el evento onClick
-    >
-      <div
-        style={{
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-          borderRadius: '8px',
-          overflow: 'hidden',
-          transition: 'transform 0.3s',
-          cursor: 'pointer',
-        }}
-      >
-        <Typography
-          variant="h6"
-          align="center"
-          color="black"
-          gutterBottom
-          sx={{
-            backgroundColor: '#f5f5f5',
-            padding: '8px',
-            fontWeight: 'bold',
-            height: '60px',
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: { xs: '0.85rem', sm: '1rem', md: '1.1rem' },
-          }}
-        >
-          {item.title}
-        </Typography>
-        <img
-          src={item.img}
-          alt={item.title}
-          style={{
-            width: '100%',
-            height: '200px',
-            objectFit: 'cover',
-          }}
-        />
-      </div>
-    </Grid>
-  ))}
-</Grid>
-</Container>
+          <Typography
+            variant="h4"
+            align="center"
+            color="black"
+            gutterBottom
+            sx={{
+              backgroundColor: '#00ced1',
+              padding: '10px',
+              borderRadius: '8px',
+              display: 'inline-block',
+              border: '3px solid #00e5e5',
+              color: '#white',
+              fontFamily: 'arial',
+              textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)',
+              transition: "transform 0.3s ease-in-out",
+              "&:hover": {
+                transform: "scale(1.05)",
+              },
+            }}
+          >
+            DESCUBRE NUESTROS PROCESOS
+          </Typography>
+
+          <Grid
+            container
+            spacing={3}
+            justifyContent="center"
+            sx={{
+              flexDirection: { xs: 'row', sm: 'row', md: 'row', lg: 'row' },
+              overflowX: { xs: 'auto', sm: 'visible' },
+              display: 'flex',
+              flexWrap: { xs: 'wrap', sm: 'wrap' },
+              paddingX: { xs: 1 },
+            }}
+          >
+            {processItems.map((item, index) => (
+              <Grid
+                item
+                xs={6}
+                sm={6}
+                md={4}
+                key={index}
+                sx={{
+                  transition: "transform 0.3s ease-in-out",
+                  minWidth: { xs: '45%' },
+                  "&:hover": {
+                    transform: "scale(1.05)",
+                  },
+                }}
+                onClick={() => handleOpenModal(item)} // Agrega el evento onClick
+              >
+                <div
+                  style={{
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                    borderRadius: '8px',
+                    overflow: 'hidden',
+                    transition: 'transform 0.3s',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    align="center"
+                    color="black"
+                    gutterBottom
+                    sx={{
+                      backgroundColor: '#f5f5f5',
+                      padding: '8px',
+                      fontWeight: 'bold',
+                      height: '60px',
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                      textOverflow: 'ellipsis',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: { xs: '0.85rem', sm: '1rem', md: '1.1rem' },
+                    }}
+                  >
+                    {item.title}
+                  </Typography>
+                  <img
+                    src={item.img}
+                    alt={item.title}
+                    style={{
+                      width: '100%',
+                      height: '200px',
+                      objectFit: 'cover',
+                    }}
+                  />
+                </div>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
 
 
         {/* Sección de Opiniones de Clientes */}
@@ -375,9 +365,22 @@ function HomePage() {
             boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
           }}
         >
-          <Typography variant="h4" align="center" color="text.primary" gutterBottom>
-            RECOMENDACIONES DE CLIENTES
+          <Typography
+            variant="h4"
+            align="center"
+            color="text.primary"
+            gutterBottom
+            sx={{
+              fontWeight: 'bold',
+              fontSize: '2rem', // Ajusta el tamaño según lo que necesites
+              textTransform: 'uppercase', // Para hacerlo más destacado
+              letterSpacing: 1.5, // Espaciado entre letras
+              boxShadow: 2, // Sombra sutil
+            }}
+          >
+            RECOMENDACION DE CLIENTES
           </Typography>
+
           <Grid container spacing={3} justifyContent="center">
             {[
               { name: 'Sal Yesenia', text: 'Excelente servicio recomendado 100% 👍👍👏👏' },
@@ -612,48 +615,48 @@ function HomePage() {
         </Container>
 
         <Dialog open={openModal} onClose={handleCloseModal}>
-  <DialogContent>
-    {selectedService && (
-      <>
-        <Typography variant="h6" gutterBottom>
-          {selectedService.title}
-        </Typography>
-        <Typography variant="body1" paragraph>
-          {selectedService.description}
-        </Typography>
-        <img
-          src={selectedService.img}
-          alt={selectedService.title}
-          style={{
-            width: '100%',
-            maxHeight: '300px',
-            objectFit: 'cover',
-            borderRadius: '8px',
-          }}
-        />
-      </>
-    )}
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={handleCloseModal} color="primary">
-      Cerrar
-    </Button>
-  </DialogActions>
-</Dialog>
+          <DialogContent>
+            {selectedService && (
+              <>
+                <Typography variant="h6" gutterBottom>
+                  {selectedService.title}
+                </Typography>
+                <Typography variant="body1" paragraph>
+                  {selectedService.description}
+                </Typography>
+                <img
+                  src={selectedService.img}
+                  alt={selectedService.title}
+                  style={{
+                    width: '100%',
+                    maxHeight: '300px',
+                    objectFit: 'cover',
+                    borderRadius: '8px',
+                  }}
+                />
+              </>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseModal} color="primary">
+              Cerrar
+            </Button>
+          </DialogActions>
+        </Dialog>
         <Footer />
         <IconButton
-  style={{
-    position: 'fixed',
-    bottom: 16,
-    right: 16,
-    backgroundColor: '#25D366',
-    color: 'white',
-    zIndex: 1000,
-  }}
-  onClick={() => window.open('https://wa.me/56992646017?text=¡Hola, me comunico desde su pagina web!')}
->
-  <WhatsAppIcon style={{ fontSize: 50 }} /> {/* Ajusta el tamaño aquí */}
-</IconButton>
+          style={{
+            position: 'fixed',
+            bottom: 16,
+            right: 16,
+            backgroundColor: '#25D366',
+            color: 'white',
+            zIndex: 1000,
+          }}
+          onClick={() => window.open('https://wa.me/56992646017?text=¡Hola, me comunico desde su pagina web!')}
+        >
+          <WhatsAppIcon style={{ fontSize: 50 }} /> {/* Ajusta el tamaño aquí */}
+        </IconButton>
 
       </Box>
     </Box>
