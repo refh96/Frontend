@@ -94,32 +94,32 @@ function HomePage() {
     {
       title: 'LIMPIEZA DETALLADA',
       img: 'https://www.tuningblog.eu/wp-content/uploads/2021/05/Dampfreiniger-autowaesche-aussen-lack-innen-interieur-5-min.gif',
-      description: 'Este proceso incluye una limpieza profunda y detallada de cada rincón del vehículo mediante herramientas que permiten sacar el polvo y suciedad de todos los lugares',
+      description: 'Este servicio ofrece una limpieza exhaustiva y minuciosa para cada rincón del vehículo. Utilizamos herramientas especializadas que eliminan eficazmente el polvo, la suciedad y las impurezas, incluso en los espacios más difíciles de alcanzar. Ideal para restaurar el interior y exterior del vehículo, dejando cada superficie impecable y revitalizada',
     },
     {
       title: 'LAVADO EXTERNO COMPLETO',
       img: 'https://i.gifer.com/D3j.gif',
-      description: 'Este lavado cubre la limpieza externa completa del vehículo desde el techo hacia abajo, rendijas, etc...',
+      description: 'Este servicio garantiza una limpieza integral del exterior de tu vehículo. Cubrimos cada detalle, desde el techo hasta las áreas más difíciles, como las rendijas y paneles exteriores. Utilizamos técnicas avanzadas y productos de calidad para eliminar suciedad, polvo y residuos, devolviendo a tu vehículo su brillo y aspecto impecable',
     },
     {
       title: 'LIMPIEZA DE VIDRIOS Y PLÁSTICOS',
       img: 'https://media.giphy.com/media/87wlWjovL0O6Q/giphy.gif',
-      description: 'Este proceso incluye una limpieza detallada de los vidrios y los plásticos...',
+      description: 'Este servicio ofrece una limpieza detallada y profesional de todas las superficies de vidrio y plástico del vehículo. Eliminamos manchas, polvo y residuos, asegurando una apariencia impecable. Ideal para mejorar la visibilidad y mantener el interior y exterior del vehículo en óptimas condiciones',
     },
     {
       title: 'PULIDO DE FOCOS',
       img: 'https://www.mantencionexpress.cl/wp-content/uploads/2021/04/medetailing_pul-foco-1.jpg',
-      description: 'Mediante herramientas y un proceso profesional dejamos tus focos como nuevos',
+      description: 'Este servicio utiliza herramientas especializadas y técnicas profesionales para restaurar el estado original de los focos de tu vehículo. Eliminamos rayones, opacidad y manchas, devolviendo la claridad y el brillo necesarios para mejorar la estética y la seguridad al conducir. Ideal para mantener una iluminación eficiente y un aspecto renovado',
     },
     {
       title: 'LAVADO DE MOTOR',
       img: 'https://www.expertoautorecambios.es/magazine/wp-content/uploads/2017/10/el-lavado-del-motor.jpg',
-      description: 'Sacamos toda la suciedad de su motor y lo dejamos como nuevo',
+      description: 'Este servicio especializado elimina completamente la suciedad acumulada en el motor de tu vehículo, utilizando técnicas seguras y efectivas que garantizan una limpieza profunda sin comprometer los componentes eléctricos o mecánicos. Ideal para mejorar el rendimiento del motor, prolongar su vida útil y mantenerlo en condiciones óptimas',
     },
     {
       title: 'HIDRATACIÓN DE PLÁSTICOS\n INTERNOS Y EXTERNOS',
       img: 'https://i.ytimg.com/vi/kpRPZUqvTtU/hqdefault.jpg',
-      description: 'Utilizamos productos de alta gama para darle una renovacion y brillo a sus plasticos',
+      description: 'Este servicio utiliza productos de alta gama para restaurar y proteger las superficies plásticas internas y externas de tu vehículo. Proporcionamos una hidratación profunda que renueva su apariencia, devolviéndoles un brillo natural y ayudando a prevenir el desgaste, las grietas y la decoloración causados por el tiempo y la exposición al sol',
     },
     // Agrega los demás elementos de proceso con descripciones
   ];
@@ -618,10 +618,10 @@ function HomePage() {
           <DialogContent>
             {selectedService && (
               <>
-                <Typography variant="h6" gutterBottom>
+                <Typography textAlign={'center'} variant="h6" gutterBottom>
                   {selectedService.title}
                 </Typography>
-                <Typography variant="body1" paragraph>
+                <Typography textAlign={'center'} variant="body1" paragraph>
                   {selectedService.description}
                 </Typography>
                 <img

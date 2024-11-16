@@ -711,7 +711,7 @@ function DashboardCliente() {
               >
                 {Array.isArray(servicios) && servicios.map(servicio => (
                   <MenuItem key={servicio.id} value={servicio.id}>
-                    {servicio.nombre_servicio}- ${servicio.precio}
+                    {servicio.nombre_servicio}
                   </MenuItem>
                 ))}
               </Select>
@@ -762,7 +762,7 @@ function DashboardCliente() {
               >
                 {tipo_vehiculos.map(tipo_vehiculo => (
                   <MenuItem key={tipo_vehiculo.id} value={tipo_vehiculo.id}>
-                    {tipo_vehiculo.nombre} - ${tipo_vehiculo.costo}
+                    {tipo_vehiculo.nombre}
                   </MenuItem>
                 ))}
               </Select>
@@ -811,7 +811,7 @@ function DashboardCliente() {
               >
                 {servicios.map(servicio => (
                   <MenuItem key={servicio.id} value={servicio.id}>
-                    {servicio.nombre_servicio}- ${servicio.precio}
+                    {servicio.nombre_servicio}
                   </MenuItem>
                 ))}
               </Select>
@@ -861,7 +861,7 @@ function DashboardCliente() {
               >
                 {tipo_vehiculos.map(tipo_vehiculo => (
                   <MenuItem key={tipo_vehiculo.id} value={tipo_vehiculo.id}>
-                    {tipo_vehiculo.nombre} - ${tipo_vehiculo.costo}
+                    {tipo_vehiculo.nombre}
                   </MenuItem>
                 ))}
               </Select>
