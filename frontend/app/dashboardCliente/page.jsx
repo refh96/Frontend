@@ -207,8 +207,9 @@ function DashboardCliente() {
 
 
   const handleAvatarClick = () => {
-    setActiveScreen('perfil'); // Cambia a la vista de perfil
+    setActiveScreen(activeScreen === "perfil" ? "reservas" : "perfil");
   };
+  
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
   };
@@ -504,14 +505,14 @@ function DashboardCliente() {
                       <IconButton
                         color="primary"
                         onClick={() => handleEdit(reserva)}
-                        disabled={reserva.estado.nombre !== "Pendiente" && reserva.estado.nombre !== "Rechazado" && reserva.estado.nombre !== "Aprobado"}
+                        disabled={!["Pendiente", "Rechazado", "Aprobado"].includes(reserva.estado.nombre)}
                       >
                         <EditIcon />
                       </IconButton>
                       <IconButton
                         color="error"
                         onClick={() => handleDelete(reserva.id)}
-                        disabled={reserva.estado.nombre !== "Pendiente" && reserva.estado.nombre !== "Rechazado" && reserva.estado.nombre !== "Aprobado"}
+                        disabled={!["Pendiente", "Rechazado", "Aprobado"].includes(reserva.estado.nombre)}
                       >
                         <DeleteIcon />
                       </IconButton>
@@ -524,9 +525,9 @@ function DashboardCliente() {
         );
       case "perfil":
         return (
-          <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" textAlign={"center"}>
+          <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" textAlign="center">
             <Typography color="black" variant="h6">Perfil</Typography>
-            <Avatar sx={{ bgcolor: 'secondary.main', marginBottom: 2, alignItems: 'center' }}>
+            <Avatar sx={{ bgcolor: 'secondary.main', marginBottom: 2 }}>
               {user.username.charAt(0)}
             </Avatar>
             <Typography color="black">Nombre: {user.username}</Typography>
@@ -540,6 +541,7 @@ function DashboardCliente() {
         return null;
     }
   };
+  
 
   const handleSort = (field) => {
     setSortCriteria(prev => ({

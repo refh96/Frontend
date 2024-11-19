@@ -52,7 +52,7 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [loadingReservas, setLoadingReservas] = useState(true);
   const router = useRouter();
-  
+
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -63,7 +63,7 @@ function Dashboard() {
           router.push("/loginAdmin");
           return;
         }
-  
+
         const res = await axios.post(
           "https://fullwash.site/profile",
           {},
@@ -73,7 +73,7 @@ function Dashboard() {
             },
           }
         );
-  
+
         // Comprobar si el usuario tiene rol de administrador
         const userRole = res.data.user.rol;  // Asumiendo que el rol se encuentra en res.data.user.role
         if (userRole !== "administrador") {
@@ -81,7 +81,7 @@ function Dashboard() {
           router.push("/loginCliente");
           return;
         }
-  
+
         setUser(res.data.user);
         setLoading(false);
       } catch (error) {
@@ -89,13 +89,13 @@ function Dashboard() {
         router.push("/loginAdmin"); // Si ocurre un error, también redirigir al login de admin
       }
     };
-  
+
     fetchProfile();
   }, [router]);
-  
+
 
   useEffect(() => {
-    
+
     const fetchReservas = async () => {
       try {
         const cookies = parseCookies();
@@ -110,11 +110,11 @@ function Dashboard() {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-            
+
           }
-          
+
         );
-        
+
         setReservas(res.data.reservas);
         setLoadingReservas(false);
       } catch (error) {
@@ -133,12 +133,12 @@ function Dashboard() {
     fetchReservas();
     fetchEstados();
   }, [router]);
-  
+
 
   const handleAvatarClick = () => {
     setActiveScreen(activeScreen === 'perfil' ? null : 'perfil');
   };
-  
+
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
   };
@@ -156,8 +156,8 @@ function Dashboard() {
         return;
       }
       const atributoIds = reservaToUpdate.atributos
-      ? reservaToUpdate.atributos.map(atributo => atributo.id)
-      : [];
+        ? reservaToUpdate.atributos.map(atributo => atributo.id)
+        : [];
 
       // Envía todos los campos necesarios
       await axios.put(
@@ -215,7 +215,7 @@ function Dashboard() {
       console.error("Error during logout:", error.message);
     }
   };
-  
+
 
   const renderScreen = () => {
     switch (activeScreen) {
@@ -223,7 +223,7 @@ function Dashboard() {
         return (
           <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" textAlign={"center"}>
             <Typography color="black" variant="h6">Perfil</Typography>
-            <Avatar sx={{ bgcolor: 'secondary.main', marginBottom: 2, alignItems:'center' }}>
+            <Avatar sx={{ bgcolor: 'secondary.main', marginBottom: 2, alignItems: 'center' }}>
               {user.username.charAt(0)}
             </Avatar>
             <Typography color="black">Nombre: {user.username}</Typography>
@@ -277,7 +277,7 @@ function Dashboard() {
   };
 
 
-  if (loading || loadingReservas)  return <p>Loading...</p>;
+  if (loading || loadingReservas) return <p>Loading...</p>;
 
 
   return (
@@ -286,155 +286,162 @@ function Dashboard() {
         <Header />
         <Box flex="1" p={2}>
           <AppBar position="static">
-          <Toolbar>
-            <IconButton edge="start" color="inherit" aria-label="menu" onClick={handleDrawerToggle}>
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" textAlign="center" sx={{ flexGrow: 1 }}>
-              Dashboard Adminstrativo
-            </Typography>
-            <Avatar sx={{ bgcolor: 'secondary.main' }} onClick={handleAvatarClick}>
-              {user.username.charAt(0)}
-            </Avatar>
-          </Toolbar>
-        </AppBar>
+            <Toolbar>
+              <IconButton edge="start" color="inherit" aria-label="menu" onClick={handleDrawerToggle}>
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" textAlign="center" sx={{ flexGrow: 1 }}>
+                Dashboard Adminstrativo
+              </Typography>
+              <Avatar sx={{ bgcolor: 'secondary.main' }} onClick={handleAvatarClick}>
+                {user.username.charAt(0)}
+              </Avatar>
+            </Toolbar>
+          </AppBar>
 
-        {/* Drawer lateral */}
-        <Drawer anchor="left" open={drawerOpen} onClose={handleDrawerToggle}>
-          <List>
-          <ListItem button onClick={() => router.push("../registroRoles")}>
-              <ListItemText primary="regitro Con Roles" />
-            </ListItem>
-          <ListItem button onClick={() => router.push("../nuevoServicio")}>
-              <ListItemText primary="Administrar servicios" />
-            </ListItem>
-            <ListItem button onClick={() => router.push("../estados")}>
-              <ListItemText primary="Administrar estados" />
-            </ListItem>
-            <ListItem button onClick={() => router.push("../atributos")}>
-              <ListItemText primary="Administrar servicios extra" />
-            </ListItem>
-            <ListItem button onClick={() => router.push("../tiposVehiculos")}>
-              <ListItemText primary="Administrar tipos de vehiculo" />
-            </ListItem>
-            <ListItem button onClick={() => router.push("../usuarios")}>
-              <ListItemText primary="Adminisitrar Clientes" />
-            </ListItem>
-            <ListItem button onClick={() => { logout()}}>
-              <ListItemText primary="Cerrar sesion" />
-            </ListItem>
-            {/* Agrega más elementos de lista según sea necesario */}
-          </List>
-        </Drawer>
+          {/* Drawer lateral */}
+          <Drawer anchor="left" open={drawerOpen} onClose={handleDrawerToggle}>
+            <List>
+              <ListItem button onClick={() => router.push("../registroRoles")}>
+                <ListItemText primary="regitro Con Roles" />
+              </ListItem>
+              <ListItem button onClick={() => router.push("../nuevoServicio")}>
+                <ListItemText primary="Administrar servicios" />
+              </ListItem>
+              <ListItem button onClick={() => router.push("../estados")}>
+                <ListItemText primary="Administrar estados" />
+              </ListItem>
+              <ListItem button onClick={() => router.push("../atributos")}>
+                <ListItemText primary="Administrar servicios extra" />
+              </ListItem>
+              <ListItem button onClick={() => router.push("../tiposVehiculos")}>
+                <ListItemText primary="Administrar tipos de vehiculo" />
+              </ListItem>
+              <ListItem button onClick={() => router.push("../usuarios")}>
+                <ListItemText primary="Adminisitrar Clientes" />
+              </ListItem>
+              <ListItem button onClick={() => { logout() }}>
+                <ListItemText primary="Cerrar sesion" />
+              </ListItem>
+              {/* Agrega más elementos de lista según sea necesario */}
+            </List>
+          </Drawer>
 
-          <TableContainer component={Paper} sx={{ mt: 4, color: 'black' }}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Usuario</TableCell>
-                  <TableCell>Servicio</TableCell>
-                  <TableCell>Fecha</TableCell>
-                  <TableCell>Hora</TableCell>
-                  <TableCell>Tipo de Vehículo</TableCell>
-                  <TableCell>Estado</TableCell>
-                  <TableCell>Servicios Extras</TableCell>
-                  <TableCell>Total</TableCell>
-                  <TableCell>Acciones</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {reservas.map((reserva) => (
-                  <TableRow key={reserva.id}>
-                    <TableCell>{reserva.user ? reserva.user.username : "N/A"}</TableCell>
-                    <TableCell>  {reserva.servicio ? reserva.servicio.nombre_servicio : "N/A"} - ${reserva.servicio ? reserva.servicio.precio : "N/A"}</TableCell>
-                    <TableCell>{new Date(reserva.fecha).toLocaleDateString()}</TableCell>
-                    <TableCell>{reserva.hora}</TableCell>
-                    <TableCell>{reserva.tipo_vehiculo ? reserva.tipo_vehiculo.nombre : "N/A"} - ${reserva.tipo_vehiculo ? reserva.tipo_vehiculo.costo : "N/A"}</TableCell>
-                    <TableCell>
-                      <Select
-                        value={reserva.estado_id}
-                        onChange={(e) => handleEstadoChange(reserva.id, e.target.value)}
-                      >
-                        {estados.map((estado) => (
-                          <MenuItem key={estado.id} value={estado.id}>
-                            {estado.nombre}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </TableCell>
-                    <TableCell>
-                      {reserva.atributos && reserva.atributos.length > 0 ? (
-                        reserva.atributos.map(atributo => (
-                          <Typography key={atributo.id}>
-                            {atributo.nombre_atributo} - ${atributo.costo_atributo}
-                          </Typography>
-                        ))
-                      ) : (
-                        <Typography>No hay atributos</Typography>
-                      )}
-                    </TableCell>
-                    <TableCell>{reserva.Total}</TableCell>
-                    <TableCell>
-                      <IconButton
-                        color="error"
-                        onClick={() => handleDelete(reserva.id)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
+          {activeScreen !== 'perfil' && (
+            <TableContainer component={Paper} sx={{ mt: 4, color: 'black' }}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Usuario</TableCell>
+                    <TableCell>Servicio</TableCell>
+                    <TableCell>Fecha</TableCell>
+                    <TableCell>Hora</TableCell>
+                    <TableCell>Tipo de Vehículo</TableCell>
+                    <TableCell>Estado</TableCell>
+                    <TableCell>Servicios Extras</TableCell>
+                    <TableCell>Total</TableCell>
+                    <TableCell>Acciones</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          {/* Formulario de Edición de Perfil */}
-        <Dialog open={showEditProfile} onClose={() => setShowEditProfile(false)}>
-          <DialogTitle>Editar Perfil</DialogTitle>
-          <DialogContent>
-            <FormControl fullWidth margin="normal">
-              <Typography>Nombre de Usuario</Typography>
-              <TextField
-                name="username"
-                value={user.username}
-                onChange={(e) => setUser({ ...user, username: e.target.value })}
-                required
-              />
-            </FormControl>
-            <FormControl fullWidth margin="normal">
-              <Typography>Email</Typography>
-              <TextField
-                type="email"
-                name="email"
-                value={user.email}
-                onChange={(e) => setUser({ ...user, email: e.target.value })}
-                required
-              />
-            </FormControl>
-            <FormControl fullWidth margin="normal">
-              <Typography>Número</Typography>
-              <TextField
-                name="numero"
-                value={user.numero}
-                onChange={(e) => setUser({ ...user, numero: e.target.value })}
-              />
-            </FormControl>
-            <FormControl fullWidth margin="normal">
-              <Typography>Contraseña</Typography>
-              <TextField
-                type="password"
-                name="password"
-                value={user.password}
-                onChange={(e) => setUser({ ...user, password: e.target.value })}
-              />
-            </FormControl>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setShowEditProfile(false)}>Cancelar</Button>
-            <Button onClick={handleUpdateProfile}>Actualizar</Button>
-          </DialogActions>
-        </Dialog>
+                </TableHead>
+                <TableBody>
+                  {reservas.map((reserva) => (
+                    <TableRow key={reserva.id}>
+                      <TableCell>{reserva.user ? reserva.user.username : "N/A"}</TableCell>
+                      <TableCell>
+                        {reserva.servicio ? reserva.servicio.nombre_servicio : "N/A"} - ${reserva.servicio ? reserva.servicio.precio : "N/A"}
+                      </TableCell>
+                      <TableCell>{new Date(reserva.fecha).toLocaleDateString()}</TableCell>
+                      <TableCell>{reserva.hora}</TableCell>
+                      <TableCell>
+                        {reserva.tipo_vehiculo ? reserva.tipo_vehiculo.nombre : "N/A"} - ${reserva.tipo_vehiculo ? reserva.tipo_vehiculo.costo : "N/A"}
+                      </TableCell>
+                      <TableCell>
+                        <Select
+                          value={reserva.estado_id}
+                          onChange={(e) => handleEstadoChange(reserva.id, e.target.value)}
+                        >
+                          {estados.map((estado) => (
+                            <MenuItem key={estado.id} value={estado.id}>
+                              {estado.nombre}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </TableCell>
+                      <TableCell>
+                        {reserva.atributos && reserva.atributos.length > 0 ? (
+                          reserva.atributos.map((atributo) => (
+                            <Typography key={atributo.id}>
+                              {atributo.nombre_atributo} - ${atributo.costo_atributo}
+                            </Typography>
+                          ))
+                        ) : (
+                          <Typography>No hay atributos</Typography>
+                        )}
+                      </TableCell>
+                      <TableCell>{reserva.Total}</TableCell>
+                      <TableCell>
+                        <IconButton
+                          color="error"
+                          onClick={() => handleDelete(reserva.id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
 
-        {renderScreen()}
+          {/* Formulario de Edición de Perfil */}
+          <Dialog open={showEditProfile} onClose={() => setShowEditProfile(false)}>
+            <DialogTitle>Editar Perfil</DialogTitle>
+            <DialogContent>
+              <FormControl fullWidth margin="normal">
+                <Typography>Nombre de Usuario</Typography>
+                <TextField
+                  name="username"
+                  value={user.username}
+                  onChange={(e) => setUser({ ...user, username: e.target.value })}
+                  required
+                />
+              </FormControl>
+              <FormControl fullWidth margin="normal">
+                <Typography>Email</Typography>
+                <TextField
+                  type="email"
+                  name="email"
+                  value={user.email}
+                  onChange={(e) => setUser({ ...user, email: e.target.value })}
+                  required
+                />
+              </FormControl>
+              <FormControl fullWidth margin="normal">
+                <Typography>Número</Typography>
+                <TextField
+                  name="numero"
+                  value={user.numero}
+                  onChange={(e) => setUser({ ...user, numero: e.target.value })}
+                />
+              </FormControl>
+              <FormControl fullWidth margin="normal">
+                <Typography>Contraseña</Typography>
+                <TextField
+                  type="password"
+                  name="password"
+                  value={user.password}
+                  onChange={(e) => setUser({ ...user, password: e.target.value })}
+                />
+              </FormControl>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setShowEditProfile(false)}>Cancelar</Button>
+              <Button onClick={handleUpdateProfile}>Actualizar</Button>
+            </DialogActions>
+          </Dialog>
+
+          {renderScreen()}
         </Box>
         <Footer />
       </Box>
