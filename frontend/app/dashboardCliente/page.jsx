@@ -483,11 +483,11 @@ function DashboardCliente() {
               <TableBody>
                 {Array.isArray(reservas) && sortReservas(reservas).map((reserva) => (
                   <TableRow key={reserva.id}>
-                    <TableCell>{reserva.servicio.nombre_servicio} - ${reserva.servicio.precio}</TableCell>
+                    <TableCell>{reserva.servicio.nombre_servicio}</TableCell>
                     <TableCell>{new Date(reserva.fecha).toLocaleDateString('es-ES', { timeZone: 'UTC' })}</TableCell>
                     <TableCell>{reserva.hora}</TableCell>
                     <TableCell>{reserva.estado.nombre}</TableCell>
-                    <TableCell>{reserva.tipo_vehiculo.nombre} - ${reserva.tipo_vehiculo.costo}</TableCell>
+                    <TableCell>{reserva.tipo_vehiculo.nombre}</TableCell>
                     <TableCell>
                       {reserva.atributos && reserva.atributos.length > 0 ? (
                         reserva.atributos.map(atributo => (

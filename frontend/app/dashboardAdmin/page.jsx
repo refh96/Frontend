@@ -312,7 +312,7 @@ function Dashboard() {
               <ListItemText primary="Administrar estados" />
             </ListItem>
             <ListItem button onClick={() => router.push("../atributos")}>
-              <ListItemText primary="Administrar atributos" />
+              <ListItemText primary="Administrar servicios extra" />
             </ListItem>
             <ListItem button onClick={() => router.push("../tiposVehiculos")}>
               <ListItemText primary="Administrar tipos de vehiculo" />

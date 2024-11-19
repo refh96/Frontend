@@ -328,8 +328,8 @@ function HomePage() {
                       fontWeight: 'bold',
                       height: '60px',
                       overflow: 'hidden',
-                      whiteSpace: 'nowrap',
-                      textOverflow: 'ellipsis',
+                      whiteSpace: 'normal', // Permite que el texto se divida
+                      wordWrap: 'break-word', // Asegura que el texto largo se divida
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -338,6 +338,7 @@ function HomePage() {
                   >
                     {item.title}
                   </Typography>
+
                   <img
                     src={item.img}
                     alt={item.title}

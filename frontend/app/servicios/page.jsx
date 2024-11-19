@@ -135,16 +135,7 @@ const Page = () => {
                     <Typography variant="body2" sx={{ color: 'black', mt: 1 }}>
                       Desde Los: ${servicio.precio}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: 'gray', mt: 1 }}>
-                      Incluye:
-                    </Typography>
-                    <ul>
-                      {servicio.atributos.map((atributo) => (
-                        <li key={atributo.id} style={{ color: 'black', fontSize: '0.9rem' }}>
-                          {atributo.nombre_atributo} - Costo: ${atributo.costo_atributo}
-                        </li>
-                      ))}
-                    </ul>
+    
                     <Button
                       variant="contained"
                       color="primary"
