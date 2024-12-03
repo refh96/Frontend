@@ -3,8 +3,8 @@
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from 'next/link';  // Importar el componente Link
-import { TextField, Button, Box, Typography } from "@mui/material";
+import Link from 'next/link';
+import { TextField, Button, Box, Typography, CircularProgress } from "@mui/material";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { setCookie } from 'nookies';
@@ -15,36 +15,74 @@ function LoginCliente() {
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  const validateField = (name, value) => {
+    let error = "";
+    if (name === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      error = "Correo electrónico no válido.";
+    }
+    if (name === "password" && value.length < 5) {
+      error = "La contraseña debe tener al menos 5 caracteres.";
+    }
+    setErrors((prev) => ({ ...prev, [name]: error }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validación en frontend
+    if (!credentials.email || !credentials.password) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Todos los campos son obligatorios.",
+      });
+      return;
+    }
+
+    if (Object.values(errors).some((error) => error)) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Corrige los errores antes de continuar.",
+      });
+      return;
+    }
+
+    setLoading(true);
+
     try {
       const res = await axios.post("https://fullwash.site/login", credentials);
       if (res.data.res) {
-        // Guardar el token en una cookie
         setCookie(null, 'token', res.data.token.token, {
           maxAge: 30 * 24 * 60 * 60, // 30 días
           path: '/',
           sameSite: 'None',
-          secure: true, // Asegúrate de usar HTTPS
+          secure: true,
         });
         Swal.fire({
           title: 'Éxito!',
-          text: 'Login Exitoso Redirigiendo al Dashboard',
+          text: 'Inicio de sesión exitoso. Redirigiendo al Dashboard...',
           icon: 'success',
-          confirmButtonText: 'Aceptar'
+          showConfirmButton: false,
+          timer: 2000,
         });
-        router.push("/dashboardCliente");
+        setTimeout(() => {
+          router.push("/dashboardCliente");
+        }, 2000);
       }
     } catch (error) {
-      console.error("Error during login:", error.message);
       Swal.fire({
-        title: 'Error!',
-        text: 'Hubo un error al iniciar sesion intente nuevamente',
+        title: 'Error',
+        text: error.response?.data?.message || "Error al iniciar sesión. Inténtalo de nuevo.",
         icon: 'error',
-        confirmButtonText: 'Aceptar'
+        confirmButtonText: 'Aceptar',
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -55,49 +93,84 @@ function LoginCliente() {
         component="form"
         onSubmit={handleSubmit}
         sx={{
-          flexGrow: 1, // Este hará que el contenido ocupe el espacio disponible
+          flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
           gap: 2,
-          width: '300px',
+          width: { xs: "90%", sm: "400px" },
           margin: 'auto',
+          marginTop: { xs: 4, sm: 6 },
+          padding: { xs: 2, sm: 4 },
+          borderRadius: 2,
+          boxShadow: 3,
+          backgroundColor: '#fff',
         }}
       >
         <Typography
           variant="h1"
           align="center"
           sx={{
-            my: 4,
-            color: 'darkorange',
-            fontFamily: 'Helvetica',
-            fontSize: '3rem',
+            my: 2,
+            color: 'primary.main',
+            fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
+            fontSize: '2rem',
           }}
         >
-          Inicio Sesion
+          Iniciar Sesión
         </Typography>
+
         <TextField
-          label="Email"
+          label="Correo"
           type="email"
-          variant="outlined"
+          value={credentials.email}
+          onChange={(e) => {
+            const newValue = e.target.value;
+            setCredentials((prev) => ({ ...prev, email: newValue }));
+            validateField("email", newValue);
+          }}
+          error={!!errors.email}
+          helperText={errors.email}
           fullWidth
-          onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
+          variant="outlined"
         />
+
         <TextField
-          label="Password"
+          label="Contraseña"
           type="password"
-          variant="outlined"
+          value={credentials.password}
+          onChange={(e) => {
+            const newValue = e.target.value;
+            setCredentials((prev) => ({ ...prev, password: newValue }));
+            validateField("password", newValue);
+          }}
+          error={!!errors.password}
+          helperText={errors.password}
           fullWidth
-          onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+          variant="outlined"
         />
-        <Button variant="contained" type="submit" fullWidth>
-          Login
+
+        <Button
+          variant="contained"
+          type="submit"
+          fullWidth
+          disabled={loading}
+          endIcon={loading && <CircularProgress size={20} />}
+          sx={{
+            backgroundColor: "primary.main",
+            "&:hover": {
+              backgroundColor: "primary.dark",
+            },
+          }}
+        >
+          Iniciar Sesión
         </Button>
 
-        {/* Texto para redirigir a la página de registro */}
-        <Typography align="center" color="black" sx={{ mt: 2 }}>
-          ¿No tienes cuenta? <Link href="./register" style={{ color: 'blue', textDecoration: 'none' }}>Regístrate aquí</Link>
+        <Typography color={'black'} align="center" sx={{ mt: 2 }}>
+          ¿No tienes cuenta?{" "}
+          <Link href="./register" style={{ color: 'blue', textDecoration: 'none' }}>
+            Regístrate aquí
+          </Link>
         </Typography>
-
       </Box>
       <Footer />
     </div>
@@ -105,4 +178,3 @@ function LoginCliente() {
 }
 
 export default LoginCliente;
-

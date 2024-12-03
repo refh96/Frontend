@@ -14,6 +14,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { FaCar, FaTruck, FaCarSide } from 'react-icons/fa'; // Importando íconos de vehículos
 
 const Page = () => {
   const [serviciosLavados, setServiciosLavados] = useState([]);
@@ -67,6 +68,12 @@ const Page = () => {
     handleCloseModal();
   };
 
+  const vehicleTypes = [
+    { id: 1, nombre: 'Sedan, Hatchback, Coupe, Cabina simple', costo: 0, icon: <FaCar /> },
+    { id: 2, nombre: 'SUV (5 Asientos), Camionetas', costo: 10000, icon: <FaCarSide /> },
+    { id: 3, nombre: 'SUV (7 Asientos), Camionetas XL, Furgones', costo: 20000, icon: <FaTruck /> },
+  ];
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header />
@@ -96,7 +103,37 @@ const Page = () => {
         >
           El costo de los servicios varía dependiendo del tamaño o tipo de vehículo
         </Typography>
+
+        {/* Mostrar los tipos de vehículos con sus íconos y costos */}
         <Grid container spacing={4} justifyContent="center">
+          {vehicleTypes.map((vehicle) => (
+            <Grid item xs={12} sm={6} md={4} key={vehicle.id}>
+              <Box
+                sx={{
+                  display: 'flex',        // Asegura que el contenido se ajuste de manera consistente
+                  flexDirection: 'column',
+                  textAlign: 'center',
+                  padding: '20px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                  borderRadius: '12px',
+                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                  height: '100%',         // Asegura que el cuadro ocupe toda la altura disponible
+                  maxHeight: '350px',     // Establece una altura máxima consistente
+                }}
+              >
+                <Box sx={{ fontSize: '2.5rem', color: 'darkblue' }}>
+                  {vehicle.icon}
+                </Box>
+                <Typography color={'black'} variant="h6" sx={{ mt: 2, fontWeight: 'bold' }}>
+                  {vehicle.nombre}
+                </Typography>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+
+
+        <Grid container spacing={4} justifyContent="center" sx={{ mt: 4 }}>
           {[{ title: 'Lavados de Vehículos', servicios: serviciosLavados }, { title: 'Otros Servicios', servicios: serviciosOtros }].map((categoria, index) => (
             <Grid item xs={12} md={6} key={index}>
               <Box
@@ -135,7 +172,7 @@ const Page = () => {
                     <Typography variant="body2" sx={{ color: 'black', mt: 1 }}>
                       Desde Los: ${servicio.precio}
                     </Typography>
-    
+
                     <Button
                       variant="contained"
                       color="primary"

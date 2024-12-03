@@ -3,10 +3,10 @@
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { TextField, Button, Box, Typography } from "@mui/material";
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import Swal from 'sweetalert2';
+import { TextField, Button, Box, Typography, CircularProgress } from "@mui/material";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import Swal from "sweetalert2";
 
 function Register() {
   const [user, setUser] = useState({
@@ -15,156 +15,179 @@ function Register() {
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const validateEmail = (email) => {
-    // Expresión regular para validar el formato de un correo electrónico
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const validateField = (name, value) => {
+    let error = "";
+    if (name === "username" && value.trim() === "") error = "El nombre es obligatorio.";
+    if (name === "numero" && value.length < 9) error = "El número debe tener al menos 9 dígitos.";
+    if (name === "email" && !validateEmail(value)) error = "Correo electrónico no válido.";
+    if (name === "password" && value.length < 5) error = "La contraseña debe tener al menos 5 caracteres.";
+    setErrors((prev) => ({ ...prev, [name]: error }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    // Validaciones en el frontend
-    if (!user.username || !user.numero || !user.email || !user.password) {
+
+    // Validación en frontend
+    if (Object.values(user).some((field) => !field)) {
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Todos los campos son obligatorios.',
-        confirmButtonText: 'Ok',
+        icon: "error",
+        title: "Error",
+        text: "Todos los campos son obligatorios.",
       });
       return;
     }
-  
-    if (user.numero.length < 9) {
+
+    if (Object.values(errors).some((error) => error)) {
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'El número debe tener al menos 9 dígitos.',
-        confirmButtonText: 'Ok',
+        icon: "error",
+        title: "Error",
+        text: "Corrige los errores antes de continuar.",
       });
       return;
     }
-  
-    if (!validateEmail(user.email)) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Por favor, ingrese un correo electrónico válido.',
-        confirmButtonText: 'Ok',
-      });
-      return;
-    }
-  
+
+    setLoading(true);
+
     try {
-      // Agregar el rol de usuario al objeto antes de enviarlo
       const userWithRole = { ...user, rol: "usuario" };
-  
       const res = await axios.post("https://fullwash.site/users", userWithRole);
-  
-      // Verificar si la respuesta contiene un error a pesar del status 200
+
       if (res.status === 200) {
-        // Si el backend devuelve un mensaje de error a pesar de ser un status 200
-        if (res.data && res.data.length > 0 && res.data[0].message) {
-          let errorMessage = res.data[0].message;
-  
-          // Personalizar el mensaje de error
-          if (errorMessage.includes("unique validation failed on numero")) {
-            errorMessage = "Este número ya está en uso.";
-          } else if (errorMessage.includes("unique validation failed on email")) {
-            errorMessage = "Este correo electrónico ya está en uso.";
-          }
-  
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: errorMessage,
-            confirmButtonText: 'Ok',
-          });
-        } else {
-          // Si no hay error en la respuesta, proceder con el éxito
-          Swal.fire({
-            icon: 'success',
-            title: 'Registro exitoso',
-            text: 'Redirigiendo al login...',
-            showConfirmButton: false,
-            timer: 2000,
-          });
-          setTimeout(() => {
-            router.push("/loginCliente");
-          }, 2000); // Redirige después de 2 segundos para que el mensaje sea visible
-        }
+        Swal.fire({
+          icon: "success",
+          title: "Registro exitoso",
+          text: "Redirigiendo al login...",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        setTimeout(() => {
+          router.push("/loginCliente");
+        }, 2000);
       }
     } catch (error) {
-      // Si el backend devuelve un error, pero con un código de estado distinto, mostrar el error
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: error.response?.data?.message || 'Error durante el registro. Inténtalo de nuevo.',
-        confirmButtonText: 'Ok',
+        icon: "error",
+        title: "Error",
+        text: error.response?.data?.message || "Error durante el registro. Inténtalo de nuevo.",
       });
-      console.error("Error durante el registro:", error.message);
+    } finally {
+      setLoading(false);
     }
   };
-  
-  
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Header />
       <Box
         component="form"
         onSubmit={handleSubmit}
         sx={{
-          flexGrow: 1, // Este hará que el contenido ocupe el espacio disponible
-          display: 'flex',
-          flexDirection: 'column',
+          flexGrow: 1,
+          display: "flex",
+          flexDirection: "column",
           gap: 2,
-          width: '300px',
-          margin: 'auto',
+          width: { xs: "90%", sm: "400px" },
+          margin: "auto",
+          marginTop: { xs: 4, sm: 6 },
+          padding: { xs: 2, sm: 4 },
+          borderRadius: 2,
+          boxShadow: 3,
+          backgroundColor: "#fff",
         }}
       >
         <Typography
           variant="h1"
           align="center"
           sx={{
-            my: 4,
-            color: 'darkorange',
-            fontFamily: 'Helvetica',
-            fontSize: '3rem',
+            my: 2,
+            color: "primary.main",
+            fontFamily: "Roboto, Helvetica, Arial, sans-serif",
+            fontSize: "2rem",
           }}
         >
-          Registro De Usuarios
+          Registro de Usuarios
         </Typography>
+
         <TextField
           label="Nombre"
-          variant="outlined"
+          type="text"
+          value={user.username}
+          onChange={(e) => {
+            const newValue = e.target.value;
+            setUser((prevUser) => ({ ...prevUser, username: newValue }));
+            validateField("username", newValue);
+          }}
+          error={!!errors.username}
+          helperText={errors.username}
           fullWidth
-          onChange={(e) => setUser({ ...user, username: e.target.value })}
+          variant="outlined"
         />
+
         <TextField
           label="Número"
-          variant="outlined"
+          type="text"
+          value={user.numero}
+          onChange={(e) => {
+            const newValue = e.target.value.replace(/\D/g, ""); // Elimina caracteres no numéricos
+            setUser((prevUser) => ({ ...prevUser, numero: newValue }));
+            validateField("numero", newValue);
+          }}          
+          error={!!errors.numero}
+          helperText={errors.numero}
           fullWidth
-          onChange={(e) => setUser({ ...user, numero: e.target.value })}
+          variant="outlined"
         />
+
         <TextField
           label="Correo"
           type="email"
-          variant="outlined"
+          value={user.email}
+          onChange={(e) => {
+            const newValue = e.target.value;
+            setUser((prevUser) => ({ ...prevUser, email: newValue }));
+            validateField("email", newValue);
+          }}
+          error={!!errors.email}
+          helperText={errors.email}
           fullWidth
-          onChange={(e) => setUser({ ...user, email: e.target.value })}
+          variant="outlined"
         />
+
         <TextField
           label="Contraseña"
           type="password"
-          variant="outlined"
+          value={user.password}
+          onChange={(e) => {
+            const newValue = e.target.value;
+            setUser((prevUser) => ({ ...prevUser, password: newValue }));
+            validateField("password", newValue);
+          }}
+          error={!!errors.password}
+          helperText={errors.password}
           fullWidth
-          onChange={(e) => setUser({ ...user, password: e.target.value })}
+          variant="outlined"
         />
-        <Button variant="contained" type="submit" fullWidth>
-          Register
+
+        <Button
+          variant="contained"
+          type="submit"
+          fullWidth
+          disabled={loading}
+          endIcon={loading && <CircularProgress size={20} />}
+          sx={{
+            backgroundColor: "primary.main",
+            "&:hover": {
+              backgroundColor: "primary.dark",
+            },
+          }}
+        >
+          Registrarse
         </Button>
       </Box>
       <Footer />
