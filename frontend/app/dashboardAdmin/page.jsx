@@ -3,6 +3,8 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import { Badge } from "@mui/material";
 import {
   Button,
   Box,
@@ -47,11 +49,92 @@ function Dashboard() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [reservas, setReservas] = useState([]);
   const [estados, setEstados] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const [activeScreen, setActiveScreen] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false); // Para mostrar el formulario de edición de perfil
   const [loading, setLoading] = useState(true);
+  const [unreadCount, setUnreadCount] = useState(0);  // Para llevar el conteo de notificaciones no leídas
   const [loadingReservas, setLoadingReservas] = useState(true);
+  const [showNotificationAlert, setShowNotificationAlert] = useState(false);
+  const [drawerNotificationsOpen, setDrawerNotificationsOpen] = useState(false);
+  const [isAppBarOpen, setIsAppBarOpen] = useState(false); // Estado para controlar el AppBar de notificaciones
   const router = useRouter();
+  const cookies = parseCookies();
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const cookies = parseCookies();
+        const token = cookies.token; // Asegúrate de obtener el token de cookies
+        const { data } = await axios.get('https://fullwash.site/notifications/all', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setNotifications(data);
+        
+        // Contamos las notificaciones no leídas
+        const unread = data.filter(notification => !notification.is_read).length;
+        setUnreadCount(unread);
+
+        // Si hay nuevas notificaciones no leídas, muestra una alerta
+        const unreadNotifications = data.filter(notification => !notification.is_read);
+        if (unreadNotifications.length > 0) {
+          const latestNotification = unreadNotifications[0]; // La última notificación no leída
+
+          // Muestra la alerta con el mensaje de la notificación
+          Swal.fire({
+            title: 'Nuevas notificaciones',
+            text: 'Revisa tu seccion de notificaciones', //latestNotification.message,
+            icon: 'info',
+            confirmButtonText: 'Ok',
+          });
+        }
+
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
+    };
+
+    // Reemplaza este intervalo con la función real que actualiza las notificaciones
+    const interval = setInterval(fetchNotifications, 10000); // Revisa cada 10 segundos
+    return () => clearInterval(interval); // Limpia el intervalo cuando el componente se desmonte
+  }, [notifications.length]);
+
+  const handleNotificationClick = async () => {
+    // Abrir el Drawer de notificaciones
+    setDrawerNotificationsOpen(true);
+
+    // Filtrar las notificaciones no leídas
+    const unreadNotifications = notifications.filter(notification => !notification.is_read);
+    const unreadNotificationIds = unreadNotifications.map(notification => notification.id);
+
+    // Si hay notificaciones no leídas, marcar como leídas
+    if (unreadNotificationIds.length > 0) {
+      const cookies = parseCookies();
+      const token = cookies.token; // Asegúrate de obtener el token de cookies
+      try {
+        await axios.post(
+          'https://fullwash.site/notifications/mark-as-read',  // Ruta para marcar como leídas
+          { ids: unreadNotificationIds },  // Enviar los IDs de las notificaciones no leídas
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        // Actualizar el estado de las notificaciones a leídas
+        setNotifications(prevNotifications =>
+          prevNotifications.map(notification => ({
+            ...notification,
+            is_read: true
+          }))
+        );
+        setUnreadCount(0); // Resetea el contador a 0 después de marcar todas como leídas
+      } catch (error) {
+        console.error("Error marking notifications as read:", error);
+      }
+    }
+  };
+
 
 
   useEffect(() => {
@@ -84,11 +167,13 @@ function Dashboard() {
 
         setUser(res.data.user);
         setLoading(false);
+
       } catch (error) {
         console.error("Error fetching profile:", error.message);
         router.push("/loginAdmin"); // Si ocurre un error, también redirigir al login de admin
       }
     };
+
 
     fetchProfile();
   }, [router]);
@@ -285,50 +370,102 @@ function Dashboard() {
       <Box display="flex" flexDirection="column" minHeight="100vh">
         <Header />
         <Box flex="1" p={2}>
+
+          {/* Barra de navegación */}
           <AppBar position="static">
             <Toolbar>
-              <IconButton edge="start" color="inherit" aria-label="menu" onClick={handleDrawerToggle}>
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                onClick={handleDrawerToggle}
+              >
                 <MenuIcon />
               </IconButton>
               <Typography variant="h6" textAlign="center" sx={{ flexGrow: 1 }}>
-                Dashboard Adminstrativo
+                Dashboard Administrativo
               </Typography>
-              <Avatar sx={{ bgcolor: 'secondary.main' }} onClick={handleAvatarClick}>
+              {/* Icono de notificación con badge */}
+              <IconButton color="inherit" onClick={handleNotificationClick}>
+                <NotificationsIcon />
+                {unreadCount > 0 && (
+                  <span style={{ position: 'absolute', top: 0, right: 0, background: 'red', color: 'white', borderRadius: '50%', padding: '0 6px', fontSize: '12px' }}>
+                    {unreadCount}
+                  </span>
+                )}
+              </IconButton>
+
+              <Avatar
+                sx={{ bgcolor: "secondary.main" }}
+                onClick={handleAvatarClick}
+              >
                 {user.username.charAt(0)}
               </Avatar>
             </Toolbar>
           </AppBar>
+          {/* Drawer de notificaciones */}
+          <Drawer
+            anchor="right"
+            open={drawerNotificationsOpen}
+            onClose={() => setDrawerNotificationsOpen(false)}
+          >
+            <Box p={2} width="300px">
+              <Typography variant="h6" gutterBottom>
+                Notificaciones
+              </Typography>
+              {notifications.length === 0 ? (
+                <Typography>No hay notificaciones nuevas.</Typography>
+              ) : (
+                <List>
+                  {notifications.map((notification, index) => (
+                    <ListItem
+                      key={index}
+                      style={{
+                        backgroundColor: notification.is_read ? '#f0f0f0' : '#e0e0e0', // Color diferente según si la notificación está leída
+                        borderLeft: notification.is_read ? 'none' : '4px solid red',  // Agregar borde rojo si es no leída
+                      }}
+                    >
+                      <ListItemText
+                        primary={notification.message}
+                        secondary={new Date(notification.created_at).toLocaleString()}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              )}
+            </Box>
+          </Drawer>
 
           {/* Drawer lateral */}
           <Drawer anchor="left" open={drawerOpen} onClose={handleDrawerToggle}>
             <List>
               <ListItem button onClick={() => router.push("../registroRoles")}>
-                <ListItemText primary="regitro Con Roles" />
+                <ListItemText primary="Registro con Roles" />
               </ListItem>
               <ListItem button onClick={() => router.push("../nuevoServicio")}>
-                <ListItemText primary="Administrar servicios" />
+                <ListItemText primary="Administrar Servicios" />
               </ListItem>
               <ListItem button onClick={() => router.push("../estados")}>
-                <ListItemText primary="Administrar estados" />
+                <ListItemText primary="Administrar Estados" />
               </ListItem>
               <ListItem button onClick={() => router.push("../atributos")}>
-                <ListItemText primary="Administrar servicios extra" />
+                <ListItemText primary="Administrar Servicios Extra" />
               </ListItem>
               <ListItem button onClick={() => router.push("../tiposVehiculos")}>
-                <ListItemText primary="Administrar tipos de vehiculo" />
+                <ListItemText primary="Administrar Tipos de Vehículo" />
               </ListItem>
               <ListItem button onClick={() => router.push("../usuarios")}>
-                <ListItemText primary="Adminisitrar Clientes" />
+                <ListItemText primary="Administrar Clientes" />
               </ListItem>
-              <ListItem button onClick={() => { logout() }}>
-                <ListItemText primary="Cerrar sesion" />
+              <ListItem button onClick={logout}>
+                <ListItemText primary="Cerrar Sesión" />
               </ListItem>
-              {/* Agrega más elementos de lista según sea necesario */}
             </List>
           </Drawer>
 
-          {activeScreen !== 'perfil' && (
-            <TableContainer component={Paper} sx={{ mt: 4, color: 'black' }}>
+          {/* Tabla de reservas */}
+          {activeScreen !== "perfil" && (
+            <TableContainer component={Paper} sx={{ mt: 4, color: "black" }}>
               <Table>
                 <TableHead>
                   <TableRow>
@@ -346,19 +483,27 @@ function Dashboard() {
                 <TableBody>
                   {reservas.map((reserva) => (
                     <TableRow key={reserva.id}>
-                      <TableCell>{reserva.user ? reserva.user.username : "N/A"}</TableCell>
                       <TableCell>
-                        {reserva.servicio ? reserva.servicio.nombre_servicio : "N/A"} - ${reserva.servicio ? reserva.servicio.precio : "N/A"}
+                        {reserva.user ? reserva.user.username : "N/A"}
                       </TableCell>
-                      <TableCell>{new Date(reserva.fecha).toLocaleDateString()}</TableCell>
+                      <TableCell>
+                        {reserva.servicio?.nombre_servicio || "N/A"} - $
+                        {reserva.servicio?.precio || "N/A"}
+                      </TableCell>
+                      <TableCell>
+                        {new Date(reserva.fecha).toLocaleDateString()}
+                      </TableCell>
                       <TableCell>{reserva.hora}</TableCell>
                       <TableCell>
-                        {reserva.tipo_vehiculo ? reserva.tipo_vehiculo.nombre : "N/A"} - ${reserva.tipo_vehiculo ? reserva.tipo_vehiculo.costo : "N/A"}
+                        {reserva.tipo_vehiculo?.nombre || "N/A"} - $
+                        {reserva.tipo_vehiculo?.costo || "N/A"}
                       </TableCell>
                       <TableCell>
                         <Select
                           value={reserva.estado_id}
-                          onChange={(e) => handleEstadoChange(reserva.id, e.target.value)}
+                          onChange={(e) =>
+                            handleEstadoChange(reserva.id, e.target.value)
+                          }
                         >
                           {estados.map((estado) => (
                             <MenuItem key={estado.id} value={estado.id}>
@@ -368,10 +513,11 @@ function Dashboard() {
                         </Select>
                       </TableCell>
                       <TableCell>
-                        {reserva.atributos && reserva.atributos.length > 0 ? (
+                        {reserva.atributos?.length ? (
                           reserva.atributos.map((atributo) => (
                             <Typography key={atributo.id}>
-                              {atributo.nombre_atributo} - ${atributo.costo_atributo}
+                              {atributo.nombre_atributo} - $
+                              {atributo.costo_atributo}
                             </Typography>
                           ))
                         ) : (
@@ -394,7 +540,7 @@ function Dashboard() {
             </TableContainer>
           )}
 
-          {/* Formulario de Edición de Perfil */}
+          {/* Formulario de edición de perfil */}
           <Dialog open={showEditProfile} onClose={() => setShowEditProfile(false)}>
             <DialogTitle>Editar Perfil</DialogTitle>
             <DialogContent>
@@ -403,7 +549,9 @@ function Dashboard() {
                 <TextField
                   name="username"
                   value={user.username}
-                  onChange={(e) => setUser({ ...user, username: e.target.value })}
+                  onChange={(e) =>
+                    setUser({ ...user, username: e.target.value })
+                  }
                   required
                 />
               </FormControl>
@@ -413,7 +561,9 @@ function Dashboard() {
                   type="email"
                   name="email"
                   value={user.email}
-                  onChange={(e) => setUser({ ...user, email: e.target.value })}
+                  onChange={(e) =>
+                    setUser({ ...user, email: e.target.value })
+                  }
                   required
                 />
               </FormControl>
@@ -422,7 +572,9 @@ function Dashboard() {
                 <TextField
                   name="numero"
                   value={user.numero}
-                  onChange={(e) => setUser({ ...user, numero: e.target.value })}
+                  onChange={(e) =>
+                    setUser({ ...user, numero: e.target.value })
+                  }
                 />
               </FormControl>
               <FormControl fullWidth margin="normal">
@@ -431,7 +583,9 @@ function Dashboard() {
                   type="password"
                   name="password"
                   value={user.password}
-                  onChange={(e) => setUser({ ...user, password: e.target.value })}
+                  onChange={(e) =>
+                    setUser({ ...user, password: e.target.value })
+                  }
                 />
               </FormControl>
             </DialogContent>
@@ -441,6 +595,7 @@ function Dashboard() {
             </DialogActions>
           </Dialog>
 
+          {/* Muestra pantalla activa */}
           {renderScreen()}
         </Box>
         <Footer />
