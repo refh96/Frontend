@@ -117,6 +117,7 @@ function DashboardCliente() {
         setServicios([]);
       }
     };
+  
     const fetchEstados = async () => {
       try {
         const res = await axios.get("https://fullwash.site/estados");
@@ -129,6 +130,7 @@ function DashboardCliente() {
         console.error("Error fetching estados:", error.message);
       }
     };
+  
     const fetchTipoVehiculo = async () => {
       try {
         const res = await axios.get("https://fullwash.site/tipo_vehiculos");
@@ -137,7 +139,7 @@ function DashboardCliente() {
         console.error("Error fetching tipoVehiculo:", error.message);
       }
     };
-
+  
     const fetchReservas = async () => {
       try {
         const cookies = parseCookies();
@@ -145,7 +147,7 @@ function DashboardCliente() {
         if (!token) {
           return;
         }
-
+  
         const res = await axios.get(
           `https://fullwash.site/reservas/user/${user.id}`,
           {
@@ -154,7 +156,7 @@ function DashboardCliente() {
             }
           }
         );
-
+  
         if (res.data && res.data.reservas) {
           setReservas(res.data.reservas);
         } else {
@@ -165,10 +167,7 @@ function DashboardCliente() {
         setReservas([]);
       }
     };
-
-    if (user.id) {
-      fetchReservas();
-    }
+  
     const fetchAtributos = async () => {
       try {
         const res = await axios.get("https://fullwash.site/atributos");
@@ -177,12 +176,18 @@ function DashboardCliente() {
         console.error("Error fetching attributes:", error.message);
       }
     };
-
+  
+    // Si el usuario tiene ID, ejecutamos la carga de reservas
+    
+    fetchReservas();
+    
+  
     fetchServicios();
     fetchTipoVehiculo();
     fetchAtributos();
     fetchEstados();
-  }, [user.id]);
+  }, [user.id, reservas]); // Dependemos de 'reservas' para que se recarguen cada vez que cambien
+  
 
   useEffect(() => {
     if (reservation) {
@@ -201,7 +206,7 @@ function DashboardCliente() {
       atributosSeleccionados.reduce((acc, atributo) => acc + atributo.costo_atributo, 0);
 
     setTotal(nuevoTotal);
-  }, [reservation.servicio_id, reservation.tipo_vehiculo_id, selectedAtributos]);
+  }, [atributos, reservation.servicio_id, reservation.tipo_vehiculo_id, selectedAtributos, servicios, tipo_vehiculos]);
 
 
 
@@ -346,15 +351,7 @@ function DashboardCliente() {
 
   const handleUpdate = async () => {
     setError(null);
-    if (!selectedAtributos || selectedAtributos.length === 0) {
-      Swal.fire({
-        title: 'Error!',
-        text: 'Si no deseas Servicios Extra selecciona Sin Servicios Extra.',
-        icon: 'error',
-        confirmButtonText: 'Aceptar'
-      });
-      return; // Detener la ejecución si no se seleccionan atributos
-    }
+   
     try {
       const cookies = parseCookies();
       const token = cookies.token;
@@ -468,6 +465,7 @@ function DashboardCliente() {
       case "reservas":
         return (
           <TableContainer component={Paper}>
+            <Typography textAlign={'center'}>Mis Reservas</Typography>
             <Table>
               <TableHead>
                 <TableRow>
@@ -642,7 +640,13 @@ function DashboardCliente() {
         icon: 'success', // Puedes usar 'success', 'error', 'warning', etc.
         confirmButtonText: 'Aceptar',
         backdrop: true, // Para oscurecer el fondo
+        timer: 3000, // El alerta se cerrará automáticamente después de 3 segundos (3000 milisegundos)
+        timerProgressBar: true, // Muestra una barra de progreso para el tiempo restante
+        didClose: () => {
+          console.log("La alerta fue cerrada automáticamente después del tiempo.");
+        }
       });
+      
       setShowEditProfile(false); // Cierra el formulario
     } catch (error) {
       console.error("Error updating profile:", error.message);
@@ -770,7 +774,7 @@ function DashboardCliente() {
               </Select>
             </FormControl>
 
-            <Typography variant="h6" margin="normal" textAlign={'center'}>Servicios Extra:</Typography>
+            <Typography variant="h6" margin="normal" textAlign={'center'}>Servicios Extra (Opcional):</Typography>
             <FormControl fullWidth margin="normal">
               <Select
                 align='center'

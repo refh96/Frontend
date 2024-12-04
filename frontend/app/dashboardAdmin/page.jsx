@@ -93,9 +93,9 @@ function Dashboard() {
         console.error('Error fetching notifications:', error);
       }
     };
-
+    fetchNotifications();
     // Reemplaza este intervalo con la función real que actualiza las notificaciones
-    const interval = setInterval(fetchNotifications, 10000); // Revisa cada 10 segundos
+    const interval = setInterval(fetchNotifications, 30000); // Revisa cada 10 segundos
     return () => clearInterval(interval); // Limpia el intervalo cuando el componente se desmonte
   }, [notifications.length]);
 
@@ -160,8 +160,8 @@ function Dashboard() {
         // Comprobar si el usuario tiene rol de administrador
         const userRole = res.data.user.rol;  // Asumiendo que el rol se encuentra en res.data.user.role
         if (userRole !== "administrador") {
-          // Si no es administrador, redirigir al login de cliente
-          router.push("/loginCliente");
+          // Si no es administrador, redirigir al dashboard de cliente
+          router.push("/dashboardCliente");
           return;
         }
 
@@ -180,44 +180,44 @@ function Dashboard() {
 
 
   useEffect(() => {
+  const fetchReservas = async () => {
+    try {
+      const cookies = parseCookies();
+      const token = cookies.token;
+      if (!token) {
+        return;
+      }
 
-    const fetchReservas = async () => {
-      try {
-        const cookies = parseCookies();
-        const token = cookies.token;
-        if (!token) {
-          return;
+      const res = await axios.get(
+        "https://fullwash.site/reservas",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
+      );
 
-        const res = await axios.get(
-          "https://fullwash.site/reservas",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+      setReservas(res.data.reservas);
+      setLoadingReservas(false);
+    } catch (error) {
+      console.error("Error fetching reservas:", error.message);
+    }
+  };
 
-          }
+  const fetchEstados = async () => {
+    try {
+      const res = await axios.get("https://fullwash.site/estados");
+      setEstados(res.data); // Guardar los estados obtenidos
+    } catch (error) {
+      console.error("Error fetching estados:", error.message);
+    }
+  };
 
-        );
+  // Ejecutar la carga de reservas cada vez que el estado de reservas cambie
+  fetchReservas();
+  fetchEstados();
+}, [reservas]); // Dependencia de reservas para actualizar siempre que cambien
 
-        setReservas(res.data.reservas);
-        setLoadingReservas(false);
-      } catch (error) {
-        console.error("Error fetching reservas:", error.message);
-      }
-    };
-    const fetchEstados = async () => {
-      try {
-        const res = await axios.get("https://fullwash.site/estados");
-        setEstados(res.data); // Guardar los estados obtenidos
-      } catch (error) {
-        console.error("Error fetching estados:", error.message);
-      }
-    };
-
-    fetchReservas();
-    fetchEstados();
-  }, [router]);
 
 
   const handleAvatarClick = () => {
