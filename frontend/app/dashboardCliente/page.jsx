@@ -85,7 +85,7 @@ function DashboardCliente() {
           router.push("/loginCliente");
           return;
         }
-
+  
         const res = await axios.post(
           "https://fullwash.site/profile",
           {},
@@ -95,7 +95,7 @@ function DashboardCliente() {
             },
           }
         );
-
+  
         setUser(res.data.user);
         setReservation(prev => ({ ...prev, user_id: res.data.user.id }));
         setLoading(false);
@@ -103,90 +103,89 @@ function DashboardCliente() {
         console.error("Error fetching profile:", error.message);
       }
     };
-
+  
     fetchProfile();
   }, [router]);
+  
 
   useEffect(() => {
-    const fetchServicios = async () => {
-      try {
-        const res = await axios.get("https://fullwash.site/servicios");
-        setServicios(Array.isArray(res.data.data) ? res.data.data : []);
-      } catch (error) {
-        console.error("Error fetching services:", error.message);
-        setServicios([]);
-      }
-    };
-  
-    const fetchEstados = async () => {
-      try {
-        const res = await axios.get("https://fullwash.site/estados");
-        const estadoPendiente = res.data.find(estado => estado.nombre === "Pendiente");
-        if (estadoPendiente) {
-          setEstadoPendienteId(estadoPendiente.id);
-          setReservation(prev => ({ ...prev, estado_id: estadoPendiente.id }));
+    if (user.id) {
+      const fetchServicios = async () => {
+        try {
+          const res = await axios.get("https://fullwash.site/servicios");
+          setServicios(Array.isArray(res.data.data) ? res.data.data : []);
+        } catch (error) {
+          console.error("Error fetching services:", error.message);
+          setServicios([]);
         }
-      } catch (error) {
-        console.error("Error fetching estados:", error.message);
-      }
-    };
+      };
   
-    const fetchTipoVehiculo = async () => {
-      try {
-        const res = await axios.get("https://fullwash.site/tipo_vehiculos");
-        setTipoVehiculo(res.data);
-      } catch (error) {
-        console.error("Error fetching tipoVehiculo:", error.message);
-      }
-    };
-  
-    const fetchReservas = async () => {
-      try {
-        const cookies = parseCookies();
-        const token = cookies.token;
-        if (!token) {
-          return;
-        }
-  
-        const res = await axios.get(
-          `https://fullwash.site/reservas/user/${user.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            }
+      const fetchEstados = async () => {
+        try {
+          const res = await axios.get("https://fullwash.site/estados");
+          const estadoPendiente = res.data.find(estado => estado.nombre === "Pendiente");
+          if (estadoPendiente) {
+            setEstadoPendienteId(estadoPendiente.id);
+            setReservation(prev => ({ ...prev, estado_id: estadoPendiente.id }));
           }
-        );
+        } catch (error) {
+          console.error("Error fetching estados:", error.message);
+        }
+      };
   
-        if (res.data && res.data.reservas) {
-          setReservas(res.data.reservas);
-        } else {
+      const fetchTipoVehiculo = async () => {
+        try {
+          const res = await axios.get("https://fullwash.site/tipo_vehiculos");
+          setTipoVehiculo(res.data);
+        } catch (error) {
+          console.error("Error fetching tipoVehiculo:", error.message);
+        }
+      };
+  
+      const fetchReservas = async () => {
+        try {
+          const cookies = parseCookies();
+          const token = cookies.token;
+          if (!token) {
+            return;
+          }
+  
+          const res = await axios.get(
+            `https://fullwash.site/reservas/user/${user.id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              }
+            }
+          );
+  
+          if (res.data && res.data.reservas) {
+            setReservas(res.data.reservas);
+          } else {
+            setReservas([]);
+          }
+        } catch (error) {
+          console.error("Error fetching reservas:", error.message);
           setReservas([]);
         }
-      } catch (error) {
-        console.error("Error fetching reservas:", error.message);
-        setReservas([]);
-      }
-    };
+      };
   
-    const fetchAtributos = async () => {
-      try {
-        const res = await axios.get("https://fullwash.site/atributos");
-        setAtributos(res.data);
-      } catch (error) {
-        console.error("Error fetching attributes:", error.message);
-      }
-    };
+      const fetchAtributos = async () => {
+        try {
+          const res = await axios.get("https://fullwash.site/atributos");
+          setAtributos(res.data);
+        } catch (error) {
+          console.error("Error fetching attributes:", error.message);
+        }
+      };
   
-    // Si el usuario tiene ID, ejecutamos la carga de reservas
-    
-    fetchReservas();
-    
-  
-    fetchServicios();
-    fetchTipoVehiculo();
-    fetchAtributos();
-    fetchEstados();
-  }, [user.id, reservas]); // Dependemos de 'reservas' para que se recarguen cada vez que cambien
+      fetchServicios();
+      fetchEstados();
+      fetchTipoVehiculo();
+      fetchAtributos();
+      fetchReservas();
+    }
+  }, [user.id, reservas]); // Solo se ejecuta cuando `user.id` cambia
   
 
   useEffect(() => {
@@ -194,27 +193,28 @@ function DashboardCliente() {
       setSelectedAtributos(reservation.atributo_ids || []);
     }
   }, [reservation]);
+  
   useEffect(() => {
     const servicio = servicios.find(s => s.id === reservation.servicio_id);
     const tipoVehiculo = tipo_vehiculos.find(t => t.id === reservation.tipo_vehiculo_id);
     const atributosSeleccionados = atributos.filter(a => selectedAtributos.includes(a.id));
-
+  
     // Suma los costos del servicio, tipo de vehículo y atributos seleccionados
     const nuevoTotal =
       (servicio ? servicio.precio : 0) +
       (tipoVehiculo ? tipoVehiculo.costo : 0) +
       atributosSeleccionados.reduce((acc, atributo) => acc + atributo.costo_atributo, 0);
-
+  
     setTotal(nuevoTotal);
-  }, [atributos, reservation.servicio_id, reservation.tipo_vehiculo_id, selectedAtributos, servicios, tipo_vehiculos]);
-
+  }, [atributos, reservation.servicio_id, reservation.tipo_vehiculo_id, selectedAtributos, servicios, tipo_vehiculos]); // Aseguramos que solo se ejecute cuando sea necesario
+  
 
 
 
   const handleAvatarClick = () => {
     setActiveScreen(activeScreen === "perfil" ? "reservas" : "perfil");
   };
-  
+
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
   };
@@ -351,7 +351,7 @@ function DashboardCliente() {
 
   const handleUpdate = async () => {
     setError(null);
-   
+
     try {
       const cookies = parseCookies();
       const token = cookies.token;
@@ -539,7 +539,7 @@ function DashboardCliente() {
         return null;
     }
   };
-  
+
 
   const handleSort = (field) => {
     setSortCriteria(prev => ({
@@ -646,7 +646,7 @@ function DashboardCliente() {
           console.log("La alerta fue cerrada automáticamente después del tiempo.");
         }
       });
-      
+
       setShowEditProfile(false); // Cierra el formulario
     } catch (error) {
       console.error("Error updating profile:", error.message);
@@ -703,207 +703,232 @@ function DashboardCliente() {
         </Drawer>
 
         {/* Formulario de Nueva Reserva */}
-        <Dialog open={showForm} onClose={() => setShowForm(false)}>
-          <DialogTitle>Nueva Reserva</DialogTitle>
+        <Dialog
+          open={showForm}
+          onClose={() => setShowForm(false)}
+          fullWidth
+          maxWidth="sm"
+          sx={{
+            '& .MuiDialog-paper': {
+              borderRadius: '16px',
+              padding: '16px',
+              backgroundColor: '#f9f9f9',
+            },
+          }}
+        >
+          <DialogTitle textAlign="center" variant="h5" gutterBottom>
+            Nueva Reserva
+          </DialogTitle>
           <DialogContent>
-            <FormControl fullWidth margin="normal">
-              <Typography textAlign={'center'}>Servicio</Typography>
-              <Select
-                align='center'
-                name="servicio_id"
-                value={reservation.servicio_id}
-                onChange={handleChange}
-                required
-              >
-                {Array.isArray(servicios) && servicios.map(servicio => (
-                  <MenuItem key={servicio.id} value={servicio.id}>
-                    {servicio.nombre_servicio}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl
-              fullWidth
-              margin="normal"
-              sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            >
-              <Typography textAlign="center">Fecha</Typography>
-              <TextField
-                align="center"
-                type="date"
-                name="fecha"
-                value={reservation.fecha}
-                onChange={handleDateChange}
-                required
-                InputLabelProps={{ shrink: true }}
-                sx={{ marginTop: 2 }}
-              />
-            </FormControl>
-
-            <FormControl fullWidth margin="normal">
-              <Typography id="hora-label" textAlign={'center'}>Hora</Typography>
-              <Select
-                align='center'
-                labelId="hora-label"
-                name="hora"
-                value={reservation.hora}
-                onChange={handleChange}
-                required
-              >
-                {generarHorasDisponibles().map((hora) => (
-                  <MenuItem key={hora} value={hora}>
-                    {hora}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl fullWidth margin="normal">
-              <Typography textAlign={'center'}>Tipo Vehículo</Typography>
-              <Select
-                align='center'
-                name="tipo_vehiculo_id"
-                value={reservation.tipo_vehiculo_id}
-                onChange={handleChange}
-                required
-              >
-                {tipo_vehiculos.map(tipo_vehiculo => (
-                  <MenuItem key={tipo_vehiculo.id} value={tipo_vehiculo.id}>
-                    {tipo_vehiculo.nombre}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <Typography variant="h6" margin="normal" textAlign={'center'}>Servicios Extra (Opcional):</Typography>
-            <FormControl fullWidth margin="normal">
-              <Select
-                align='center'
-                multiple
-                value={selectedAtributos}
-                onChange={handleAtributoToggle}
-                renderValue={(selected) => selected.map(id => {
-                  const atributo = atributos.find(a => a.id === id);
-                  return atributo ? `${atributo.nombre_atributo} - $${atributo.costo_atributo}` : '';
-                }).join(', ')}
-              >
-                {atributos.map(atributo => (
-                  <MenuItem key={atributo.id} value={atributo.id}>
-                    {atributo.nombre_atributo} - ${atributo.costo_atributo}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <Typography variant="h5" >Total: ${total}</Typography>
-
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Typography variant="subtitle1">Servicio</Typography>
+                  <Select name="servicio_id" value={reservation.servicio_id} onChange={handleChange} required>
+                    {Array.isArray(servicios) &&
+                      servicios.map((servicio) => (
+                        <MenuItem key={servicio.id} value={servicio.id}>
+                          {servicio.nombre_servicio}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <Typography variant="subtitle1">Fecha</Typography>
+                  <TextField type="date" name="fecha" value={reservation.fecha} onChange={handleDateChange} required />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <Typography variant="subtitle1">Hora</Typography>
+                  <Select name="hora" value={reservation.hora} onChange={handleChange} required>
+                    {generarHorasDisponibles().map((hora) => (
+                      <MenuItem key={hora} value={hora}>
+                        {hora}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Typography variant="subtitle1">Tipo Vehículo</Typography>
+                  <Select name="tipo_vehiculo_id" value={reservation.tipo_vehiculo_id} onChange={handleChange} required>
+                    {tipo_vehiculos.map((tipo_vehiculo) => (
+                      <MenuItem key={tipo_vehiculo.id} value={tipo_vehiculo.id}>
+                        {tipo_vehiculo.nombre}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Servicios Extra (Opcional):
+                </Typography>
+                <FormControl fullWidth>
+                  <Select
+                    multiple
+                    value={selectedAtributos}
+                    onChange={handleAtributoToggle}
+                    renderValue={(selected) =>
+                      selected
+                        .map((id) => {
+                          const atributo = atributos.find((a) => a.id === id);
+                          return atributo ? `${atributo.nombre_atributo} - $${atributo.costo_atributo}` : '';
+                        })
+                        .join(', ')
+                    }
+                  >
+                    {atributos.map((atributo) => (
+                      <MenuItem key={atributo.id} value={atributo.id}>
+                        {atributo.nombre_atributo} - ${atributo.costo_atributo}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} textAlign="center">
+                <Typography variant="h6">Total: ${total}</Typography>
+              </Grid>
+            </Grid>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setShowForm(false)}>Cancelar</Button>
-            <Button onClick={handleSubmit}>Guardar</Button>
+          <DialogActions sx={{ justifyContent: 'center', gap: 2 }}>
+            <Button variant="outlined" onClick={() => setShowForm(false)}>
+              Cancelar
+            </Button>
+            <Button variant="contained" color="primary" onClick={handleSubmit}>
+              Guardar
+            </Button>
           </DialogActions>
         </Dialog>
 
         {/* Formulario de Edición de Reserva */}
-        <Dialog open={editing} onClose={() => setEditing(false)}>
-          <DialogTitle>Editar Reserva</DialogTitle>
+        <Dialog
+          open={editing}
+          onClose={() => setEditing(false)}
+          fullWidth
+          maxWidth="sm"
+          sx={{
+            '& .MuiDialog-paper': {
+              borderRadius: '16px',
+              padding: '16px',
+              backgroundColor: '#f9f9f9',
+            },
+          }}
+        >
+          <DialogTitle textAlign="center" variant="h5" gutterBottom>
+            Editar Reserva
+          </DialogTitle>
           <DialogContent>
-            <FormControl fullWidth margin="normal">
-              <Typography textAlign={'center'}>Servicio</Typography>
-              <Select
-                align='center'
-                name="servicio_id"
-                value={reservation.servicio_id}
-                onChange={handleChange}
-                required
-              >
-                {servicios.map(servicio => (
-                  <MenuItem key={servicio.id} value={servicio.id}>
-                    {servicio.nombre_servicio}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl
-              fullWidth
-              margin="normal"
-              sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            >
-              <Typography textAlign="center">Fecha</Typography>
-              <TextField
-                align="center"
-                type="date"
-                name="fecha"
-                value={reservation.fecha}
-                onChange={handleDateChange}
-                required
-                InputLabelProps={{ shrink: true }}
-                sx={{ marginTop: 2 }}
-              />
-            </FormControl>
-            <FormControl fullWidth margin="normal">
-              <Typography id="hora-label" textAlign={'center'}>Hora</Typography>
-              <Select
-                align='center'
-                labelId="hora-label"
-                name="hora"
-                value={reservation.hora ? reservation.hora.slice(0, 5) : ''}
-                onChange={handleTimeChange}
-                required
-              >
-                {generarHorasDisponibles().map((hora) => (
-                  <MenuItem key={hora} value={hora}>
-                    {hora}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl fullWidth margin="normal">
-              <Typography textAlign={'center'}>Tipo Vehículo</Typography>
-              <Select
-                align='center'
-                name="tipo_vehiculo_id"
-                value={reservation.tipo_vehiculo_id}
-                onChange={handleChange}
-                required
-              >
-                {tipo_vehiculos.map(tipo_vehiculo => (
-                  <MenuItem key={tipo_vehiculo.id} value={tipo_vehiculo.id}>
-                    {tipo_vehiculo.nombre}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <Typography variant="h6" margin="normal" textAlign={'center'}>Servicios Extra:</Typography>
-            <FormControl fullWidth margin="normal">
-              <Select
-                multiple
-                align='center'
-                value={selectedAtributos}
-                onChange={handleAtributoToggle}
-                renderValue={(selected) =>
-                  selected
-                    .map((id) => {
-                      const atributo = atributos.find((a) => a.id === id);
-                      return atributo ? `${atributo.nombre_atributo} - $${atributo.costo_atributo}` : '';
-                    })
-                    .join(', ')
-                }
-              >
-                {atributos.map((atributo) => (
-                  <MenuItem key={atributo.id} value={atributo.id}>
-                    {atributo.nombre_atributo} - ${atributo.costo_atributo}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <Typography variant="h5">Total: ${total}</Typography>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Typography variant="subtitle1" textAlign="center">Servicio</Typography>
+                  <Select
+                    name="servicio_id"
+                    value={reservation.servicio_id}
+                    onChange={handleChange}
+                    required
+                  >
+                    {servicios.map((servicio) => (
+                      <MenuItem key={servicio.id} value={servicio.id}>
+                        {servicio.nombre_servicio}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <Typography variant="subtitle1" textAlign="center">Fecha</Typography>
+                  <TextField
+                    type="date"
+                    name="fecha"
+                    value={reservation.fecha}
+                    onChange={handleDateChange}
+                    required
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <Typography variant="subtitle1" textAlign="center">Hora</Typography>
+                  <Select
+                    name="hora"
+                    value={reservation.hora ? reservation.hora.slice(0, 5) : ''}
+                    onChange={handleTimeChange}
+                    required
+                  >
+                    {generarHorasDisponibles().map((hora) => (
+                      <MenuItem key={hora} value={hora}>
+                        {hora}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Typography variant="subtitle1" textAlign="center">Tipo Vehículo</Typography>
+                  <Select
+                    name="tipo_vehiculo_id"
+                    value={reservation.tipo_vehiculo_id}
+                    onChange={handleChange}
+                    required
+                  >
+                    {tipo_vehiculos.map((tipo_vehiculo) => (
+                      <MenuItem key={tipo_vehiculo.id} value={tipo_vehiculo.id}>
+                        {tipo_vehiculo.nombre}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="h6" textAlign="center" gutterBottom>
+                  Servicios Extra:
+                </Typography>
+                <FormControl fullWidth>
+                  <Select
+                    multiple
+                    value={selectedAtributos}
+                    onChange={handleAtributoToggle}
+                    renderValue={(selected) =>
+                      selected
+                        .map((id) => {
+                          const atributo = atributos.find((a) => a.id === id);
+                          return atributo ? `${atributo.nombre_atributo} - $${atributo.costo_atributo}` : '';
+                        })
+                        .join(', ')
+                    }
+                  >
+                    {atributos.map((atributo) => (
+                      <MenuItem key={atributo.id} value={atributo.id}>
+                        {atributo.nombre_atributo} - ${atributo.costo_atributo}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} textAlign="center">
+                <Typography variant="h6">Total: ${total}</Typography>
+              </Grid>
+            </Grid>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setEditing(false)}>Cancelar</Button>
-            <Button onClick={handleUpdate}>Actualizar</Button>
+          <DialogActions sx={{ justifyContent: 'center', gap: 2 }}>
+            <Button variant="outlined" onClick={() => setEditing(false)}>
+              Cancelar
+            </Button>
+            <Button variant="contained" color="primary" onClick={handleUpdate}>
+              Actualizar
+            </Button>
           </DialogActions>
         </Dialog>
+
 
         {/* Formulario de Edición de Perfil */}
         <Dialog open={showEditProfile} onClose={() => setShowEditProfile(false)}>
