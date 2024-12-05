@@ -14,7 +14,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { FaCar, FaTruck, FaCarSide } from 'react-icons/fa'; // Importando íconos de vehículos
+import { FaCar, FaTruck, FaCarSide } from 'react-icons/fa';
 
 const Page = () => {
   const [serviciosLavados, setServiciosLavados] = useState([]);
@@ -25,33 +25,27 @@ const Page = () => {
   const router = useRouter();
 
   useEffect(() => {
-    async function fetchServiciosLavados() {
+    async function fetchServicios() {
       try {
-        const response = await axios.get('https://fullwash.site/servicios?txtBuscar=lavados');
-        setServiciosLavados(response.data.data || []);
+        const responseLavados = await axios.get('https://fullwash.site/servicios?txtBuscar=lavados');
+        const responseOtros = await axios.get('https://fullwash.site/servicios?txtBuscar=otros');
+        setServiciosLavados(responseLavados.data.data || []);
+        setServiciosOtros(responseOtros.data.data || []);
       } catch (error) {
-        console.error('Error fetching Lavados services:', error);
-        setServiciosLavados([]);
+        console.error('Error fetching services:', error);
       } finally {
         setLoading(false);
       }
     }
 
-    async function fetchServiciosOtros() {
-      try {
-        const response = await axios.get('https://fullwash.site/servicios?txtBuscar=otros');
-        setServiciosOtros(response.data.data || []);
-      } catch (error) {
-        console.error('Error fetching Otros services:', error);
-        setServiciosOtros([]);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchServiciosLavados();
-    fetchServiciosOtros();
+    fetchServicios();
   }, []);
+
+  const formatTime = (minutes) => {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    return `${hours} horas ${remainingMinutes} minutos`;
+  };
 
   const handleOpenModal = (servicio) => {
     setSelectedService(servicio);
@@ -103,22 +97,22 @@ const Page = () => {
         >
           El costo de los servicios varía dependiendo del tamaño o tipo de vehículo
         </Typography>
-
-        {/* Mostrar los tipos de vehículos con sus íconos y costos */}
+  
+        {/* Mostrar los tipos de vehículos */}
         <Grid container spacing={4} justifyContent="center">
           {vehicleTypes.map((vehicle) => (
             <Grid item xs={12} sm={6} md={4} key={vehicle.id}>
               <Box
                 sx={{
-                  display: 'flex',        // Asegura que el contenido se ajuste de manera consistente
+                  display: 'flex',
                   flexDirection: 'column',
                   textAlign: 'center',
                   padding: '20px',
                   backgroundColor: 'rgba(255, 255, 255, 0.9)',
                   borderRadius: '12px',
                   boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                  height: '100%',         // Asegura que el cuadro ocupe toda la altura disponible
-                  maxHeight: '350px',     // Establece una altura máxima consistente
+                  height: '100%',
+                  maxHeight: '350px',
                 }}
               >
                 <Box sx={{ fontSize: '2.5rem', color: 'darkblue' }}>
@@ -131,8 +125,8 @@ const Page = () => {
             </Grid>
           ))}
         </Grid>
-
-
+  
+        {/* Mostrar servicios */}
         <Grid container spacing={4} justifyContent="center" sx={{ mt: 4 }}>
           {[{ title: 'Lavados de Vehículos', servicios: serviciosLavados }, { title: 'Otros Servicios', servicios: serviciosOtros }].map((categoria, index) => (
             <Grid item xs={12} md={6} key={index}>
@@ -163,16 +157,35 @@ const Page = () => {
                       },
                     }}
                   >
-                    <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'black' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'black', mb: 1 }}>
                       {servicio.nombre_servicio}
                     </Typography>
-                    <Typography variant="body1" sx={{ color: 'gray' }}>
-                      {servicio.descripcion}
+  
+                    {/* Tiempo estimado */}
+                    <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'darkgray', mb: 1 }}>
+                      Tiempo estimado de servicio: {servicio.tiempo_estimado ? formatTime(servicio.tiempo_estimado) : 'No especificado'}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: 'black', mt: 1 }}>
-                      Desde Los: ${servicio.precio}
+  
+                    {/* Detalles incluidos */}
+                    <Typography variant="body1" sx={{ color: 'gray', mb: 1 }}>
+                      El servicio incluye:
                     </Typography>
-
+                    <Box component="ul" sx={{ paddingLeft: 0, marginTop: 0, color: 'black', listStyle: 'none' }}>
+                      {Array.isArray(servicio.detalles_incluidos)
+                        ? servicio.detalles_incluidos.map((detalle, idx) => (
+                            <Box component="li" key={idx} sx={{ marginBottom: '8px' }}>{detalle}</Box>
+                          ))
+                        : servicio.detalles_incluidos.split(',').map((detalle, idx) => (
+                            <Box component="li" key={idx} sx={{ marginBottom: '8px' }}>{detalle.trim()}</Box>
+                          ))}
+                    </Box>
+  
+                    {/* Precio */}
+                    <Typography variant="h6" sx={{ color: 'black', mt: 2 }}>
+                      Desde los: ${servicio.precio}
+                    </Typography>
+  
+                    {/* Botón */}
                     <Button
                       variant="contained"
                       color="primary"
@@ -188,20 +201,23 @@ const Page = () => {
           ))}
         </Grid>
       </Container>
-
+  
       <Dialog open={openModal} onClose={handleCloseModal}>
         <DialogContent>
           {selectedService && (
             <>
               <Typography variant="h6">{selectedService.nombre_servicio}</Typography>
-              <Typography variant="body1">{selectedService.descripcion}</Typography>
-              <Typography variant="body2">Desde Los: ${selectedService.precio}</Typography>
               <Typography variant="body2">Incluye:</Typography>
               <ul>
-                {selectedService.atributos.map((atributo) => (
-                  <li key={atributo.id}>{atributo.nombre_atributo} - Costo: ${atributo.costo_atributo}</li>
-                ))}
+                {Array.isArray(selectedService.detalles_incluidos)
+                  ? selectedService.detalles_incluidos.map((detalle, idx) => (
+                      <li key={idx}>{detalle}</li>
+                    ))
+                  : selectedService.detalles_incluidos.split(',').map((detalle, idx) => (
+                      <li key={idx}>{detalle.trim()}</li>
+                    ))}
               </ul>
+              <Typography variant="h6">Desde los: ${selectedService.precio}</Typography>
             </>
           )}
         </DialogContent>
@@ -214,10 +230,12 @@ const Page = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
+  
       <Footer />
     </div>
   );
+  
+
 };
 
 export default Page;

@@ -20,8 +20,6 @@ import {
   Select,
   FormControl,
   InputLabel,
-  Chip,
-  OutlinedInput,
 } from "@mui/material";
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { parseCookies } from 'nookies';
@@ -31,9 +29,10 @@ import Footer from '../components/Footer';
 function NuevoServicio() {
   const [servicio, setServicio] = useState({
     nombre_servicio: "",
-    descripcion: "",
     categoria: "",
-    precio: "", // Añadir el precio al estado
+    precio: "",
+    tiempo_estimado: "",
+    detalles_incluidos: "", // Nuevo campo
   });
   const [servicios, setServicios] = useState([]);
   const [editingId, setEditingId] = useState(null);
@@ -109,7 +108,10 @@ function NuevoServicio() {
       if (editingId) {
         await axios.put(
           `https://fullwash.site/servicios/${editingId}`,
-          servicio,
+          {
+            ...servicio,
+            detalles_incluidos: servicio.detalles_incluidos,
+          },
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -120,7 +122,10 @@ function NuevoServicio() {
       } else {
         await axios.post(
           "https://fullwash.site/servicios",
-          servicio,
+          {
+            ...servicio,
+            detalles_incluidos: servicio.detalles_incluidos, // Envía directamente como string
+          },
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -132,9 +137,10 @@ function NuevoServicio() {
 
       setServicio({
         nombre_servicio: "",
-        descripcion: "",
         categoria: "",
-        precio: "", // Resetear el precio
+        precio: "",
+        tiempo_estimado: "",
+        detalles_incluidos: "",
       });
       setEditingId(null);
       fetchServicios();
@@ -174,9 +180,10 @@ function NuevoServicio() {
   const handleEdit = (servicio) => {
     setServicio({
       nombre_servicio: servicio.nombre_servicio,
-      descripcion: servicio.descripcion,
       categoria: servicio.categoria,
       precio: servicio.precio,
+      tiempo_estimado: servicio.tiempo_estimado,
+      detalles_incluidos: servicio.detalles_incluidos, // Convertimos de JSON a string
     });
     setEditingId(servicio.id);
     formRef.current.scrollIntoView({ behavior: "smooth" });
@@ -215,9 +222,10 @@ function NuevoServicio() {
                 <TextField
                   fullWidth
                   margin="normal"
-                  label="Descripción"
-                  name="descripcion"
-                  value={servicio.descripcion}
+                  label="Tiempo Estimado (en minutos)"
+                  name="tiempo_estimado"
+                  type="number"
+                  value={servicio.tiempo_estimado}
                   onChange={handleChange}
                   required
                 />
@@ -244,6 +252,14 @@ function NuevoServicio() {
                   onChange={handleChange}
                   required
                 />
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Detalles Incluidos (separados por comas)"
+                  name="detalles_incluidos"
+                  value={servicio.detalles_incluidos}
+                  onChange={handleChange}
+                />
                 <Button variant="contained" color="primary" type="submit" fullWidth sx={{ mt: 2 }}>
                   {editingId ? "Actualizar Servicio" : "Crear Servicio"}
                 </Button>
@@ -260,7 +276,7 @@ function NuevoServicio() {
           <Grid item xs={12} md={8}>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <Typography variant="h4" color="darkorange" gutterBottom>
-                {editingId ? "Lista Servicio" : "Lista Servicios"}
+                Lista de Servicios
               </Typography>
               <TableContainer component={Paper}>
                 <Table>
@@ -268,9 +284,10 @@ function NuevoServicio() {
                     <TableRow>
                       <TableCell>ID</TableCell>
                       <TableCell>Nombre del Servicio</TableCell>
-                      <TableCell>Descripción</TableCell>
                       <TableCell>Categoría</TableCell>
                       <TableCell>Precio</TableCell>
+                      <TableCell>Tiempo Estimado</TableCell>
+                      <TableCell>Detalles Incluidos</TableCell>
                       <TableCell>Acciones</TableCell>
                     </TableRow>
                   </TableHead>
@@ -279,9 +296,10 @@ function NuevoServicio() {
                       <TableRow key={servicio.id}>
                         <TableCell>{servicio.id}</TableCell>
                         <TableCell>{servicio.nombre_servicio}</TableCell>
-                        <TableCell>{servicio.descripcion}</TableCell>
                         <TableCell>{servicio.categoria}</TableCell>
                         <TableCell>{servicio.precio}</TableCell>
+                        <TableCell>{servicio.tiempo_estimado} minutos</TableCell>
+                        <TableCell>{servicio.detalles_incluidos}</TableCell>
                         <TableCell>
                           <IconButton color="primary" onClick={() => handleEdit(servicio)}>
                             <EditIcon />
