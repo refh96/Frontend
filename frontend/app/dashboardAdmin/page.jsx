@@ -58,8 +58,13 @@ function Dashboard() {
   const [showNotificationAlert, setShowNotificationAlert] = useState(false);
   const [drawerNotificationsOpen, setDrawerNotificationsOpen] = useState(false);
   const [isAppBarOpen, setIsAppBarOpen] = useState(false); // Estado para controlar el AppBar de notificaciones
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]); // Fecha por defecto: hoy
+  const [filteredNotifications, setFilteredNotifications] = useState([]);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [currentReserva, setCurrentReserva] = useState(null);
   const router = useRouter();
   const cookies = parseCookies();
+
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -70,7 +75,7 @@ function Dashboard() {
           headers: { Authorization: `Bearer ${token}` },
         });
         setNotifications(data);
-        
+
         // Contamos las notificaciones no leídas
         const unread = data.filter(notification => !notification.is_read).length;
         setUnreadCount(unread);
@@ -135,6 +140,13 @@ function Dashboard() {
     }
   };
 
+  useEffect(() => {
+    const filtered = notifications.filter(notification =>
+      new Date(notification.created_at).toISOString().split("T")[0] === selectedDate
+    );
+    setFilteredNotifications(filtered);
+  }, [notifications, selectedDate]);
+
 
 
   useEffect(() => {
@@ -180,43 +192,43 @@ function Dashboard() {
 
 
   useEffect(() => {
-  const fetchReservas = async () => {
-    try {
-      const cookies = parseCookies();
-      const token = cookies.token;
-      if (!token) {
-        return;
-      }
-
-      const res = await axios.get(
-        "https://fullwash.site/reservas",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+    const fetchReservas = async () => {
+      try {
+        const cookies = parseCookies();
+        const token = cookies.token;
+        if (!token) {
+          return;
         }
-      );
 
-      setReservas(res.data.reservas);
-      setLoadingReservas(false);
-    } catch (error) {
-      console.error("Error fetching reservas:", error.message);
-    }
-  };
+        const res = await axios.get(
+          "https://fullwash.site/reservas",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-  const fetchEstados = async () => {
-    try {
-      const res = await axios.get("https://fullwash.site/estados");
-      setEstados(res.data); // Guardar los estados obtenidos
-    } catch (error) {
-      console.error("Error fetching estados:", error.message);
-    }
-  };
+        setReservas(res.data.reservas);
+        setLoadingReservas(false);
+      } catch (error) {
+        console.error("Error fetching reservas:", error.message);
+      }
+    };
 
-  // Ejecutar la carga de reservas cada vez que el estado de reservas cambie
-  fetchReservas();
-  fetchEstados();
-}, [reservas]); // Dependencia de reservas para actualizar siempre que cambien
+    const fetchEstados = async () => {
+      try {
+        const res = await axios.get("https://fullwash.site/estados");
+        setEstados(res.data); // Guardar los estados obtenidos
+      } catch (error) {
+        console.error("Error fetching estados:", error.message);
+      }
+    };
+
+    // Ejecutar la carga de reservas cada vez que el estado de reservas cambie
+    fetchReservas();
+    fetchEstados();
+  }, [reservas]); // Dependencia de reservas para actualizar siempre que cambien
 
 
 
@@ -360,6 +372,61 @@ function Dashboard() {
       alert("Error al actualizar el perfil");
     }
   };
+  const groupNotificationsByDate = (notifications) => {
+    return notifications.reduce((grouped, notification) => {
+      const date = new Date(notification.created_at).toLocaleDateString();
+      if (!grouped[date]) {
+        grouped[date] = [];
+      }
+      grouped[date].push(notification);
+      return grouped;
+    }, {});
+  };
+
+  const handleEditClick = (reserva) => {
+    setCurrentReserva(reserva);
+    setEditDialogOpen(true);
+  };
+
+  const handleSaveChanges = async (updatedReserva) => {
+    try {
+      const cookies = parseCookies();
+      const token = cookies.token;
+
+      await axios.put(
+        `https://fullwash.site/reservas/${updatedReserva.id}`,
+        {
+          user_id: updatedReserva.user_id,
+          servicio_id: updatedReserva.servicio_id,
+          fecha: updatedReserva.fecha,
+          hora: updatedReserva.hora,
+          estado_id: updatedReserva.estado_id,
+          tipo_vehiculo_id: updatedReserva.tipo_vehiculo_id,
+          atributo_ids: updatedReserva.atributo_ids,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Actualiza la lista de reservas en el estado
+      setReservas((prevReservas) =>
+        prevReservas.map((reserva) =>
+          reserva.id === updatedReserva.id ? updatedReserva : reserva
+        )
+      );
+
+      setEditDialogOpen(false); // Cierra el diálogo
+      Swal.fire("¡Éxito!", "Reserva actualizada correctamente.", "success");
+    } catch (error) {
+      console.error("Error actualizando reserva:", error.message);
+      Swal.fire("Error", "No se pudo actualizar la reserva.", "error");
+    }
+  };
+
+
 
 
   if (loading || loadingReservas) return <p>Loading...</p>;
@@ -413,28 +480,62 @@ function Dashboard() {
               <Typography variant="h6" gutterBottom>
                 Notificaciones
               </Typography>
-              {notifications.length === 0 ? (
-                <Typography>No hay notificaciones nuevas.</Typography>
+
+              {/* Selector de Fecha */}
+              <TextField
+                label="Seleccionar Fecha"
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                fullWidth
+                margin="normal"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+
+              {/* Lista de Notificaciones Filtradas */}
+              {filteredNotifications.length === 0 ? (
+                <Typography>No hay notificaciones para esta fecha.</Typography>
               ) : (
                 <List>
-                  {notifications.map((notification, index) => (
-                    <ListItem
-                      key={index}
-                      style={{
-                        backgroundColor: notification.is_read ? '#f0f0f0' : '#e0e0e0', // Color diferente según si la notificación está leída
-                        borderLeft: notification.is_read ? 'none' : '4px solid red',  // Agregar borde rojo si es no leída
-                      }}
-                    >
-                      <ListItemText
-                        primary={notification.message}
-                        secondary={new Date(notification.created_at).toLocaleString()}
-                      />
-                    </ListItem>
-                  ))}
+                  {Object.entries(groupNotificationsByDate(filteredNotifications)).map(
+                    ([date, notifications]) => (
+                      <Box key={date} mb={2}>
+                        <Typography
+                          variant="subtitle1"
+                          sx={{ fontWeight: "bold", mt: 2 }}
+                        >
+                          {date}
+                        </Typography>
+                        {notifications.map((notification, index) => (
+                          <ListItem
+                            key={index}
+                            style={{
+                              backgroundColor: notification.is_read
+                                ? '#f0f0f0'
+                                : '#e0e0e0',
+                              borderLeft: notification.is_read
+                                ? 'none'
+                                : '4px solid red',
+                            }}
+                          >
+                            <ListItemText
+                              primary={notification.message}
+                              secondary={new Date(
+                                notification.created_at
+                              ).toLocaleTimeString()}
+                            />
+                          </ListItem>
+                        ))}
+                      </Box>
+                    )
+                  )}
                 </List>
               )}
             </Box>
           </Drawer>
+
 
           {/* Drawer lateral */}
           <Drawer anchor="left" open={drawerOpen} onClose={handleDrawerToggle}>
@@ -526,6 +627,14 @@ function Dashboard() {
                       </TableCell>
                       <TableCell>{reserva.Total}</TableCell>
                       <TableCell>
+                        <Button
+                          onClick={() => handleEditClick(reserva)}
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                        >
+                          Editar
+                        </Button>
                         <IconButton
                           color="error"
                           onClick={() => handleDelete(reserva.id)}
@@ -594,6 +703,63 @@ function Dashboard() {
               <Button onClick={handleUpdateProfile}>Actualizar</Button>
             </DialogActions>
           </Dialog>
+          <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
+            <DialogTitle>Editar Reserva</DialogTitle>
+            <DialogContent>
+              {currentReserva && (
+                <>
+                  <TextField
+                    label="Fecha"
+                    type="date"
+                    fullWidth
+                    margin="normal"
+                    value={currentReserva.fecha.slice(0, 10)} // Mostrar solo la fecha
+                    onChange={(e) =>
+                      setCurrentReserva({
+                        ...currentReserva,
+                        fecha: e.target.value.slice(0, 10), // Guardar solo la fecha
+                      })
+                    }
+                  />
+                  <TextField
+                    label="Hora"
+                    type="time"
+                    fullWidth
+                    margin="normal"
+                    value={currentReserva.hora}
+                    onChange={(e) =>
+                      setCurrentReserva({ ...currentReserva, hora: e.target.value })
+                    }
+                  />
+                  <FormControl fullWidth margin="normal">
+                    <Select
+                      value={currentReserva.estado_id}
+                      onChange={(e) =>
+                        setCurrentReserva({ ...currentReserva, estado_id: e.target.value })
+                      }
+                    >
+                      {estados.map((estado) => (
+                        <MenuItem key={estado.id} value={estado.id}>
+                          {estado.nombre}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </>
+              )}
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setEditDialogOpen(false)}>Cancelar</Button>
+              <Button
+                onClick={() => handleSaveChanges(currentReserva)}
+                color="primary"
+                variant="contained"
+              >
+                Guardar
+              </Button>
+            </DialogActions>
+          </Dialog>
+
 
           {/* Muestra pantalla activa */}
           {renderScreen()}
