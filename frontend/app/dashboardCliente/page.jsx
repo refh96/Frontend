@@ -56,6 +56,7 @@ function DashboardCliente() {
   const [reservas, setReservas] = useState([]);
   const [atributos, setAtributos] = useState([]); // Para almacenar los atributos
   const [selectedAtributos, setSelectedAtributos] = useState([]); // Atributos seleccionados
+  const [selectedService, setSelectedService] = useState(null);
   const [total, setTotal] = useState(0); // Estado para el total
   const [reservation, setReservation] = useState({
     user_id: "",
@@ -85,7 +86,7 @@ function DashboardCliente() {
           router.push("/loginCliente");
           return;
         }
-  
+
         const res = await axios.post(
           "https://fullwash.site/profile",
           {},
@@ -95,7 +96,7 @@ function DashboardCliente() {
             },
           }
         );
-  
+
         setUser(res.data.user);
         setReservation(prev => ({ ...prev, user_id: res.data.user.id }));
         setLoading(false);
@@ -103,10 +104,28 @@ function DashboardCliente() {
         console.error("Error fetching profile:", error.message);
       }
     };
-  
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('showForm') === 'true') {
+      setShowForm(true);
+
+      // Obtener el servicio_id y seleccionarlo automáticamente
+      const servicioId = params.get('servicio_id');
+      if (servicioId) {
+        // Aquí puedes realizar la búsqueda del servicio si es necesario
+        setSelectedService(servicioId); // Si tienes una lista de servicios, puedes buscarlo aquí.
+        setReservation((prevReservation) => ({
+          ...prevReservation,
+          servicio_id: servicioId, // Establece el servicio en el formulario
+        }));
+      }
+
+      // Limpia el parámetro de la URL
+      router.replace('/dashboardCliente');
+    }
+
     fetchProfile();
   }, [router]);
-  
+
 
   useEffect(() => {
     if (user.id) {
@@ -119,7 +138,7 @@ function DashboardCliente() {
           setServicios([]);
         }
       };
-  
+
       const fetchEstados = async () => {
         try {
           const res = await axios.get("https://fullwash.site/estados");
@@ -132,7 +151,7 @@ function DashboardCliente() {
           console.error("Error fetching estados:", error.message);
         }
       };
-  
+
       const fetchTipoVehiculo = async () => {
         try {
           const res = await axios.get("https://fullwash.site/tipo_vehiculos");
@@ -141,7 +160,7 @@ function DashboardCliente() {
           console.error("Error fetching tipoVehiculo:", error.message);
         }
       };
-  
+
       const fetchReservas = async () => {
         try {
           const cookies = parseCookies();
@@ -149,7 +168,7 @@ function DashboardCliente() {
           if (!token) {
             return;
           }
-  
+
           const res = await axios.get(
             `https://fullwash.site/reservas/user/${user.id}`,
             {
@@ -158,7 +177,7 @@ function DashboardCliente() {
               }
             }
           );
-  
+
           if (res.data && res.data.reservas) {
             setReservas(res.data.reservas);
           } else {
@@ -169,7 +188,7 @@ function DashboardCliente() {
           setReservas([]);
         }
       };
-  
+
       const fetchAtributos = async () => {
         try {
           const res = await axios.get("https://fullwash.site/atributos");
@@ -178,7 +197,8 @@ function DashboardCliente() {
           console.error("Error fetching attributes:", error.message);
         }
       };
-  
+
+
       fetchServicios();
       fetchEstados();
       fetchTipoVehiculo();
@@ -186,28 +206,27 @@ function DashboardCliente() {
       fetchReservas();
     }
   }, [user.id, reservas]); // Solo se ejecuta cuando `user.id` cambia
-  
+
 
   useEffect(() => {
     if (reservation) {
       setSelectedAtributos(reservation.atributo_ids || []);
     }
   }, [reservation]);
-  
+
   useEffect(() => {
     const servicio = servicios.find(s => s.id === reservation.servicio_id);
     const tipoVehiculo = tipo_vehiculos.find(t => t.id === reservation.tipo_vehiculo_id);
     const atributosSeleccionados = atributos.filter(a => selectedAtributos.includes(a.id));
-  
+
     // Suma los costos del servicio, tipo de vehículo y atributos seleccionados
     const nuevoTotal =
       (servicio ? servicio.precio : 0) +
       (tipoVehiculo ? tipoVehiculo.costo : 0) +
       atributosSeleccionados.reduce((acc, atributo) => acc + atributo.costo_atributo, 0);
-  
+
     setTotal(nuevoTotal);
   }, [atributos, reservation.servicio_id, reservation.tipo_vehiculo_id, selectedAtributos, servicios, tipo_vehiculos]); // Aseguramos que solo se ejecute cuando sea necesario
-  
 
 
 
@@ -328,6 +347,7 @@ function DashboardCliente() {
       [name]: value, // Actualiza el campo correspondiente de la reserva
     }));
   };
+
 
   const handleEdit = (reserva) => {
     setEditReservation(reserva);
@@ -729,6 +749,12 @@ function DashboardCliente() {
                       servicios.map((servicio) => (
                         <MenuItem key={servicio.id} value={servicio.id}>
                           {servicio.nombre_servicio}
+                        </MenuItem>
+                      ))}
+                    {Array.isArray(servicios) &&
+                      servicios.map((servicio) => (
+                        <MenuItem key={servicio.id} value={servicio.nombre_servicio}>
+                          {servicio.nombre_servicio} {/* Mostramos el nombre del servicio */}
                         </MenuItem>
                       ))}
                   </Select>

@@ -21,6 +21,7 @@ import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { parseCookies } from 'nookies';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Swal from 'sweetalert2';
 
 function Atributos() {
   const [atributo, setAtributo] = useState({
@@ -109,7 +110,14 @@ function Atributos() {
             },
           }
         );
-        alert("Atributo editado exitosamente");
+        Swal.fire({
+          title: 'Éxito!',
+          text: 'Atributo Editado exitosamente',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          timer: 3000,
+          timerProgressBar: true,
+        });
       } else {
         await axios.post(
           "https://fullwash.site/atributos",
@@ -120,7 +128,14 @@ function Atributos() {
             },
           }
         );
-        alert("Atributo creado exitosamente");
+        Swal.fire({
+          title: 'Éxito!',
+          text: 'Atributo Creado exitosamente',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          timer: 3000,
+          timerProgressBar: true,
+        });
       }
 
       setAtributo({ nombre_atributo: "", costo_atributo: "" });

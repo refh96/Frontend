@@ -21,6 +21,8 @@ import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { parseCookies } from 'nookies';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Swal from 'sweetalert2';
+
 
 function Estados() {
   const [estado, setEstado] = useState({
@@ -105,14 +107,28 @@ function Estados() {
             Authorization: `Bearer ${token}`,
           },
         });
-        alert('Estado editado exitosamente');
+        Swal.fire({
+          title: 'Éxito!',
+          text: 'Estado Editado exitosamente',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          timer: 3000,
+          timerProgressBar: true,
+        });
       } else {
         await axios.post('https://fullwash.site/estados', estado, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        alert('Estado creado exitosamente');
+        Swal.fire({
+          title: 'Éxito!',
+          text: 'Estado Creado exitosamente',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          timer: 3000,
+          timerProgressBar: true,
+        });
       }
 
       setEstado({ nombre: '', mensaje: '' });

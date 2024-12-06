@@ -58,7 +58,7 @@ const Page = () => {
   };
 
   const handleAddToOrder = () => {
-    router.push('/dashboardCliente');
+    router.push(`/dashboardCliente?showForm=true&servicio_id=${selectedService.id}`);    
     handleCloseModal();
   };
 

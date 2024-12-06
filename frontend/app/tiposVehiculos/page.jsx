@@ -21,6 +21,7 @@ import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { parseCookies } from 'nookies';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Swal from 'sweetalert2';
 
 function TiposDeVehiculo() {
   const [tipoVehiculo, setTipoVehiculo] = useState({
@@ -110,7 +111,14 @@ function TiposDeVehiculo() {
             },
           }
         );
-        alert("Tipo de vehículo editado exitosamente");
+        Swal.fire({
+          title: 'Éxito!',
+          text: 'Tipo de Vehiculo Editado exitosamente',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          timer: 3000,
+          timerProgressBar: true,
+        });
       } else {
         await axios.post(
           "https://fullwash.site/tipo_vehiculos",
@@ -121,7 +129,14 @@ function TiposDeVehiculo() {
             },
           }
         );
-        alert("Tipo de vehículo creado exitosamente");
+        Swal.fire({
+          title: 'Éxito!',
+          text: 'Tipo de Vehiculo Creado exitosamente',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          timer: 3000,
+          timerProgressBar: true,
+        });
       }
 
       setTipoVehiculo({ nombre: "", costo: "" });

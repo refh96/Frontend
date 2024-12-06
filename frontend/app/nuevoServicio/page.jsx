@@ -25,6 +25,7 @@ import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { parseCookies } from 'nookies';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Swal from 'sweetalert2';
 
 function NuevoServicio() {
   const [servicio, setServicio] = useState({
@@ -118,7 +119,14 @@ function NuevoServicio() {
             },
           }
         );
-        alert("Servicio editado exitosamente");
+        Swal.fire({
+          title: 'Éxito!',
+          text: 'Servicio Editado exitosamente',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          timer: 3000,
+          timerProgressBar: true,
+        });
       } else {
         await axios.post(
           "https://fullwash.site/servicios",
@@ -132,7 +140,14 @@ function NuevoServicio() {
             },
           }
         );
-        alert("Servicio creado exitosamente");
+        Swal.fire({
+          title: 'Éxito!',
+          text: 'Servicio Creado exitosamente',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          timer: 3000,
+          timerProgressBar: true,
+        });
       }
 
       setServicio({
@@ -146,7 +161,9 @@ function NuevoServicio() {
       fetchServicios();
     } catch (error) {
       console.error("Error submitting service:", error.message);
-      setError("Error al procesar el servicio");
+      // Accede al mensaje de error desde la respuesta del servidor
+      const errorMessage = error.response?.data?.message || "Error al procesar el servicio";
+      setError(errorMessage);
     }
   };
 
@@ -159,7 +176,14 @@ function NuevoServicio() {
       const token = cookies.token;
 
       if (!token) {
-        alert("Por favor, inicia sesión para continuar.");
+        Swal.fire({
+          title: 'Error!',
+          text: 'Porfavor Inicia sesion para continuar',
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          timer: 3000,
+          timerProgressBar: true,
+        });
         return;
       }
 
@@ -169,7 +193,14 @@ function NuevoServicio() {
         },
       });
 
-      alert("Servicio eliminado exitosamente");
+      Swal.fire({
+        title: 'Éxito!',
+        text: 'Servicio Eliminado exitosamente',
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+        timer: 3000,
+        timerProgressBar: true,
+      });
       fetchServicios();
     } catch (error) {
       console.error("Error deleting service:", error.message);
