@@ -242,6 +242,18 @@ function DashboardCliente() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    // Validar campos obligatorios
+    const { servicio_id, fecha, hora, tipo_vehiculo_id } = reservation;
+
+    if (!servicio_id || !fecha || !hora || !tipo_vehiculo_id) {
+      Swal.fire({
+        title: 'Campos incompletos',
+        text: 'Por favor, rellena todos los campos obligatorios antes de guardar la reserva. El campo de servicios extra es opcional.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+      });
+      return; // Detenemos el envío si falta algún campo
+    }
     try {
       const cookies = parseCookies();
       const token = cookies.token;
