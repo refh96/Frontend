@@ -164,11 +164,17 @@ function LoginCliente() {
         >
           Iniciar Sesión
         </Button>
+        <Typography color={'black'} align="center" sx={{ mt: 2 }}>
+          ¿olvidaste tu contraseña?{" "}
+          <Link href="./forgot-password" style={{ color: 'blue', textDecoration: 'none' }}>
+            Recuperar
+          </Link>
+        </Typography>
 
         <Typography color={'black'} align="center" sx={{ mt: 2 }}>
           ¿No tienes cuenta?{" "}
           <Link href="./register" style={{ color: 'blue', textDecoration: 'none' }}>
-            Regístrate aquí
+            Regístrate 
           </Link>
         </Typography>
       </Box>
