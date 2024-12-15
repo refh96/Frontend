@@ -228,6 +228,79 @@ function DashboardCliente() {
     setTotal(nuevoTotal);
   }, [atributos, reservation.servicio_id, reservation.tipo_vehiculo_id, selectedAtributos, servicios, tipo_vehiculos]); // Aseguramos que solo se ejecute cuando sea necesario
 
+  useEffect(() => {
+    const servicio = servicios.find((s) => s.id === reservation.servicio_id);
+    const tipoVehiculo = tipo_vehiculos.find((t) => t.id === reservation.tipo_vehiculo_id);
+    const atributosSeleccionados = atributos.filter((a) => selectedAtributos.includes(a.id));
+  
+    let nuevoTotal = 0;
+  
+    if (servicio && tipoVehiculo) {
+      // Ajustar el costo del vehículo según el servicio
+      let costoVehiculoAjustado = tipoVehiculo.costo;
+  
+      if (servicio.nombre_servicio === "Lavado Detailing") {
+        if (tipoVehiculo.id === 2) {
+          costoVehiculoAjustado += 45000;
+        } else if (tipoVehiculo.id === 3) {
+          costoVehiculoAjustado += 90000;
+        }
+      }
+
+      if (servicio.nombre_servicio === "Lavado de Tapices") {
+        if (tipoVehiculo.id === 2) {
+          costoVehiculoAjustado += 10000;
+        } else if (tipoVehiculo.id === 3) {
+          costoVehiculoAjustado += 25000;
+        }
+      }
+
+      if (servicio.nombre_servicio === "Lavado de Alfombra") {
+        if (tipoVehiculo.id === 3) {
+          costoVehiculoAjustado += 5000;
+        }
+      }
+
+      if (servicio.nombre_servicio === "Limpieza de Chasis") {
+        if (tipoVehiculo.id === 2) {
+          costoVehiculoAjustado += 5000;
+        }if (tipoVehiculo.id === 3) {
+          costoVehiculoAjustado += 5000;
+        }
+      }
+      if (servicio.nombre_servicio === "Pulido Basico") {
+        if (tipoVehiculo.id === 2) {
+          costoVehiculoAjustado += 50000;
+        }if (tipoVehiculo.id === 3) {
+          costoVehiculoAjustado += 95000;
+        }
+      }
+      if (servicio.nombre_servicio === "Pulido Avanzado") {
+        if (tipoVehiculo.id === 2) {
+          costoVehiculoAjustado += 45000;
+        }if (tipoVehiculo.id === 3) {
+          costoVehiculoAjustado += 90000;
+        }
+      }
+  
+      // Sumar costos del servicio, vehículo ajustado y atributos seleccionados
+      nuevoTotal =
+        servicio.precio +
+        costoVehiculoAjustado +
+        atributosSeleccionados.reduce((acc, atributo) => acc + atributo.costo_atributo, 0);
+    }
+  
+    setTotal(nuevoTotal);
+  }, [
+    atributos,
+    reservation.servicio_id,
+    reservation.tipo_vehiculo_id,
+    selectedAtributos,
+    servicios,
+    tipo_vehiculos,
+  ]);
+  
+
 
 
   const handleAvatarClick = () => {
@@ -761,12 +834,6 @@ function DashboardCliente() {
                       servicios.map((servicio) => (
                         <MenuItem key={servicio.id} value={servicio.id}>
                           {servicio.nombre_servicio}
-                        </MenuItem>
-                      ))}
-                    {Array.isArray(servicios) &&
-                      servicios.map((servicio) => (
-                        <MenuItem key={servicio.id} value={servicio.nombre_servicio}>
-                          {servicio.nombre_servicio} {/* Mostramos el nombre del servicio */}
                         </MenuItem>
                       ))}
                   </Select>
