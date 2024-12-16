@@ -895,9 +895,6 @@ function DashboardCliente() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} textAlign="center">
-                <Typography variant="h6">Total: ${total}</Typography>
-              </Grid>
             </Grid>
           </DialogContent>
           <DialogActions sx={{ justifyContent: 'center', gap: 2 }}>
