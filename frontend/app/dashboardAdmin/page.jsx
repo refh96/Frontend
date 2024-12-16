@@ -596,8 +596,7 @@ function Dashboard() {
                       </TableCell>
                       <TableCell>{reserva.hora}</TableCell>
                       <TableCell>
-                        {reserva.tipo_vehiculo?.nombre || "N/A"} - $
-                        {reserva.tipo_vehiculo?.costo || "N/A"}
+                        {reserva.tipo_vehiculo?.nombre || "N/A"}
                       </TableCell>
                       <TableCell>
                         <Select
