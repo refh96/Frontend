@@ -206,7 +206,20 @@ function DashboardCliente() {
       fetchReservas();
     }
   }, [user.id, reservas]); // Solo se ejecuta cuando `user.id` cambia
-
+  
+  useEffect(() => {
+    if (reservation.servicio_id && servicios.length > 0) {
+      const servicioSeleccionado = servicios.find((s) => s.id === parseInt(reservation.servicio_id));
+      if (servicioSeleccionado) {
+        setReservation((prev) => ({
+          ...prev,
+          servicio_id: servicioSeleccionado.id,
+        }));
+      }
+    }
+  }, [reservation.servicio_id, servicios]);
+  
+  
 
   useEffect(() => {
     if (reservation) {
@@ -215,19 +228,23 @@ function DashboardCliente() {
   }, [reservation]);
 
   useEffect(() => {
-    const servicio = servicios.find(s => s.id === reservation.servicio_id);
-    const tipoVehiculo = tipo_vehiculos.find(t => t.id === reservation.tipo_vehiculo_id);
-    const atributosSeleccionados = atributos.filter(a => selectedAtributos.includes(a.id));
-
-    // Suma los costos del servicio, tipo de vehículo y atributos seleccionados
-    const nuevoTotal =
-      (servicio ? servicio.precio : 0) +
-      (tipoVehiculo ? tipoVehiculo.costo : 0) +
-      atributosSeleccionados.reduce((acc, atributo) => acc + atributo.costo_atributo, 0);
-
-    setTotal(nuevoTotal);
-  }, [atributos, reservation.servicio_id, reservation.tipo_vehiculo_id, selectedAtributos, servicios, tipo_vehiculos]); // Aseguramos que solo se ejecute cuando sea necesario
-
+    if (reservation.servicio_id && reservation.tipo_vehiculo_id) {
+      const servicio = servicios.find((s) => s.id === reservation.servicio_id);
+      const tipoVehiculo = tipo_vehiculos.find((t) => t.id === reservation.tipo_vehiculo_id);
+      const costoAtributos = selectedAtributos.reduce((total, id) => {
+        const atributo = atributos.find((a) => a.id === id);
+        return total + (atributo ? atributo.costo_atributo : 0);
+      }, 0);
+  
+      const nuevoTotal = 
+        (servicio ? servicio.costo_servicio : 0) +
+        (tipoVehiculo ? tipoVehiculo.costo_vehiculo : 0) +
+        costoAtributos;
+  
+      setTotal(nuevoTotal);
+    }
+  }, [reservation.servicio_id, reservation.tipo_vehiculo_id, selectedAtributos, servicios, tipo_vehiculos, atributos]);
+  
   useEffect(() => {
     const servicio = servicios.find((s) => s.id === reservation.servicio_id);
     const tipoVehiculo = tipo_vehiculos.find((t) => t.id === reservation.tipo_vehiculo_id);
@@ -894,6 +911,9 @@ function DashboardCliente() {
                     ))}
                   </Select>
                 </FormControl>
+              </Grid>
+              <Grid item xs={12} textAlign="center">
+                <Typography variant="h6">Total: ${total}</Typography>
               </Grid>
             </Grid>
           </DialogContent>
