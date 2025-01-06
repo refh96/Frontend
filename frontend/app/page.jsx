@@ -39,23 +39,55 @@ function HomePage() {
       img: 'https://i.ibb.co/6H7HXYP/pulidoras.png',
       alt: 'imagen 4',
     },
-  ];
-  const items2 = [
     {
       img: 'https://i.ibb.co/FWPHQVp/koch-1.jpg',
-      alt: 'imagen 1',
+      alt: 'imagen 5',
     },
     {
       img: 'https://i.ibb.co/SsttkPZ/kock-2.png',
-      alt: 'imagen 2',
+      alt: 'imagen 6',
     },
     {
       img: 'https://i.ibb.co/Z8c09yS/meguiars.jpg',
-      alt: 'imagen 3',
+      alt: 'imagen 7',
     },
     {
       img: 'https://i.ibb.co/7CXzwDP/meguiars-2.jpg',
+      alt: 'imagen 8',
+    },
+  ];
+  const items2 = [
+    {
+      img: 'https://i.ibb.co/fp1504L/1.jpg',
+      alt: 'imagen 1',
+    },
+    {
+      img: 'https://i.ibb.co/zxWX2C3/2.jpg',
+      alt: 'imagen 2',
+    },
+    {
+      img: 'https://i.ibb.co/ZzjK13M/3.jpg',
+      alt: 'imagen 3',
+    },
+    {
+      img: 'https://i.ibb.co/1M5ZP45/4.jpg',
       alt: 'imagen 4',
+    },
+    {
+      img: 'https://i.ibb.co/zGz0XCZ/5.jpg',
+      alt: 'imagen 5',
+    },
+    {
+      img: 'https://i.ibb.co/LhbG2XH/6.jpg',
+      alt: 'imagen 6',
+    },
+    {
+      img: 'https://i.ibb.co/VSVR3X9/7.jpg',
+      alt: 'imagen 7',
+    },
+    {
+      img: 'https://i.ibb.co/bPKSpRF/8.jpg',
+      alt: 'imagen 8',
     },
   ];
   useEffect(() => {
@@ -455,9 +487,9 @@ En Full Wash, nos especializamos en ofrecer un servicio de lavado de vehículos 
                   boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
                 }}
               >
-                <Typography variant="h4" sx={{ marginBottom: 1 }}>PRODUCTOS QUE UTILIZAMOS</Typography>
+                <Typography variant="h4" sx={{ marginBottom: 1 }}>GUÍA DE LAVADO DE TU VEHÍCULO</Typography>
                 <Typography variant="body1" sx={{ marginY: 2 }}>
-                  Utilizamos productos de alta calidad, específicos para mantener la pintura, los interiores y los vidrios de tu vehículo en óptimas condiciones.
+                      Como lavar el vehículo de forma correcta.
                 </Typography>
                 <div style={{ width: '100%', overflow: 'hidden', marginBottom: '10px', position: 'relative' }}>
                   <Carousel
@@ -510,9 +542,10 @@ En Full Wash, nos especializamos en ofrecer un servicio de lavado de vehículos 
                   boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
                 }}
               >
-                <Typography variant="h4" sx={{ marginBottom: 1 }}>HERRAMIENTAS QUE UTILIZAMOS</Typography>
+                <Typography variant="h4" sx={{ marginBottom: 1 }}>PRODUCTOS Y HERRAMIENTAS QUE UTILIZAMOS</Typography>
                 <Typography variant="body1" sx={{ marginY: 2 }}>
                   Contamos con herramientas de última tecnología para asegurar un lavado profundo y detallado en cada vehículo.
+                  Utilizamos productos de alta calidad, específicos para mantener la pintura, los interiores y los vidrios de tu vehículo en óptimas condiciones.
                 </Typography>
                 <div style={{ width: '100%', overflow: 'hidden', marginBottom: '10px', position: 'relative' }}>
                   <Carousel
