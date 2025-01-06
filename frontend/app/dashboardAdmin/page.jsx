@@ -31,7 +31,8 @@ import {
   Drawer,
   Avatar,
   AppBar,
-  Toolbar
+  Toolbar,
+  TablePagination
 } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import { Delete as DeleteIcon } from '@mui/icons-material';
@@ -62,6 +63,9 @@ function Dashboard() {
   const [filteredNotifications, setFilteredNotifications] = useState([]);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [currentReserva, setCurrentReserva] = useState(null);
+  const [page, setPage] = useState(0); // Página actual
+  const [rowsPerPage, setRowsPerPage] = useState(10); // Filas por página
+  const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
   const cookies = parseCookies();
 
@@ -84,11 +88,11 @@ function Dashboard() {
         const unreadNotifications = data.filter(notification => !notification.is_read);
         if (unreadNotifications.length > 0) {
           const latestNotification = unreadNotifications[0]; // La última notificación no leída
-
+          const notificationDate = new Date(latestNotification.created_at).toLocaleString();
           // Muestra la alerta con el mensaje de la notificación
           Swal.fire({
             title: 'Nuevas notificaciones',
-            text: 'Revisa tu seccion de notificaciones', //latestNotification.message,
+            html: `<strong>${latestNotification.message}</strong><br><small>Fecha: ${notificationDate}</small>`,
             icon: 'info',
             confirmButtonText: 'Ok',
           });
@@ -425,9 +429,27 @@ function Dashboard() {
       Swal.fire("Error", "No se pudo actualizar la reserva.", "error");
     }
   };
+   // Filtrar las filas para mostrar en la página actual
+   const paginatedReservas = reservas.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
+
+  // Manejar cambios en la paginación
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reinicia a la primera página
+  };
 
 
-
+  const filteredReservas = reservas.filter((reserva) => 
+    reserva.user?.username.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  
 
   if (loading || loadingReservas) return <p>Loading...</p>;
 
@@ -566,87 +588,91 @@ function Dashboard() {
 
           {/* Tabla de reservas */}
           {activeScreen !== "perfil" && (
-            <TableContainer component={Paper} sx={{ mt: 4, color: "black" }}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Usuario</TableCell>
-                    <TableCell>Servicio</TableCell>
-                    <TableCell>Fecha</TableCell>
-                    <TableCell>Hora</TableCell>
-                    <TableCell>Tipo de Vehículo</TableCell>
-                    <TableCell>Estado</TableCell>
-                    <TableCell>Servicios Extras</TableCell>
-                    <TableCell>Total</TableCell>
-                    <TableCell>Acciones</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {reservas.map((reserva) => (
-                    <TableRow key={reserva.id}>
-                      <TableCell>
-                        {reserva.user ? reserva.user.username : "N/A"}
-                      </TableCell>
-                      <TableCell>
-                        {reserva.servicio?.nombre_servicio || "N/A"} - $
-                        {reserva.servicio?.precio || "N/A"}
-                      </TableCell>
-                      <TableCell>
-                        {new Date(reserva.fecha).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell>{reserva.hora}</TableCell>
-                      <TableCell>
-                        {reserva.tipo_vehiculo?.nombre || "N/A"}
-                      </TableCell>
-                      <TableCell>
-                        <Select
-                          value={reserva.estado_id}
-                          onChange={(e) =>
-                            handleEstadoChange(reserva.id, e.target.value)
-                          }
-                        >
-                          {estados.map((estado) => (
-                            <MenuItem key={estado.id} value={estado.id}>
-                              {estado.nombre}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </TableCell>
-                      <TableCell>
-                        {reserva.atributos?.length ? (
-                          reserva.atributos.map((atributo) => (
-                            <Typography key={atributo.id}>
-                              {atributo.nombre_atributo} - $
-                              {atributo.costo_atributo}
-                            </Typography>
-                          ))
-                        ) : (
-                          <Typography>No hay atributos</Typography>
-                        )}
-                      </TableCell>
-                      <TableCell>{reserva.Total}</TableCell>
-                      <TableCell>
-                        <Button
-                          onClick={() => handleEditClick(reserva)}
-                          variant="contained"
-                          color="primary"
-                          size="small"
-                        >
-                          Editar
-                        </Button>
-                        <IconButton
-                          color="error"
-                          onClick={() => handleDelete(reserva.id)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          )}
+  <TableContainer component={Paper} sx={{ mt: 4, color: "black" }}>
+    {/* Campo de búsqueda */}
+    <TextField
+      label="Buscar por usuario"
+      variant="outlined"
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      sx={{ mb: 2 }}
+    />
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>Usuario</TableCell>
+          <TableCell>Servicio</TableCell>
+          <TableCell>Fecha</TableCell>
+          <TableCell>Hora</TableCell>
+          <TableCell>Tipo de Vehículo</TableCell>
+          <TableCell>Estado</TableCell>
+          <TableCell>Servicios Extras</TableCell>
+          <TableCell>Total</TableCell>
+          <TableCell>Acciones</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {filteredReservas.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((reserva) => (
+          <TableRow key={reserva.id}>
+            <TableCell>{reserva.user ? reserva.user.username : "N/A"}</TableCell>
+            <TableCell>{reserva.servicio?.nombre_servicio || "N/A"} - ${reserva.servicio?.precio || "N/A"}</TableCell>
+            <TableCell>{new Date(reserva.fecha).toLocaleDateString()}</TableCell>
+            <TableCell>{reserva.hora}</TableCell>
+            <TableCell>{reserva.tipo_vehiculo?.nombre || "N/A"}</TableCell>
+            <TableCell>
+              <Select
+                value={reserva.estado_id}
+                onChange={(e) => handleEstadoChange(reserva.id, e.target.value)}
+              >
+                {estados.map((estado) => (
+                  <MenuItem key={estado.id} value={estado.id}>
+                    {estado.nombre}
+                  </MenuItem>
+                ))}
+              </Select>
+            </TableCell>
+            <TableCell>
+              {reserva.atributos?.length ? (
+                reserva.atributos.map((atributo) => (
+                  <Typography key={atributo.id}>
+                    {atributo.nombre_atributo} - ${atributo.costo_atributo}
+                  </Typography>
+                ))
+              ) : (
+                <Typography>No hay atributos</Typography>
+              )}
+            </TableCell>
+            <TableCell>{reserva.Total}</TableCell>
+            <TableCell>
+              <Button
+                onClick={() => handleEditClick(reserva)}
+                variant="contained"
+                color="primary"
+                size="small"
+              >
+                Editar
+              </Button>
+              <IconButton color="error" onClick={() => handleDelete(reserva.id)}>
+                <DeleteIcon />
+              </IconButton>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+    {/* Paginación */}
+    <TablePagination
+      component="div"
+      count={filteredReservas.length}
+      page={page}
+      onPageChange={handleChangePage}
+      rowsPerPage={rowsPerPage}
+      onRowsPerPageChange={handleChangeRowsPerPage}
+      labelRowsPerPage="Filas por página"
+    />
+  </TableContainer>
+)}
+
 
           {/* Formulario de edición de perfil */}
           <Dialog open={showEditProfile} onClose={() => setShowEditProfile(false)}>
