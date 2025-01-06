@@ -6,30 +6,20 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import { useRouter } from 'next/navigation';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-
+import NextImage  from 'next/image';
 function HomePage() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
   const router = useRouter();
-
   const items = [
     {
-      img: 'https://i.ibb.co/7R5fLvY/prueba-3.jpg',
+      img: 'https://i.ibb.co/LNydfT4/349359557-636255998051932-7868626956502682837-n.jpg',
       alt: 'imagen 1',
     },
     {
-      img: 'https://i.ibb.co/CMsS5PF/prueba5.jpg',
+      img: 'https://i.ibb.co/zVmHmMh/350146187-936849570953786-3203082689587698559-n.jpg',
       alt: 'imagen 2',
-    },
-    {
-      img: 'https://i.ibb.co/SVNvtz4/fullwash1.png',
-      alt: 'imagen 3',
-    },
-    {
-      img: 'https://i.ibb.co/GFPg5Pj/vehiculo-1.jpg',
-      alt: 'imagen 4',
     },
   ];
   const items1 = [
@@ -75,21 +65,24 @@ function HomePage() {
     }, 2000); // Tiempo de carga de 2 segundos
     return () => clearTimeout(timer);
   }, []);
+  useEffect(() => {
+    items.forEach((item) => {
+      const img = new window.Image();
+      img.src = item.img;
+    });
+  }, []);
   const handleOpenModal = (servicio) => {
     setSelectedService(servicio);
     setOpenModal(true);
   };
-
   const handleCloseModal = () => {
     setOpenModal(false);
     setSelectedService(null);
   };
-
   const handleAddToOrder = () => {
     router.push('/dashboardCliente');
     handleCloseModal();
   };
-
   const processItems = [
     {
       title: 'LIMPIEZA DETALLADA',
@@ -123,9 +116,6 @@ function HomePage() {
     },
     // Agrega los demás elementos de proceso con descripciones
   ];
-
-
-
   return (
     <Box
       display="flex"
@@ -146,57 +136,91 @@ function HomePage() {
             flexWrap: 'wrap',  // Permite que los elementos se acomoden en pantallas pequeñas
           }}
         >
-          <div
+        <Grid container spacing={2} alignItems="center">
+  {/* Carrusel */}
+  <Grid item xs={11.5} sm={6}>
+    <div
+      style={{
+        width: '100%',  // Hace que el carrusel ocupe todo el ancho de la pantalla
+        height: '100%', // Hace que el carrusel ocupe todo el alto de la pantalla
+        overflow: 'hidden',  // Asegura que no sobresalga nada del borde curvado
+        position: 'relative',
+        borderRadius: '20px',  // Aplica el borderRadius al contenedor
+        marginBottom: '10px',
+        marginRight: '20px', // Añade margen a la derecha
+      }}
+    >
+      <Carousel
+        autoPlay
+        animation="fade"
+        timeout={700}
+        indicators={true}
+        navButtonsAlwaysInvisible={true}
+        indicatorContainerProps={{
+          style: { marginTop: '5px' },
+        }}
+      >
+        {items.map((item, index) => (
+          <Paper
+            key={index}
             style={{
-              width: '100%',  // Hace que el carrusel ocupe todo el ancho de la pantalla
-              height: '100%', // Hace que el carrusel ocupe todo el alto de la pantalla
-              overflow: 'hidden',
-              position: 'relative',
-              borderRadius: '8px',
-              marginBottom: '10px',
-              marginRight: '20px', // Añade margen a la derecha
+              height: '500px',  // Hace que el Paper ocupe todo el alto del contenedor
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'transparent',
+              boxShadow: 'none',
+              borderRadius: '20px',  // Aplica el borderRadius al Paper
             }}
+            elevation={0}
           >
-            <Carousel
-              autoPlay
-              animation="fade"
-              timeout={700}
-              indicators={true}
-              navButtonsAlwaysInvisible={true}
-              indicatorContainerProps={{
-                style: { marginTop: '15px' },
+            <NextImage
+              width={'1000'}
+              height={'1000'}
+              src={item.img}
+              alt={item.alt}
+              layout="intrinsic"
+              style={{
+                width: '66%',
+                height: '70%',
+                objectFit: 'cover',  // Asegura que la imagen cubra todo el espacio del contenedor
+                objectPosition: 'center center', // Posiciona la imagen en el centro
+                borderRadius: '20px',  // Aplica el borderRadius a la imagen
               }}
-            >
-              {items.map((item, index) => (
-                <Paper
-                  key={index}
-                  style={{
-                    height: '100%',  // Hace que el Paper ocupe todo el alto del contenedor
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: 'transparent',
-                    boxShadow: 'none',
-                  }}
-                  elevation={0}
-                >
-                  <img
-                    src={item.img}
-                    alt={item.alt}
-                    style={{
-                      width: '96%',
-                      height: '100%',
-                      objectFit: 'contain',  // La imagen cubre todo el contenedor sin deformarse
-                      borderRadius: '20px', // Ajusta la curvatura de los bordes según prefieras
-                    }}
-                  />
-                </Paper>
+            />
+          </Paper>
+        ))}
+      </Carousel>
+    </div>
+  </Grid>
+
+  {/* Párrafo de texto descriptivo */}
+  <Grid item xs={12} sm={6}>
+    <Paper
+      style={{
+        padding: '20px',
+        borderRadius: '8px',
+        backgroundColor: '#f5f5f5',
+        boxShadow: 'none',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Typography variant="h6" style={{ textAlign: 'center' }}>
+        {`Bienvenido a Full Wash – El mejor cuidado para tu vehículo
+
+En Full Wash, nos especializamos en ofrecer un servicio de lavado de vehículos de alta calidad, garantizando que tu automóvil reciba el tratamiento que se merece. Nuestro equipo de expertos utiliza productos de alta gama y técnicas de limpieza avanzadas para asegurar que tu vehículo quede impecable, tanto por dentro como por fuera. Ya sea que necesites un lavado rápido, detallado o un tratamiento especializado para tu coche, estamos aquí para satisfacer todas tus necesidades. Además, nuestra comodidad y atención al cliente son nuestra prioridad, ofreciendo un servicio eficiente y conveniente para que tu experiencia sea rápida y sin complicaciones. Confía en Full Wash para mantener tu vehículo en su mejor estado, con un acabado que te hará sentir como si fuera nuevo. ¡Visítanos hoy y descubre por qué somos la opción preferida para el cuidado de tu coche! `.split('\n').map((line, idx) => (
+                <React.Fragment key={idx}>
+                  {line}
+                  {idx < 2 && <br />}
+                </React.Fragment>
               ))}
-            </Carousel>
-          </div>
-
-
-
+      </Typography>
+    </Paper>
+  </Grid>
+</Grid>
 
           <div
             style={{
@@ -228,14 +252,13 @@ function HomePage() {
                 animation: 'bounce 1.5s ease-in-out infinite',
               }}
             >
-              {`REGISTRATE Y AGENDA CON NOSOTROS\n TU SERVICIO DE \nCONFIANZA`.split('\n').map((line, idx) => (
+              {`REGISTRATE Y RESERVA TU SERVICIO\n CALIDAD GARANTIZADA `.split('\n').map((line, idx) => (
                 <React.Fragment key={idx}>
                   {line}
                   {idx < 2 && <br />}
                 </React.Fragment>
               ))}
             </Typography>
-
             <Button
               variant="contained"
               color="success"
@@ -253,9 +276,6 @@ function HomePage() {
             </Button>
           </div>
         </div>
-
-
-
         <Container sx={{ marginY: 4, textAlign: 'center' }}>
           <Typography
             variant="h4"
@@ -279,7 +299,6 @@ function HomePage() {
           >
             DESCUBRE NUESTROS PROCESOS
           </Typography>
-
           <Grid
             container
             spacing={3}
@@ -338,7 +357,6 @@ function HomePage() {
                   >
                     {item.title}
                   </Typography>
-
                   <img
                     src={item.img}
                     alt={item.title}
@@ -353,8 +371,6 @@ function HomePage() {
             ))}
           </Grid>
         </Container>
-
-
         {/* Sección de Opiniones de Clientes */}
         <Container
           sx={{
@@ -381,7 +397,6 @@ function HomePage() {
           >
             RECOMENDACION DE CLIENTES
           </Typography>
-
           <Grid container spacing={3} justifyContent="center">
             {[
               { name: 'Sal Yesenia', text: 'Excelente servicio recomendado 100% 👍👍👏👏' },
@@ -426,7 +441,6 @@ function HomePage() {
             ))}
           </Grid>
         </Container>
-
         <Container sx={{ marginY: 4, paddingX: 2 }}>
           <Grid container spacing={4} direction="column" alignItems="center">
             {/* Sección de Productos que Utilizamos */}
@@ -484,7 +498,6 @@ function HomePage() {
                 </div>
               </div>
             </Grid>
-
             {/* Sección de Herramientas que Utilizamos */}
             <Grid item xs={12} sx={{ width: '100%', maxWidth: 800 }}>
               <div
@@ -569,7 +582,6 @@ function HomePage() {
                 <Typography variant="h4" sx={{ marginBottom: '16px', fontFamily: 'Arial, sans-serif' }}>
                   Visita Nuestras Redes Sociales Para Más Contenido
                 </Typography>
-
                 <Grid container spacing={2} justifyContent="center">
                   {isLoading ? (
                     Array.from(new Array(3)).map((_, index) => (
@@ -614,7 +626,6 @@ function HomePage() {
             </Grid>
           </Grid>
         </Container>
-
         <Dialog open={openModal} onClose={handleCloseModal}>
           <DialogContent>
             {selectedService && (
@@ -658,12 +669,8 @@ function HomePage() {
         >
           <WhatsAppIcon style={{ fontSize: 50 }} /> {/* Ajusta el tamaño aquí */}
         </IconButton>
-
       </Box>
     </Box>
   );
-
-
 }
-
 export default HomePage;

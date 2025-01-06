@@ -60,7 +60,6 @@ const Header = () => {
       <AppBar position="relative" sx={{ backgroundColor: '#3CB3DE' }}>
         <Toolbar>
           <Box
-            onClick={() => router.push('/')} // Redirige al inicio al hacer clic en el logo
             sx={{
               display: 'flex',
               alignItems: 'center',
@@ -69,6 +68,7 @@ const Header = () => {
             }}
           >
             <img
+              onClick={() => router.push('/')}
               src="https://i.ibb.co/7CYX4zX/logo-full-wash.jpg"
               alt="Logo"
               style={{
