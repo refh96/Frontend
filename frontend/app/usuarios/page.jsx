@@ -31,8 +31,15 @@ const AdminUsuarios = () => {
     useEffect(() => {
         // Función para obtener la lista de usuarios
         const fetchUsuarios = async () => {
+            const cookies = parseCookies();
+            const token = cookies.token;
             try {
-                const response = await axios.get('https://fullwash.site/users');
+                const response = await axios.get('https://fullwash.site/users',
+                    {
+                      headers: {
+                        Authorization: `Bearer ${token}`,
+                      }
+                    });
                 setUsuarios(response.data);
             } catch (error) {
                 console.error('Error al obtener los usuarios:', error);
@@ -78,8 +85,15 @@ const AdminUsuarios = () => {
 
     // Función para manejar el cambio de rol
     const handleRoleChange = async (id, newRole) => {
+        const cookies = parseCookies();
+        const token = cookies.token;
         try {
-            await axios.put(`https://fullwash.site/users/${id}`, { rol: newRole });
+            await axios.put(`https://fullwash.site/users/${id}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  }
+                }, { rol: newRole });
             setUsuarios((prevUsuarios) =>
                 prevUsuarios.map((user) =>
                     user.id === id ? { ...user, rol: newRole } : user
@@ -94,10 +108,17 @@ const AdminUsuarios = () => {
 
     // Función para eliminar un usuario
     const handleDelete = async (id) => {
+        const cookies = parseCookies();
+            const token = cookies.token;
         const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este usuario?');
         if (confirmDelete) {
             try {
-                await axios.delete(`https://fullwash.site/users/${id}`);
+                await axios.delete(`https://fullwash.site/users/${id}`,
+                    {
+                      headers: {
+                        Authorization: `Bearer ${token}`,
+                      }
+                    });
                 setUsuarios((prevUsuarios) => prevUsuarios.filter((user) => user.id !== id));
                 alert('Usuario eliminado correctamente');
             } catch (error) {
