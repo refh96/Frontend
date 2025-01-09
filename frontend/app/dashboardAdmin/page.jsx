@@ -606,68 +606,101 @@ function Dashboard() {
       sx={{ mb: 2 }}
     />
     <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell>Usuario</TableCell>
-          <TableCell>Servicio</TableCell>
-          <TableCell>Fecha</TableCell>
-          <TableCell>Hora</TableCell>
-          <TableCell>Tipo de Vehículo</TableCell>
-          <TableCell>Estado</TableCell>
-          <TableCell>Servicios Extras</TableCell>
-          <TableCell>Total</TableCell>
-          <TableCell>Acciones</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {filteredReservas.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((reserva) => (
-          <TableRow key={reserva.id}>
-            <TableCell>{reserva.user ? reserva.user.username : "N/A"}</TableCell>
-            <TableCell>{reserva.servicio?.nombre_servicio || "N/A"} - ${reserva.servicio?.precio || "N/A"}</TableCell>
-            <TableCell>{new Date(reserva.fecha).toLocaleDateString()}</TableCell>
-            <TableCell>{reserva.hora}</TableCell>
-            <TableCell>{reserva.tipo_vehiculo?.nombre || "N/A"}</TableCell>
-            <TableCell>
-              <Select
-                value={reserva.estado_id}
-                onChange={(e) => handleEstadoChange(reserva.id, e.target.value)}
-              >
-                {estados.map((estado) => (
-                  <MenuItem key={estado.id} value={estado.id}>
-                    {estado.nombre}
-                  </MenuItem>
-                ))}
-              </Select>
-            </TableCell>
-            <TableCell>
-              {reserva.atributos?.length ? (
-                reserva.atributos.map((atributo) => (
-                  <Typography key={atributo.id}>
-                    {atributo.nombre_atributo} - ${atributo.costo_atributo}
-                  </Typography>
-                ))
-              ) : (
-                <Typography>No hay atributos</Typography>
-              )}
-            </TableCell>
-            <TableCell>{reserva.Total}</TableCell>
-            <TableCell>
-              <Button
-                onClick={() => handleEditClick(reserva)}
-                variant="contained"
-                color="primary"
-                size="small"
-              >
-                Editar
-              </Button>
-              <IconButton color="error" onClick={() => handleDelete(reserva.id)}>
-                <DeleteIcon />
-              </IconButton>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+  <TableHead>
+    <TableRow>
+      <TableCell>Usuario</TableCell>
+      <TableCell>Servicio</TableCell>
+      <TableCell>Fecha</TableCell>
+      <TableCell>Hora</TableCell>
+      <TableCell>Tipo de Vehículo</TableCell>
+      <TableCell>Estado</TableCell>
+      <TableCell>Servicios Extras</TableCell>
+      <TableCell>Total</TableCell>
+      <TableCell>Acciones</TableCell>
+    </TableRow>
+  </TableHead>
+  <TableBody>
+    {filteredReservas.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((reserva) => (
+      <TableRow key={reserva.id}>
+        <TableCell>{reserva.user ? reserva.user.username : "N/A"}</TableCell>
+        <TableCell>{reserva.servicio?.nombre_servicio || "N/A"} - ${reserva.servicio?.precio || "N/A"}</TableCell>
+        <TableCell>{new Date(reserva.fecha).toLocaleDateString()}</TableCell>
+        <TableCell>{reserva.hora}</TableCell>
+        <TableCell>{reserva.tipo_vehiculo?.nombre || "N/A"}</TableCell>
+        <TableCell>
+        <Select
+  value={reserva.estado_id}
+  onChange={(e) => {
+    const selectedEstado = estados.find((estado) => estado.id === e.target.value);
+    if (selectedEstado) {
+      Swal.fire({
+        title: `Cambiar estado a "${selectedEstado.nombre}"`,
+        text: `Mensaje Enviado al Correo del Cliente: ${selectedEstado.mensaje}`,
+        icon: 'info',
+        showCancelButton: true,
+        showDenyButton: true, // Habilita el botón alternativo
+        confirmButtonText: 'Confirmar',
+        denyButtonText: 'Editar mensaje', // Texto del botón alternativo
+        cancelButtonText: 'Cancelar',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          handleEstadoChange(reserva.id, e.target.value); // Ejecuta el cambio de estado
+          Swal.fire({
+            title: 'Estado actualizado',
+            text: `El estado se ha cambiado a "${selectedEstado.nombre}".`,
+            icon: 'success',
+            timer: 2000,
+          });
+        } else if (result.isDenied) {
+          // Redirige a la página de edición del mensaje
+          window.location.href = 'https://www.fullwash.cl/estados';
+        } else {
+          // Restaura el valor anterior en el select si se cancela
+          e.target.value = reserva.estado_id;
+        }
+      });
+    }
+  }}
+>
+  {estados
+    .map((estado) => (
+      <MenuItem key={estado.id} value={estado.id}>
+        {estado.nombre}
+      </MenuItem>
+    ))}
+</Select>
+
+
+        </TableCell>
+        <TableCell>
+          {reserva.atributos?.length ? (
+            reserva.atributos.map((atributo) => (
+              <Typography key={atributo.id}>
+                {atributo.nombre_atributo} - ${atributo.costo_atributo}
+              </Typography>
+            ))
+          ) : (
+            <Typography>No hay atributos</Typography>
+          )}
+        </TableCell>
+        <TableCell>{reserva.Total}</TableCell>
+        <TableCell>
+          <Button
+            onClick={() => handleEditClick(reserva)}
+            variant="contained"
+            color="primary"
+            size="small"
+          >
+            Editar
+          </Button>
+          <IconButton color="error" onClick={() => handleDelete(reserva.id)}>
+            <DeleteIcon />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+    ))}
+  </TableBody>
+</Table>;
     {/* Paginación */}
     <TablePagination
       component="div"
@@ -765,18 +798,48 @@ function Dashboard() {
                     }
                   />
                   <FormControl fullWidth margin="normal">
-                    <Select
-                      value={currentReserva.estado_id}
-                      onChange={(e) =>
-                        setCurrentReserva({ ...currentReserva, estado_id: e.target.value })
-                      }
-                    >
-                      {estados.map((estado) => (
-                        <MenuItem key={estado.id} value={estado.id}>
-                          {estado.nombre}
-                        </MenuItem>
-                      ))}
-                    </Select>
+                  <Select
+            value={currentReserva.estado_id}
+            onChange={(e) => {
+              const selectedEstado = estados.find((estado) => estado.id === e.target.value);
+              if (selectedEstado) {
+                Swal.fire({
+                  title: `Cambiar estado a "${selectedEstado.nombre}"`,
+                  text: `Mensaje Enviado al Correo del Cliente: ${selectedEstado.mensaje}`,
+                  icon: 'info',
+                  showCancelButton: true,
+                  showDenyButton: true,
+                  confirmButtonText: 'Confirmar',
+                  denyButtonText: 'Editar mensaje',
+                  cancelButtonText: 'Cancelar',
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    setCurrentReserva({ ...currentReserva, estado_id: e.target.value });
+                    Swal.fire({
+                      title: 'Estado seleccionado',
+                      text: `mensaje: "${selectedEstado.mensaje}".`,
+                      icon: 'success',
+                      timer: 3000,
+                    });
+                  } else if (result.isDenied) {
+                    // Redirigir a la página de edición
+                    window.location.href = 'https://www.fullwash.cl/estados';
+                  } else {
+                    setCurrentReserva({ ...currentReserva });
+                  }
+                });
+                
+              }
+            }}
+          >
+            {estados
+              .filter((estado) => estado.id === 7) // Mostrar solo el estado con id 7
+              .map((estado) => (
+                <MenuItem key={estado.id} value={estado.id}>
+                  {estado.nombre}
+                </MenuItem>
+              ))}
+          </Select>
                   </FormControl>
                 </>
               )}
