@@ -76,7 +76,16 @@ function DashboardCliente() {
   const [showEditProfile, setShowEditProfile] = useState(false); // Para mostrar el formulario de edición de perfil
   const [sortCriteria, setSortCriteria] = useState({ field: "servicio.nombre_servicio", direction: "asc" });
   const router = useRouter();
-
+  const initialReservation = {
+    user_id: user.id,
+    servicio_id: "",
+    fecha: new Date().toISOString().split("T")[0], // Fecha actual
+    hora: "",
+    estado_id: estadoPendienteId || null, // ID del estado inicial (Pendiente)
+    tipo_vehiculo_id: "",
+    atributo_ids: [],
+  };
+  
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -317,7 +326,11 @@ function DashboardCliente() {
     tipo_vehiculos,
   ]);
   
-
+  const handleOpenNewReservation = () => {
+    setReservation(initialReservation); // Reinicia el estado
+    setShowForm(true); // Abre el formulario de nueva reserva
+  };
+  
 
 
   const handleAvatarClick = () => {
@@ -468,7 +481,16 @@ function DashboardCliente() {
     setEditing(true);
   };
 
-
+  const handleCloseNewReservation = () => {
+    setShowForm(false);
+    setReservation(initialReservation); // Limpia el estado al cerrar
+  };
+  
+  const handleCloseEditReservation = () => {
+    setEditing(false);
+    setEditReservation(null); // Limpia el estado de edición
+  };
+  
 
 
   const handleUpdate = async () => {
@@ -823,7 +845,7 @@ function DashboardCliente() {
         {/* Drawer lateral */}
         <Drawer anchor="left" open={drawerOpen} onClose={handleDrawerToggle}>
           <List>
-            <ListItem button onClick={() => { setShowForm(true); handleDrawerToggle(); }}>
+            <ListItem button onClick={() => { setShowForm(true); handleDrawerToggle(); handleOpenNewReservation() }}>
               <ListItemText primary="Crear Nueva Reserva" />
             </ListItem>
             <ListItem button onClick={() => { setActiveScreen('reservas'); handleDrawerToggle(); }}>
@@ -842,7 +864,7 @@ function DashboardCliente() {
         {/* Formulario de Nueva Reserva */}
         <Dialog
           open={showForm}
-          onClose={() => setShowForm(false)}
+          onClose={() => handleCloseNewReservation()}
           fullWidth
           maxWidth="sm"
           sx={{
@@ -945,7 +967,7 @@ function DashboardCliente() {
         {/* Formulario de Edición de Reserva */}
         <Dialog
           open={editing}
-          onClose={() => setEditing(false)}
+          onClose={() => handleCloseNewReservation()}
           fullWidth
           maxWidth="sm"
           sx={{
