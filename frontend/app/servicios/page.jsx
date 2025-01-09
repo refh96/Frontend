@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -12,34 +12,31 @@ import {
 } from '@mui/material';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { FaCar, FaTruck, FaCarSide } from 'react-icons/fa';
 
+const fetchServicios = async (txtBuscar) => {
+  const response = await axios.get(`https://fullwash.site/servicios?txtBuscar=${txtBuscar}`);
+  return response.data.data || [];
+};
+
 const Page = () => {
-  const [serviciosLavados, setServiciosLavados] = useState([]);
-  const [serviciosOtros, setServiciosOtros] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const router = useRouter();
 
-  useEffect(() => {
-    async function fetchServicios() {
-      try {
-        const responseLavados = await axios.get('https://fullwash.site/servicios?txtBuscar=lavados');
-        const responseOtros = await axios.get('https://fullwash.site/servicios?txtBuscar=otros');
-        setServiciosLavados(responseLavados.data.data || []);
-        setServiciosOtros(responseOtros.data.data || []);
-      } catch (error) {
-        console.error('Error fetching services:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
+  // Usar useQuery para obtener servicios
+  const { data: serviciosLavados = [], isLoading: loadingLavados } = useQuery({
+    queryKey: ['servicios', 'lavados'],
+    queryFn: () => fetchServicios('lavados'),
+  });
 
-    fetchServicios();
-  }, []);
+  const { data: serviciosOtros = [], isLoading: loadingOtros } = useQuery({
+    queryKey: ['servicios', 'otros'],
+    queryFn: () => fetchServicios('otros'),
+  });
 
   const formatTime = (minutes) => {
     const hours = Math.floor(minutes / 60);
@@ -58,7 +55,7 @@ const Page = () => {
   };
 
   const handleAddToOrder = () => {
-    router.push(`/dashboardCliente?showForm=true&servicio_id=${selectedService.id}`);    
+    router.push(`/dashboardCliente?showForm=true&servicio_id=${selectedService.id}`);
     handleCloseModal();
   };
 
@@ -234,8 +231,6 @@ const Page = () => {
       <Footer />
     </div>
   );
-  
-
 };
 
 export default Page;

@@ -266,9 +266,9 @@ function DashboardCliente() {
 
       if (servicio.nombre_servicio === "Lavado de Tapices") {
         if (tipoVehiculo.id === 2) {
-          costoVehiculoAjustado += 10000;
+          costoVehiculoAjustado -= 5000;
         } else if (tipoVehiculo.id === 3) {
-          costoVehiculoAjustado += 25000;
+          costoVehiculoAjustado += 10000;
         }
       }
 

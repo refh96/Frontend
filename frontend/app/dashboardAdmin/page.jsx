@@ -85,7 +85,7 @@ function Dashboard() {
         setUnreadCount(unread);
 
         // Si hay nuevas notificaciones no leídas, muestra una alerta
-        const unreadNotifications = data.filter(notification => !notification.is_read);
+       /* const unreadNotifications = data.filter(notification => !notification.is_read);
         if (unreadNotifications.length > 0) {
           const latestNotification = unreadNotifications[0]; // La última notificación no leída
           const notificationDate = new Date(latestNotification.created_at).toLocaleString();
@@ -96,7 +96,7 @@ function Dashboard() {
             icon: 'info',
             confirmButtonText: 'Ok',
           });
-        }
+        }*/
 
       } catch (error) {
         console.error('Error fetching notifications:', error);
@@ -394,9 +394,16 @@ function Dashboard() {
 
   const handleSaveChanges = async (updatedReserva) => {
     try {
+      // Asegúrate de que solo se pueda seleccionar "Recalendarizado"
+      const recalendarizadoEstadoId = 7; // Asumimos que el estado "Recalendarizado" tiene el ID 3, ajusta según sea necesario
+      if (updatedReserva.estado_id !== recalendarizadoEstadoId) {
+        Swal.fire("Error", "Solo se puede seleccionar el estado 'Recalendarizado'.", "error");
+        return; // Evita continuar con la actualización si no es "Recalendarizado"
+      }
+  
       const cookies = parseCookies();
       const token = cookies.token;
-
+  
       await axios.put(
         `https://fullwash.site/reservas/${updatedReserva.id}`,
         {
@@ -414,14 +421,14 @@ function Dashboard() {
           },
         }
       );
-
+  
       // Actualiza la lista de reservas en el estado
       setReservas((prevReservas) =>
         prevReservas.map((reserva) =>
           reserva.id === updatedReserva.id ? updatedReserva : reserva
         )
       );
-
+  
       setEditDialogOpen(false); // Cierra el diálogo
       Swal.fire("¡Éxito!", "Reserva actualizada correctamente.", "success");
     } catch (error) {
@@ -429,6 +436,7 @@ function Dashboard() {
       Swal.fire("Error", "No se pudo actualizar la reserva.", "error");
     }
   };
+  
    // Filtrar las filas para mostrar en la página actual
    const paginatedReservas = reservas.slice(
     page * rowsPerPage,
