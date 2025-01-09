@@ -777,13 +777,28 @@ function DashboardCliente() {
   };
   const generarHorasDisponibles = () => {
     const horas = [];
-    for (let i = 9; i <= 18; i++) { // 18 es 6 PM
-      const horaFormateada = `${i < 10 ? '0' : ''}${i}:00`;
-      horas.push(horaFormateada);
+    const fechaSeleccionada = reservation.fecha; // Fecha seleccionada
+    const horaActual = reservation.hora; // Hora actual de la reserva siendo editada
+  
+    // Obtener reservas que coincidan con la fecha seleccionada
+    const reservasEnFecha = reservas.filter(reserva => {
+      const reservaFecha = new Date(reserva.fecha).toISOString().split('T')[0];
+      return reservaFecha === fechaSeleccionada;
+    });
+  
+    for (let i = 9; i <= 18; i++) { // Horas de 9 AM a 6 PM
+      const horaFormateada = `${i < 10 ? '0' : ''}${i}:00:00`;
+      const horaOcupada = reservasEnFecha.some(reserva => reserva.hora === horaFormateada && reserva.hora !== horaActual);
+  
+      if (!horaOcupada) {
+        horas.push(horaFormateada.slice(0, 5)); // Mostrar solo "HH:mm"
+      }
     }
+  
     return horas;
   };
-
+  
+  
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
       {/* Header */}
