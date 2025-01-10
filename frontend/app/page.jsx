@@ -7,7 +7,6 @@ import Footer from './components/Footer';
 import { useRouter } from 'next/navigation';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import NextImage  from 'next/image';
-import { parseCookies } from 'nookies';
 import axios from 'axios'; // Importa axios
 
 function HomePage() {
@@ -110,13 +109,7 @@ function HomePage() {
   useEffect(() => {
     const fetchRecomendaciones = async () => {
       try {
-        const cookies = parseCookies();
-        const token = cookies.token;
-        const response = await axios.get('https://fullwash.site/encuestas', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get('https://fullwash.site/encuestas');
         if (response.data.success) {
           // Filtramos solo las encuestas que están publicadas y tienen dataSharing en "si"
           const encuestasPublicadas = response.data.encuestas.filter(
@@ -491,7 +484,7 @@ En Full Wash, nos especializamos en ofrecer un servicio de lavado de vehículos 
                     {client.comments}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Satisfacción: {client.satisfaction}/5
+                    Satisfacción: {client.satisfaction}
                   </Typography>
                 </Paper>
               </Grid>
