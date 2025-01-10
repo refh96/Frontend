@@ -4,7 +4,19 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { parseCookies } from 'nookies';
-import { TextField, Button, Box, Typography, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
+import { 
+  TextField, 
+  Button, 
+  Box, 
+  Typography, 
+  MenuItem, 
+  Select, 
+  FormControl, 
+  InputLabel,
+  Paper,
+  Grid
+} from "@mui/material";
+import { ArrowBack } from '@mui/icons-material';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Swal from 'sweetalert2';
@@ -63,10 +75,9 @@ function RegistroRoles() {
     verifyUser();
   }, [router]);
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Validaciones en el frontend
     if (!user.username || !user.numero || !user.email || !user.password || !user.rol) {
       Swal.fire({
@@ -77,7 +88,7 @@ function RegistroRoles() {
       });
       return;
     }
-  
+
     if (user.numero.length < 9) {
       Swal.fire({
         icon: 'error',
@@ -87,7 +98,7 @@ function RegistroRoles() {
       });
       return;
     }
-  
+
     if (!validateEmail(user.email)) {
       Swal.fire({
         icon: 'error',
@@ -97,27 +108,25 @@ function RegistroRoles() {
       });
       return;
     }
-  
+
     try {
       const userWith = { ...user };
 
       const res = await axios.post("https://fullwash.site/users", userWith);
 
-  
-  
       // Verificar si la respuesta contiene un error a pesar del status 200
       if (res.status === 200) {
         // Si el backend devuelve un mensaje de error a pesar de ser un status 200
         if (res.data && res.data.length > 0 && res.data[0].message) {
           let errorMessage = res.data[0].message;
-  
+
           // Personalizar el mensaje de error
           if (errorMessage.includes("unique validation failed on numero")) {
             errorMessage = "Este número ya está en uso.";
           } else if (errorMessage.includes("unique validation failed on email")) {
             errorMessage = "Este correo electrónico ya está en uso.";
           }
-  
+
           Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -151,83 +160,182 @@ function RegistroRoles() {
   };
 
   return (
-    <div>
-
-      <Box display="flex" flexDirection="column" minHeight="100vh" >
+    <Box display="flex" flexDirection="column" minHeight="100vh" sx={{ backgroundColor: '#f5f5f5' }}>
       <Header />
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => router.push('./dashboardAdmin')}
-        sx={{ mt: 2, alignSelf: 'flex-start', fontSize: '0.75rem', padding: '4px 8px' }}
-      >
-        Volver
-      </Button>
-      <Box flex="1" p={2} component="form" onSubmit={handleSubmit}>
-        <Typography
-          variant="h1"
-          align="center"
+      
+      <Box sx={{ 
+        flexGrow: 1, 
+        p: 3, 
+        maxWidth: 1400, 
+        mx: 'auto',
+        width: '100%'
+      }}>
+        {/* Botón de regreso con mejor diseño */}
+        <Button
+          variant="contained"
+          onClick={() => router.push('./dashboardAdmin')}
+          startIcon={<ArrowBack />}
           sx={{
-            my: 4,
-            color: 'darkorange',
-            fontFamily: 'Helvetica',
-            fontSize: '3rem',
+            mb: 4,
+            backgroundColor: 'darkorange',
+            '&:hover': {
+              backgroundColor: '#ff8c00',
+            }
           }}
         >
-          Registro Roles
-        </Typography>
-        {error && (
-          <Typography color="error" variant="body2" sx={{ mb: 2 }}>
-            {error}
-          </Typography>
-        )}
-        <TextField
-          label="Username"
-          variant="outlined"
-          fullWidth
-          onChange={(e) => setUser({ ...user, username: e.target.value })}
-        />
-        <TextField
-          label="Número"
-          variant="outlined"
-          fullWidth
-          onChange={(e) => setUser({ ...user, numero: e.target.value })}
-        />
-        <TextField
-          label="Email"
-          type="email"
-          variant="outlined"
-          fullWidth
-          onChange={(e) => setUser({ ...user, email: e.target.value })}
-        />
-        <TextField
-          label="Password"
-          type="password"
-          variant="outlined"
-          fullWidth
-          onChange={(e) => setUser({ ...user, password: e.target.value })}
-        />
-        
-        <FormControl fullWidth variant="outlined">
-          <InputLabel id="rol-label">Rol</InputLabel>
-          <Select
-            labelId="rol-label"
-            value={user.rol}
-            onChange={(e) => setUser({ ...user, rol: e.target.value })}
-            label="Rol"
-          >
-            <MenuItem value="usuario">Usuario</MenuItem>
-            <MenuItem value="administrador">Administrador</MenuItem>
-          </Select>
-        </FormControl>
-        
-        <Button variant="contained" type="submit" fullWidth>
-          Register
+          Volver al Dashboard
         </Button>
-        </Box>
-      <Footer />
+
+        <Grid container justifyContent="center">
+          <Grid item xs={12} md={6}>
+            <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+              <Typography 
+                variant="h5" 
+                sx={{ 
+                  color: 'darkorange',
+                  mb: 3,
+                  fontWeight: 'bold',
+                  textAlign: 'center'
+                }}
+              >
+                Registro de Usuarios
+              </Typography>
+
+              <Box component="form" onSubmit={handleSubmit}>
+                {error && (
+                  <Typography color="error" variant="body2" sx={{ mb: 2 }}>
+                    {error}
+                  </Typography>
+                )}
+
+                <TextField
+                  label="Username"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  required
+                  onChange={(e) => setUser({ ...user, username: e.target.value })}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      '&.Mui-focused fieldset': {
+                        borderColor: 'darkorange',
+                      },
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: 'darkorange',
+                    },
+                  }}
+                />
+
+                <TextField
+                  label="Número"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  required
+                  onChange={(e) => setUser({ ...user, numero: e.target.value })}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      '&.Mui-focused fieldset': {
+                        borderColor: 'darkorange',
+                      },
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: 'darkorange',
+                    },
+                  }}
+                />
+
+                <TextField
+                  label="Email"
+                  type="email"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  required
+                  onChange={(e) => setUser({ ...user, email: e.target.value })}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      '&.Mui-focused fieldset': {
+                        borderColor: 'darkorange',
+                      },
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: 'darkorange',
+                    },
+                  }}
+                />
+
+                <TextField
+                  label="Contraseña"
+                  type="password"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  required
+                  onChange={(e) => setUser({ ...user, password: e.target.value })}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      '&.Mui-focused fieldset': {
+                        borderColor: 'darkorange',
+                      },
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: 'darkorange',
+                    },
+                  }}
+                />
+
+                <FormControl 
+                  fullWidth 
+                  margin="normal"
+                  required
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      '&.Mui-focused fieldset': {
+                        borderColor: 'darkorange',
+                      },
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: 'darkorange',
+                    },
+                  }}
+                >
+                  <InputLabel id="rol-label">Rol</InputLabel>
+                  <Select
+                    labelId="rol-label"
+                    id="rol"
+                    value={user.rol}
+                    label="Rol"
+                    onChange={(e) => setUser({ ...user, rol: e.target.value })}
+                  >
+                    <MenuItem value="usuario">Usuario</MenuItem>
+                    <MenuItem value="administrador">Administrador</MenuItem>
+                    <MenuItem value="ayudante">Ayudante</MenuItem>
+                  </Select>
+                </FormControl>
+
+                <Button 
+                  variant="contained" 
+                  type="submit" 
+                  fullWidth 
+                  sx={{ 
+                    mt: 3,
+                    backgroundColor: 'darkorange',
+                    '&:hover': {
+                      backgroundColor: '#ff8c00',
+                    }
+                  }}
+                >
+                  Registrar Usuario
+                </Button>
+              </Box>
+            </Paper>
+          </Grid>
+        </Grid>
       </Box>
-    </div>
+      <Footer />
+    </Box>
   );
 }
 

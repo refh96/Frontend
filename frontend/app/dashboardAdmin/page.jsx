@@ -85,18 +85,18 @@ function Dashboard() {
         setUnreadCount(unread);
 
         // Si hay nuevas notificaciones no leídas, muestra una alerta
-       /* const unreadNotifications = data.filter(notification => !notification.is_read);
-        if (unreadNotifications.length > 0) {
-          const latestNotification = unreadNotifications[0]; // La última notificación no leída
-          const notificationDate = new Date(latestNotification.created_at).toLocaleString();
-          // Muestra la alerta con el mensaje de la notificación
-          Swal.fire({
-            title: 'Nuevas notificaciones',
-            html: `<strong>${latestNotification.message}</strong><br><small>Fecha: ${notificationDate}</small>`,
-            icon: 'info',
-            confirmButtonText: 'Ok',
-          });
-        }*/
+        /* const unreadNotifications = data.filter(notification => !notification.is_read);
+         if (unreadNotifications.length > 0) {
+           const latestNotification = unreadNotifications[0]; // La última notificación no leída
+           const notificationDate = new Date(latestNotification.created_at).toLocaleString();
+           // Muestra la alerta con el mensaje de la notificación
+           Swal.fire({
+             title: 'Nuevas notificaciones',
+             html: `<strong>${latestNotification.message}</strong><br><small>Fecha: ${notificationDate}</small>`,
+             icon: 'info',
+             confirmButtonText: 'Ok',
+           });
+         }*/
 
       } catch (error) {
         console.error('Error fetching notifications:', error);
@@ -173,14 +173,15 @@ function Dashboard() {
           }
         );
 
-        // Comprobar si el usuario tiene rol de administrador
-        const userRole = res.data.user.rol;  // Asumiendo que el rol se encuentra en res.data.user.role
-        if (userRole !== "administrador") {
-          // Si no es administrador, redirigir al dashboard de cliente
+        // Comprobar el rol del usuario y redirigir según corresponda
+        const userRole = res.data.user.rol;
+        if (userRole === "ayudante") {
+          router.push("/dashboardAyudante");
+          return;
+        } else if (userRole !== "administrador") {
           router.push("/dashboardCliente");
           return;
         }
-
         setUser(res.data.user);
         setLoading(false);
 
@@ -400,10 +401,10 @@ function Dashboard() {
         Swal.fire("Error", "Solo se puede seleccionar el estado 'Recalendarizado'.", "error");
         return; // Evita continuar con la actualización si no es "Recalendarizado"
       }
-  
+
       const cookies = parseCookies();
       const token = cookies.token;
-  
+
       await axios.put(
         `https://fullwash.site/reservas/${updatedReserva.id}`,
         {
@@ -421,14 +422,14 @@ function Dashboard() {
           },
         }
       );
-  
+
       // Actualiza la lista de reservas en el estado
       setReservas((prevReservas) =>
         prevReservas.map((reserva) =>
           reserva.id === updatedReserva.id ? updatedReserva : reserva
         )
       );
-  
+
       setEditDialogOpen(false); // Cierra el diálogo
       Swal.fire("¡Éxito!", "Reserva actualizada correctamente.", "success");
     } catch (error) {
@@ -436,9 +437,9 @@ function Dashboard() {
       Swal.fire("Error", "No se pudo actualizar la reserva.", "error");
     }
   };
-  
-   // Filtrar las filas para mostrar en la página actual
-   const paginatedReservas = reservas.slice(
+
+  // Filtrar las filas para mostrar en la página actual
+  const paginatedReservas = reservas.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
@@ -454,10 +455,10 @@ function Dashboard() {
   };
 
 
-  const filteredReservas = reservas.filter((reserva) => 
+  const filteredReservas = reservas.filter((reserva) =>
     reserva.user?.username.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
+
 
   if (loading || loadingReservas) return <p>Loading...</p>;
 
@@ -588,6 +589,15 @@ function Dashboard() {
               <ListItem button onClick={() => router.push("../usuarios")}>
                 <ListItemText primary="Administrar Clientes" />
               </ListItem>
+              <ListItem button onClick={() => router.push("../estadisticasReservas")}>
+                <ListItemText primary="Estadisticas de Reservas" />
+              </ListItem>
+              <ListItem button onClick={() => router.push("../listaEncuestas")}>
+                <ListItemText primary="Lista de Encuestas" />
+              </ListItem>
+              <ListItem button onClick={() => router.push("../estadisticas")}>
+                <ListItemText primary="Estadisticas de Encuestas" />
+              </ListItem>
               <ListItem button onClick={logout}>
                 <ListItemText primary="Cerrar Sesión" />
               </ListItem>
@@ -596,123 +606,123 @@ function Dashboard() {
 
           {/* Tabla de reservas */}
           {activeScreen !== "perfil" && (
-  <TableContainer component={Paper} sx={{ mt: 4, color: "black" }}>
-    {/* Campo de búsqueda */}
-    <TextField
-      label="Buscar por usuario"
-      variant="outlined"
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-      sx={{ mb: 2 }}
-    />
-    <Table>
-  <TableHead>
-    <TableRow>
-      <TableCell>Usuario</TableCell>
-      <TableCell>Servicio</TableCell>
-      <TableCell>Fecha</TableCell>
-      <TableCell>Hora</TableCell>
-      <TableCell>Tipo de Vehículo</TableCell>
-      <TableCell>Estado</TableCell>
-      <TableCell>Servicios Extras</TableCell>
-      <TableCell>Total</TableCell>
-      <TableCell>Acciones</TableCell>
-    </TableRow>
-  </TableHead>
-  <TableBody>
-    {filteredReservas.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((reserva) => (
-      <TableRow key={reserva.id}>
-        <TableCell>{reserva.user ? reserva.user.username : "N/A"}</TableCell>
-        <TableCell>{reserva.servicio?.nombre_servicio || "N/A"} - ${reserva.servicio?.precio || "N/A"}</TableCell>
-        <TableCell>{new Date(reserva.fecha).toLocaleDateString()}</TableCell>
-        <TableCell>{reserva.hora}</TableCell>
-        <TableCell>{reserva.tipo_vehiculo?.nombre || "N/A"}</TableCell>
-        <TableCell>
-        <Select
-  value={reserva.estado_id}
-  onChange={(e) => {
-    const selectedEstado = estados.find((estado) => estado.id === e.target.value);
-    if (selectedEstado) {
-      Swal.fire({
-        title: `Cambiar estado a "${selectedEstado.nombre}"`,
-        text: `Mensaje Enviado al Correo del Cliente: ${selectedEstado.mensaje}`,
-        icon: 'info',
-        showCancelButton: true,
-        showDenyButton: true, // Habilita el botón alternativo
-        confirmButtonText: 'Confirmar',
-        denyButtonText: 'Editar mensaje', // Texto del botón alternativo
-        cancelButtonText: 'Cancelar',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          handleEstadoChange(reserva.id, e.target.value); // Ejecuta el cambio de estado
-          Swal.fire({
-            title: 'Estado actualizado',
-            text: `El estado se ha cambiado a "${selectedEstado.nombre}".`,
-            icon: 'success',
-            timer: 2000,
-          });
-        } else if (result.isDenied) {
-          // Redirige a la página de edición del mensaje
-          window.location.href = 'https://www.fullwash.cl/estados';
-        } else {
-          // Restaura el valor anterior en el select si se cancela
-          e.target.value = reserva.estado_id;
-        }
-      });
-    }
-  }}
->
-  {estados
-    .map((estado) => (
-      <MenuItem key={estado.id} value={estado.id}>
-        {estado.nombre}
-      </MenuItem>
-    ))}
-</Select>
+            <TableContainer component={Paper} sx={{ mt: 4, color: "black" }}>
+              {/* Campo de búsqueda */}
+              <TextField
+                label="Buscar por usuario"
+                variant="outlined"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                sx={{ mb: 2 }}
+              />
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Usuario</TableCell>
+                    <TableCell>Servicio</TableCell>
+                    <TableCell>Fecha</TableCell>
+                    <TableCell>Hora</TableCell>
+                    <TableCell>Tipo de Vehículo</TableCell>
+                    <TableCell>Estado</TableCell>
+                    <TableCell>Servicios Extras</TableCell>
+                    <TableCell>Total</TableCell>
+                    <TableCell>Acciones</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {filteredReservas.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((reserva) => (
+                    <TableRow key={reserva.id}>
+                      <TableCell>{reserva.user ? reserva.user.username : "N/A"}</TableCell>
+                      <TableCell>{reserva.servicio?.nombre_servicio || "N/A"} - ${reserva.servicio?.precio || "N/A"}</TableCell>
+                      <TableCell>{new Date(reserva.fecha).toLocaleDateString()}</TableCell>
+                      <TableCell>{reserva.hora}</TableCell>
+                      <TableCell>{reserva.tipo_vehiculo?.nombre || "N/A"}</TableCell>
+                      <TableCell>
+                        <Select
+                          value={reserva.estado_id}
+                          onChange={(e) => {
+                            const selectedEstado = estados.find((estado) => estado.id === e.target.value);
+                            if (selectedEstado) {
+                              Swal.fire({
+                                title: `Cambiar estado a "${selectedEstado.nombre}"`,
+                                text: `Mensaje Enviado al Correo del Cliente: ${selectedEstado.mensaje}`,
+                                icon: 'info',
+                                showCancelButton: true,
+                                showDenyButton: true, // Habilita el botón alternativo
+                                confirmButtonText: 'Confirmar',
+                                denyButtonText: 'Editar mensaje', // Texto del botón alternativo
+                                cancelButtonText: 'Cancelar',
+                              }).then((result) => {
+                                if (result.isConfirmed) {
+                                  handleEstadoChange(reserva.id, e.target.value); // Ejecuta el cambio de estado
+                                  Swal.fire({
+                                    title: 'Estado actualizado',
+                                    text: `El estado se ha cambiado a "${selectedEstado.nombre}".`,
+                                    icon: 'success',
+                                    timer: 2000,
+                                  });
+                                } else if (result.isDenied) {
+                                  // Redirige a la página de edición del mensaje
+                                  window.location.href = 'http://localhost:3000/estados';
+                                } else {
+                                  // Restaura el valor anterior en el select si se cancela
+                                  e.target.value = reserva.estado_id;
+                                }
+                              });
+                            }
+                          }}
+                        >
+                          {estados
+                            .map((estado) => (
+                              <MenuItem key={estado.id} value={estado.id}>
+                                {estado.nombre}
+                              </MenuItem>
+                            ))}
+                        </Select>
 
 
-        </TableCell>
-        <TableCell>
-          {reserva.atributos?.length ? (
-            reserva.atributos.map((atributo) => (
-              <Typography key={atributo.id}>
-                {atributo.nombre_atributo} - ${atributo.costo_atributo}
-              </Typography>
-            ))
-          ) : (
-            <Typography>No hay atributos</Typography>
+                      </TableCell>
+                      <TableCell>
+                        {reserva.atributos?.length ? (
+                          reserva.atributos.map((atributo) => (
+                            <Typography key={atributo.id}>
+                              {atributo.nombre_atributo} - ${atributo.costo_atributo}
+                            </Typography>
+                          ))
+                        ) : (
+                          <Typography>No hay atributos</Typography>
+                        )}
+                      </TableCell>
+                      <TableCell>{reserva.Total}</TableCell>
+                      <TableCell>
+                        <Button
+                          onClick={() => handleEditClick(reserva)}
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                        >
+                          Editar
+                        </Button>
+                        <IconButton color="error" onClick={() => handleDelete(reserva.id)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>;
+              {/* Paginación */}
+              <TablePagination
+                component="div"
+                count={filteredReservas.length}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                labelRowsPerPage="Filas por página"
+              />
+            </TableContainer>
           )}
-        </TableCell>
-        <TableCell>{reserva.Total}</TableCell>
-        <TableCell>
-          <Button
-            onClick={() => handleEditClick(reserva)}
-            variant="contained"
-            color="primary"
-            size="small"
-          >
-            Editar
-          </Button>
-          <IconButton color="error" onClick={() => handleDelete(reserva.id)}>
-            <DeleteIcon />
-          </IconButton>
-        </TableCell>
-      </TableRow>
-    ))}
-  </TableBody>
-</Table>;
-    {/* Paginación */}
-    <TablePagination
-      component="div"
-      count={filteredReservas.length}
-      page={page}
-      onPageChange={handleChangePage}
-      rowsPerPage={rowsPerPage}
-      onRowsPerPageChange={handleChangeRowsPerPage}
-      labelRowsPerPage="Filas por página"
-    />
-  </TableContainer>
-)}
 
 
           {/* Formulario de edición de perfil */}
@@ -798,48 +808,48 @@ function Dashboard() {
                     }
                   />
                   <FormControl fullWidth margin="normal">
-                  <Select
-            value={currentReserva.estado_id}
-            onChange={(e) => {
-              const selectedEstado = estados.find((estado) => estado.id === e.target.value);
-              if (selectedEstado) {
-                Swal.fire({
-                  title: `Cambiar estado a "${selectedEstado.nombre}"`,
-                  text: `Mensaje Enviado al Correo del Cliente: ${selectedEstado.mensaje}`,
-                  icon: 'info',
-                  showCancelButton: true,
-                  showDenyButton: true,
-                  confirmButtonText: 'Confirmar',
-                  denyButtonText: 'Editar mensaje',
-                  cancelButtonText: 'Cancelar',
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    setCurrentReserva({ ...currentReserva, estado_id: e.target.value });
-                    Swal.fire({
-                      title: 'Estado seleccionado',
-                      text: `mensaje: "${selectedEstado.mensaje}".`,
-                      icon: 'success',
-                      timer: 3000,
-                    });
-                  } else if (result.isDenied) {
-                    // Redirigir a la página de edición
-                    window.location.href = 'https://www.fullwash.cl/estados';
-                  } else {
-                    setCurrentReserva({ ...currentReserva });
-                  }
-                });
-                
-              }
-            }}
-          >
-            {estados
-              .filter((estado) => estado.id === 7) // Mostrar solo el estado con id 7
-              .map((estado) => (
-                <MenuItem key={estado.id} value={estado.id}>
-                  {estado.nombre}
-                </MenuItem>
-              ))}
-          </Select>
+                    <Select
+                      value={currentReserva.estado_id}
+                      onChange={(e) => {
+                        const selectedEstado = estados.find((estado) => estado.id === e.target.value);
+                        if (selectedEstado) {
+                          Swal.fire({
+                            title: `Cambiar estado a "${selectedEstado.nombre}"`,
+                            text: `Mensaje Enviado al Correo del Cliente: ${selectedEstado.mensaje}`,
+                            icon: 'info',
+                            showCancelButton: true,
+                            showDenyButton: true,
+                            confirmButtonText: 'Confirmar',
+                            denyButtonText: 'Editar mensaje',
+                            cancelButtonText: 'Cancelar',
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                              setCurrentReserva({ ...currentReserva, estado_id: e.target.value });
+                              Swal.fire({
+                                title: 'Estado seleccionado',
+                                text: `mensaje: "${selectedEstado.mensaje}".`,
+                                icon: 'success',
+                                timer: 3000,
+                              });
+                            } else if (result.isDenied) {
+                              // Redirigir a la página de edición
+                              window.location.href = 'http://localhost:3000/estados';
+                            } else {
+                              setCurrentReserva({ ...currentReserva });
+                            }
+                          });
+
+                        }
+                      }}
+                    >
+                      {estados
+                        .filter((estado) => estado.id === 7) // Mostrar solo el estado con id 7
+                        .map((estado) => (
+                          <MenuItem key={estado.id} value={estado.id}>
+                            {estado.nombre}
+                          </MenuItem>
+                        ))}
+                    </Select>
                   </FormControl>
                 </>
               )}

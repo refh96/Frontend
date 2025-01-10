@@ -16,8 +16,9 @@ import {
   Paper,
   Grid,
   IconButton,
+  Alert,
 } from "@mui/material";
-import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
+import { Delete as DeleteIcon, Edit as EditIcon, ArrowBack } from '@mui/icons-material';
 import { parseCookies } from 'nookies';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -34,7 +35,6 @@ function TiposDeVehiculo() {
   const [error, setError] = useState(null);
   const router = useRouter();
   const formRef = useRef(null); // Referencia al formulario
-
 
   useEffect(() => {
     const verifyUser = async () => {
@@ -73,7 +73,6 @@ function TiposDeVehiculo() {
 
     verifyUser();
   }, [router]);
-  
 
   const fetchTiposDeVehiculo = async () => {
     try {
@@ -186,94 +185,181 @@ function TiposDeVehiculo() {
   };
 
   return (
-    <Box display="flex" flexDirection="column" minHeight="100vh">
+    <Box display="flex" flexDirection="column" minHeight="100vh" sx={{ backgroundColor: '#f5f5f5' }}>
       <Header />
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => router.push('./dashboardAdmin')}
-        sx={{ mt: 2, alignSelf: 'flex-start', fontSize: '0.75rem', padding: '4px 8px' }}
-      >
-        Volver
-      </Button>
+      
+      {/* Container principal con padding y máximo ancho */}
+      <Box sx={{ 
+        flexGrow: 1, 
+        p: 3, 
+        maxWidth: 1400, 
+        mx: 'auto',
+        width: '100%'
+      }}>
+        {/* Botón de regreso con mejor diseño */}
+        <Button
+          variant="contained"
+          onClick={() => router.push('./dashboardAdmin')}
+          startIcon={<ArrowBack />}
+          sx={{
+            mb: 4,
+            backgroundColor: 'darkorange',
+            '&:hover': {
+              backgroundColor: '#ff8c00',
+            }
+          }}
+        >
+          Volver al Dashboard
+        </Button>
 
-      <Box sx={{ flexGrow: 1, mt: 4 }}>
-        <Grid container spacing={2} justifyContent="center">
+        <Grid container spacing={4}>
+          {/* Formulario */}
           <Grid item xs={12} md={4}>
-            <Box ref={formRef} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <Typography variant="h4" color="darkorange" gutterBottom>
-                {editingId ? "Editar Tipo de Vehículo" : "Nuevo Tipo de Vehículo"}
+            <Paper 
+              elevation={3} 
+              sx={{ 
+                p: 3, 
+                borderRadius: 2,
+                height: '100%',
+                backgroundColor: 'white'
+              }}
+              ref={formRef}
+            >
+              <Typography 
+                variant="h5" 
+                sx={{ 
+                  color: 'darkorange',
+                  mb: 3,
+                  fontWeight: 'bold',
+                  textAlign: 'center'
+                }}
+              >
+                {editingId ? 'Editar Tipo de Vehículo' : 'Nuevo Tipo de Vehículo'}
               </Typography>
 
-              <Box component="form" onSubmit={handleSubmit} sx={{ mt: 4, width: '100%' }}>
+              <Box component="form" onSubmit={handleSubmit}>
                 <TextField
                   fullWidth
-                  margin="normal"
-                  label="Nombre del Tipo de Vehículo"
+                  label="Nombre del Tipo"
                   name="nombre"
                   value={tipoVehiculo.nombre}
                   onChange={handleChange}
                   required
+                  variant="outlined"
+                  sx={{ mb: 2 }}
                 />
                 <TextField
                   fullWidth
-                  margin="normal"
                   label="Costo"
                   name="costo"
+                  type="number"
                   value={tipoVehiculo.costo}
                   onChange={handleChange}
-                  type="number"
                   required
+                  variant="outlined"
+                  sx={{ mb: 3 }}
                 />
 
-                <Button variant="contained" color="primary" type="submit" fullWidth sx={{ mt: 2 }}>
-                  {editingId ? "Actualizar Tipo de Vehículo" : "Crear Tipo de Vehículo"}
+                <Button 
+                  variant="contained" 
+                  type="submit" 
+                  fullWidth
+                  sx={{
+                    backgroundColor: 'darkorange',
+                    '&:hover': {
+                      backgroundColor: '#ff8c00',
+                    },
+                    py: 1.5
+                  }}
+                >
+                  {editingId ? 'Actualizar Tipo' : 'Crear Tipo'}
                 </Button>
               </Box>
 
               {error && (
-                <Typography color="error" sx={{ mt: 2 }}>
+                <Alert severity="error" sx={{ mt: 2 }}>
                   {error}
-                </Typography>
+                </Alert>
               )}
-            </Box>
+            </Paper>
           </Grid>
 
+          {/* Tabla */}
           <Grid item xs={12} md={8}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <Typography variant="h4" color="darkorange" gutterBottom>
-                Lista de Tipos de Vehículo
-              </Typography>
-              <TableContainer component={Paper}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>ID</TableCell>
-                      <TableCell>Nombre</TableCell>
-                      <TableCell>Costo</TableCell>
-                      <TableCell>Acciones</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {tiposVehiculo.map((tipo) => (
-                      <TableRow key={tipo.id}>
-                        <TableCell>{tipo.id}</TableCell>
-                        <TableCell>{tipo.nombre}</TableCell>
-                        <TableCell>${tipo.costo}</TableCell>
-                        <TableCell>
-                          <IconButton color="primary" onClick={() => handleEdit(tipo)}>
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton color="error" onClick={() => handleDelete(tipo.id)}>
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
+            <Paper 
+              elevation={3} 
+              sx={{ 
+                borderRadius: 2,
+                overflow: 'hidden'
+              }}
+            >
+              <Box sx={{ p: 3, backgroundColor: 'white' }}>
+                <Typography 
+                  variant="h5" 
+                  sx={{ 
+                    color: 'darkorange',
+                    mb: 3,
+                    fontWeight: 'bold',
+                    textAlign: 'center'
+                  }}
+                >
+                  Lista de Tipos de Vehículos
+                </Typography>
+                
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>ID</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Nombre</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Costo</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Acciones</TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Box>
+                    </TableHead>
+                    <TableBody>
+                      {tiposVehiculo.map((tipo) => (
+                        <TableRow 
+                          key={tipo.id}
+                          sx={{ 
+                            '&:hover': { 
+                              backgroundColor: '#f8f8f8' 
+                            }
+                          }}
+                        >
+                          <TableCell>{tipo.id}</TableCell>
+                          <TableCell>{tipo.nombre}</TableCell>
+                          <TableCell>${tipo.costo}</TableCell>
+                          <TableCell>
+                            <IconButton 
+                              onClick={() => handleEdit(tipo)}
+                              sx={{ 
+                                color: 'darkorange',
+                                '&:hover': { 
+                                  backgroundColor: 'rgba(255, 140, 0, 0.1)' 
+                                }
+                              }}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton 
+                              onClick={() => handleDelete(tipo.id)}
+                              sx={{ 
+                                color: 'error.main',
+                                '&:hover': { 
+                                  backgroundColor: 'rgba(211, 47, 47, 0.1)' 
+                                }
+                              }}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Box>
+            </Paper>
           </Grid>
         </Grid>
       </Box>

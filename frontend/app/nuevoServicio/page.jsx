@@ -21,7 +21,7 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
+import { Delete as DeleteIcon, Edit as EditIcon, ArrowBack } from '@mui/icons-material';
 import { parseCookies } from 'nookies';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -221,26 +221,53 @@ function NuevoServicio() {
   };
 
   return (
-    <Box display="flex" flexDirection="column" minHeight="100vh">
+    <Box display="flex" flexDirection="column" minHeight="100vh" sx={{ backgroundColor: '#f5f5f5' }}>
       <Header />
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => router.push('./dashboardAdmin')}
-        sx={{ mt: 2, alignSelf: 'flex-start', fontSize: '0.75rem', padding: '4px 8px' }}
-      >
-        Volver
-      </Button>
+      
+      <Box sx={{ 
+        flexGrow: 1, 
+        p: 3, 
+        maxWidth: 1400, 
+        mx: 'auto',
+        width: '100%'
+      }}>
+        {/* Botón de regreso con mejor diseño */}
+        <Button
+          variant="contained"
+          onClick={() => router.push('./dashboardAdmin')}
+          startIcon={<ArrowBack />}
+          sx={{
+            mb: 4,
+            backgroundColor: 'darkorange',
+            '&:hover': {
+              backgroundColor: '#ff8c00',
+            }
+          }}
+        >
+          Volver al Dashboard
+        </Button>
 
-      <Box sx={{ flexGrow: 1, mt: 4 }}>
-        <Grid container spacing={2} justifyContent="center">
+        <Grid container spacing={3}>
+          {/* Formulario */}
           <Grid item xs={12} md={4}>
-            <Box ref={formRef} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <Typography variant="h4" color="darkorange" gutterBottom>
+            <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+              <Typography 
+                variant="h5" 
+                sx={{ 
+                  color: 'darkorange',
+                  mb: 3,
+                  fontWeight: 'bold',
+                  textAlign: 'center'
+                }}
+              >
                 {editingId ? "Editar Servicio" : "Nuevo Servicio"}
               </Typography>
 
-              <Box component="form" onSubmit={handleSubmit} sx={{ mt: 4, width: '100%' }}>
+              <Box 
+                component="form" 
+                onSubmit={handleSubmit} 
+                ref={formRef}
+              >
                 <TextField
                   fullWidth
                   margin="normal"
@@ -249,6 +276,16 @@ function NuevoServicio() {
                   value={servicio.nombre_servicio}
                   onChange={handleChange}
                   required
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      '&.Mui-focused fieldset': {
+                        borderColor: 'darkorange',
+                      },
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: 'darkorange',
+                    },
+                  }}
                 />
                 <TextField
                   fullWidth
@@ -259,8 +296,31 @@ function NuevoServicio() {
                   value={servicio.tiempo_estimado}
                   onChange={handleChange}
                   required
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      '&.Mui-focused fieldset': {
+                        borderColor: 'darkorange',
+                      },
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: 'darkorange',
+                    },
+                  }}
                 />
-                <FormControl fullWidth margin="normal">
+                <FormControl 
+                  fullWidth 
+                  margin="normal"
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      '&.Mui-focused fieldset': {
+                        borderColor: 'darkorange',
+                      },
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: 'darkorange',
+                    },
+                  }}
+                >
                   <InputLabel>Categoría</InputLabel>
                   <Select
                     value={servicio.categoria}
@@ -282,6 +342,16 @@ function NuevoServicio() {
                   value={servicio.precio}
                   onChange={handleChange}
                   required
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      '&.Mui-focused fieldset': {
+                        borderColor: 'darkorange',
+                      },
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: 'darkorange',
+                    },
+                  }}
                 />
                 <TextField
                   fullWidth
@@ -290,8 +360,31 @@ function NuevoServicio() {
                   name="detalles_incluidos"
                   value={servicio.detalles_incluidos}
                   onChange={handleChange}
+                  multiline
+                  rows={3}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      '&.Mui-focused fieldset': {
+                        borderColor: 'darkorange',
+                      },
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: 'darkorange',
+                    },
+                  }}
                 />
-                <Button variant="contained" color="primary" type="submit" fullWidth sx={{ mt: 2 }}>
+                <Button 
+                  variant="contained" 
+                  type="submit" 
+                  fullWidth 
+                  sx={{ 
+                    mt: 2,
+                    backgroundColor: 'darkorange',
+                    '&:hover': {
+                      backgroundColor: '#ff8c00',
+                    }
+                  }}
+                >
                   {editingId ? "Actualizar Servicio" : "Crear Servicio"}
                 </Button>
               </Box>
@@ -301,41 +394,73 @@ function NuevoServicio() {
                   {error}
                 </Typography>
               )}
-            </Box>
+            </Paper>
           </Grid>
 
+          {/* Tabla de Servicios */}
           <Grid item xs={12} md={8}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <Typography variant="h4" color="darkorange" gutterBottom>
+            <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+              <Typography 
+                variant="h5" 
+                sx={{ 
+                  color: 'darkorange',
+                  mb: 3,
+                  fontWeight: 'bold',
+                  textAlign: 'center'
+                }}
+              >
                 Lista de Servicios
               </Typography>
-              <TableContainer component={Paper}>
+              <TableContainer>
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>ID</TableCell>
-                      <TableCell>Nombre del Servicio</TableCell>
-                      <TableCell>Categoría</TableCell>
-                      <TableCell>Precio</TableCell>
-                      <TableCell>Tiempo Estimado</TableCell>
-                      <TableCell>Detalles Incluidos</TableCell>
-                      <TableCell>Acciones</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>ID</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Nombre del Servicio</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Categoría</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Precio</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Tiempo Estimado</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Detalles Incluidos</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Acciones</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {servicios.map((servicio) => (
-                      <TableRow key={servicio.id}>
+                      <TableRow 
+                        key={servicio.id}
+                        sx={{ 
+                          '&:hover': { 
+                            backgroundColor: '#f8f8f8' 
+                          }
+                        }}
+                      >
                         <TableCell>{servicio.id}</TableCell>
                         <TableCell>{servicio.nombre_servicio}</TableCell>
                         <TableCell>{servicio.categoria}</TableCell>
-                        <TableCell>{servicio.precio}</TableCell>
+                        <TableCell>${servicio.precio}</TableCell>
                         <TableCell>{servicio.tiempo_estimado} minutos</TableCell>
                         <TableCell>{servicio.detalles_incluidos}</TableCell>
                         <TableCell>
-                          <IconButton color="primary" onClick={() => handleEdit(servicio)}>
+                          <IconButton 
+                            onClick={() => handleEdit(servicio)}
+                            sx={{ 
+                              color: 'darkorange',
+                              '&:hover': {
+                                backgroundColor: 'rgba(255, 140, 0, 0.1)',
+                              }
+                            }}
+                          >
                             <EditIcon />
                           </IconButton>
-                          <IconButton color="error" onClick={() => handleDelete(servicio.id)}>
+                          <IconButton 
+                            onClick={() => handleDelete(servicio.id)}
+                            sx={{ 
+                              color: '#d32f2f',
+                              '&:hover': {
+                                backgroundColor: 'rgba(211, 47, 47, 0.1)',
+                              }
+                            }}
+                          >
                             <DeleteIcon />
                           </IconButton>
                         </TableCell>
@@ -344,7 +469,7 @@ function NuevoServicio() {
                   </TableBody>
                 </Table>
               </TableContainer>
-            </Box>
+            </Paper>
           </Grid>
         </Grid>
       </Box>

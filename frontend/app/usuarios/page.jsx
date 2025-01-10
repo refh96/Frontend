@@ -18,11 +18,14 @@ import {
     MenuItem,
     FormControl,
     InputLabel,
+    IconButton,
 } from '@mui/material';
+import { ArrowBack, WhatsApp as WhatsAppIcon } from '@mui/icons-material';
 import axios from 'axios';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+
 const AdminUsuarios = () => {
     const [loading, setLoading] = useState(true); // Estado de carga
     const [usuarios, setUsuarios] = useState([]);
@@ -40,9 +43,16 @@ const AdminUsuarios = () => {
                         Authorization: `Bearer ${token}`,
                       }
                     });
-                setUsuarios(response.data);
+                // Verificar si la respuesta es exitosa y contiene users
+                if (response.data.success && response.data.users) {
+                    setUsuarios(response.data.users);
+                } else {
+                    console.error('Formato de respuesta inesperado:', response.data);
+                    setUsuarios([]);
+                }
             } catch (error) {
                 console.error('Error al obtener los usuarios:', error);
+                setUsuarios([]);
             }
         };
         const verifyUser = async () => {
@@ -129,87 +139,151 @@ const AdminUsuarios = () => {
     };
 
     return (
-    <Box display="flex" flexDirection="column" minHeight="100vh">
-      <Header />
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => router.push('./dashboardAdmin')}
-        sx={{ mt: 2, alignSelf: 'flex-start', fontSize: '0.75rem', padding: '4px 8px' }}
-      >
-        Volver
-      </Button>
-      <Box flex="1" p={2}>
-        <Container>
-        <Typography variant="h4" color="darkorange" gutterBottom textAlign={"center"}>
-                Administracion de Usuarios
-              </Typography>
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>ID</TableCell>
-                            <TableCell>Nombre de Usuario</TableCell>
-                            <TableCell>Número</TableCell>
-                            <TableCell>Email</TableCell>
-                            <TableCell>Rol</TableCell>
-                            <TableCell>Acciones</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {usuarios.map((usuario) => (
-                            <TableRow key={usuario.id}>
-                                <TableCell>{usuario.id}</TableCell>
-                                <TableCell>{usuario.username}</TableCell>
-                                <TableCell>
-                                    <a
-                                        href={`https://wa.me/${usuario.numero}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        {usuario.numero}
-                                    </a>
-                                </TableCell>
-                                <TableCell>{usuario.email}</TableCell>
-                                <TableCell>
-                                    <FormControl variant="standard">
-                                        <Select
-                                            value={usuario.rol}
-                                            onChange={(e) => handleRoleChange(usuario.id, e.target.value)}
+        <Box display="flex" flexDirection="column" minHeight="100vh" sx={{ backgroundColor: '#f5f5f5' }}>
+            <Header />
+            
+            {/* Container principal con padding y máximo ancho */}
+            <Box sx={{ 
+                flexGrow: 1, 
+                p: 3, 
+                maxWidth: 1400, 
+                mx: 'auto',
+                width: '100%'
+            }}>
+                {/* Botón de regreso con mejor diseño */}
+                <Button
+                    variant="contained"
+                    onClick={() => router.push('./dashboardAdmin')}
+                    startIcon={<ArrowBack />}
+                    sx={{
+                        mb: 4,
+                        backgroundColor: 'darkorange',
+                        '&:hover': {
+                            backgroundColor: '#ff8c00',
+                        }
+                    }}
+                >
+                    Volver al Dashboard
+                </Button>
+
+                <Paper 
+                    elevation={3} 
+                    sx={{ 
+                        borderRadius: 2,
+                        overflow: 'hidden'
+                    }}
+                >
+                    <Box sx={{ p: 3, backgroundColor: 'white' }}>
+                        <Typography 
+                            variant="h5" 
+                            sx={{ 
+                                color: 'darkorange',
+                                mb: 3,
+                                fontWeight: 'bold',
+                                textAlign: 'center'
+                            }}
+                        >
+                            Administración de Usuarios
+                        </Typography>
+                        
+                        <TableContainer>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>ID</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Nombre de Usuario</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Número</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Email</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Rol</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Acciones</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {usuarios.map((usuario) => (
+                                        <TableRow 
+                                            key={usuario.id}
+                                            sx={{ 
+                                                '&:hover': { 
+                                                    backgroundColor: '#f8f8f8' 
+                                                }
+                                            }}
                                         >
-                                            <MenuItem value="usuario">Usuario</MenuItem>
-                                            <MenuItem value="administrador">Administrador</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                </TableCell>
-                                <TableCell>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={() =>
-                                            window.open(`https://wa.me/${usuario.numero}`, '_blank')
-                                        }
-                                    >
-                                        Contactar por WhatsApp
-                                    </Button>
-                                    <Button
-                                        variant="contained"
-                                        color="secondary"
-                                        onClick={() => handleDelete(usuario.id)}
-                                        style={{ marginLeft: '10px' }}
-                                    >
-                                        Eliminar
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </Container>
+                                            <TableCell>{usuario.id}</TableCell>
+                                            <TableCell>{usuario.username}</TableCell>
+                                            <TableCell>
+                                                <a
+                                                    href={`https://wa.me/${usuario.numero}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    style={{ 
+                                                        color: 'darkorange',
+                                                        textDecoration: 'none',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap: '8px'
+                                                    }}
+                                                >
+                                                    {usuario.numero}
+                                                </a>
+                                            </TableCell>
+                                            <TableCell>{usuario.email}</TableCell>
+                                            <TableCell>
+                                                <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
+                                                    <Select
+                                                        value={usuario.rol}
+                                                        onChange={(e) => handleRoleChange(usuario.id, e.target.value)}
+                                                        sx={{
+                                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                                borderColor: 'darkorange',
+                                                            },
+                                                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                                                                borderColor: '#ff8c00',
+                                                            },
+                                                        }}
+                                                    >
+                                                        <MenuItem value="usuario">Usuario</MenuItem>
+                                                        <MenuItem value="administrador">Administrador</MenuItem>
+                                                    </Select>
+                                                </FormControl>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Button
+                                                    variant="contained"
+                                                    startIcon={<WhatsAppIcon />}
+                                                    onClick={() => window.open(`https://wa.me/${usuario.numero}`, '_blank')}
+                                                    sx={{
+                                                        mr: 1,
+                                                        backgroundColor: '#25D366',
+                                                        '&:hover': {
+                                                            backgroundColor: '#128C7E',
+                                                        },
+                                                    }}
+                                                >
+                                                    WhatsApp
+                                                </Button>
+                                                <Button
+                                                    variant="contained"
+                                                    color="error"
+                                                    onClick={() => handleDelete(usuario.id)}
+                                                    sx={{
+                                                        '&:hover': {
+                                                            backgroundColor: 'rgb(211, 47, 47)',
+                                                        },
+                                                    }}
+                                                >
+                                                    Eliminar
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Box>
+                </Paper>
+            </Box>
+            <Footer />
         </Box>
-      <Footer />
-      </Box>
     );
 };
 

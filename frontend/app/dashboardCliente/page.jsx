@@ -667,17 +667,71 @@ function DashboardCliente() {
         );
       case "perfil":
         return (
-          <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" textAlign="center">
-            <Typography color="black" variant="h6">Perfil</Typography>
-            <Avatar sx={{ bgcolor: 'secondary.main', marginBottom: 2 }}>
-              {user.username.charAt(0)}
-            </Avatar>
-            <Typography color="black">Nombre: {user.username}</Typography>
-            <Typography color="black">Email: {user.email}</Typography>
-            <Typography color="black">Teléfono: {user.numero}</Typography>
-            <Button onClick={() => setShowEditProfile(true)}>Editar Perfil</Button>
-            <Button onClick={logout}>Cerrar Sesión</Button>
-          </Box>
+          <Box
+  sx={{
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    p: 4,
+    mx: 'auto',
+    mt: 4,
+    maxWidth: 600,
+    backgroundColor: '#fff',
+    borderRadius: 2,
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+  }}
+>
+  <Avatar 
+    sx={{ 
+      width: 120,
+      height: 120,
+      bgcolor: '#1a237e',
+      fontSize: '3rem',
+      mb: 4
+    }}
+  >
+    {user.username.charAt(0)}
+  </Avatar>
+  <Box sx={{ textAlign: 'center', mb: 4 }}>
+  <Typography color="black" sx={{ fontSize: '1.1rem', mb: 2 }}>
+  <strong>Nombre:</strong> {user.username}
+</Typography>
+<Typography color="black" sx={{ fontSize: '1.1rem', mb: 2 }}>
+  <strong>Correo:</strong> {user.email}
+</Typography>
+<Typography color="black" sx={{ fontSize: '1.1rem', mb: 2 }}>
+  <strong>Telefono:</strong> {user.numero}
+</Typography>
+
+    {/* ... otros campos ... */}
+  </Box>
+  <Box sx={{ display: 'flex', gap: 2 }}>
+    <Button 
+      variant="contained" 
+      onClick={() => setShowEditProfile(true)}
+      sx={{
+        backgroundColor: '#1a237e',
+        '&:hover': { backgroundColor: '#0d47a1' }
+      }}
+    >
+      Editar Perfil
+    </Button>
+    <Button 
+      variant="outlined" 
+      onClick={logout}
+      sx={{
+        color: '#d32f2f',
+        borderColor: '#d32f2f',
+        '&:hover': {
+          backgroundColor: '#ffebee',
+          borderColor: '#b71c1c'
+        }
+      }}
+    >
+      Cerrar Sesión
+    </Button>
+  </Box>
+</Box>
         );
       default:
         return null;
@@ -828,19 +882,46 @@ function DashboardCliente() {
 
       {/* Contenido Principal */}
       <Box flex="1" p={2}>
-        <AppBar position="static">
-          <Toolbar>
-            <IconButton edge="start" color="inherit" aria-label="menu" onClick={handleDrawerToggle}>
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" textAlign="center" sx={{ flexGrow: 1 }}>
-              Dashboard
-            </Typography>
-            <Avatar sx={{ bgcolor: 'secondary.main' }} onClick={handleAvatarClick}>
-              {user.username.charAt(0)}
-            </Avatar>
-          </Toolbar>
-        </AppBar>
+      <AppBar position="static" sx={{ 
+  backgroundColor: '#1a237e',
+  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+  mb: 3
+}}>
+  <Toolbar>
+    <IconButton 
+      edge="start" 
+      color="inherit" 
+      onClick={handleDrawerToggle}
+      sx={{ 
+        mr: 2,
+        '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' }
+      }}
+    >
+      <MenuIcon />
+    </IconButton>
+    <Typography 
+      variant="h6" 
+      sx={{ 
+        flexGrow: 1, 
+        fontWeight: 600,
+        textAlign: 'center'
+      }}
+    >
+      Panel de Control
+    </Typography>
+    <Avatar 
+      onClick={handleAvatarClick}
+      sx={{ 
+        bgcolor: '#ff5722',
+        cursor: 'pointer',
+        transition: 'transform 0.2s',
+        '&:hover': { transform: 'scale(1.1)' }
+      }}
+    >
+      {user.username.charAt(0)}
+    </Avatar>
+  </Toolbar>
+</AppBar>
 
         {/* Drawer lateral */}
         <Drawer anchor="left" open={drawerOpen} onClose={handleDrawerToggle}>

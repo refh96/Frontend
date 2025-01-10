@@ -16,13 +16,13 @@ import {
   Paper,
   Grid,
   IconButton,
+  Alert,
 } from '@mui/material';
-import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
+import { Delete as DeleteIcon, Edit as EditIcon, ArrowBack } from '@mui/icons-material';
 import { parseCookies } from 'nookies';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Swal from 'sweetalert2';
-
 
 function Estados() {
   const [estado, setEstado] = useState({
@@ -32,10 +32,10 @@ function Estados() {
   const [estados, setEstados] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState(null);
+  const [userRole, setUserRole] = useState(null);
   const router = useRouter();
   const formRef = useRef(null); // Referencia al formulario
   const [loading, setLoading] = useState(true); // Estado de carga
-
 
   useEffect(() => {
     const verifyUser = async () => {
@@ -58,8 +58,9 @@ function Estados() {
           }
         );
 
-        const userRole = res.data.user.rol;
-        if (userRole !== "administrador") {
+        const role = res.data.user.rol;
+        setUserRole(role);
+        if (role !== "administrador" && role !== "ayudante") {
           router.push("/loginCliente");
           return;
         }
@@ -176,94 +177,188 @@ function Estados() {
   };
 
   return (
-    <Box display="flex" flexDirection="column" minHeight="100vh">
+    <Box display="flex" flexDirection="column" minHeight="100vh" sx={{ backgroundColor: '#f5f5f5' }}>
       <Header />
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => router.push('./dashboardAdmin')}
-        sx={{ mt: 2, alignSelf: 'flex-start', fontSize: '0.75rem', padding: '4px 8px' }}
-      >
-        Volver
-      </Button>
 
-      <Box sx={{ flexGrow: 1, mt: 4 }}>
-        <Grid container spacing={2} justifyContent="center">
+      {/* Container principal con padding y máximo ancho */}
+      <Box sx={{
+        flexGrow: 1,
+        p: 3,
+        maxWidth: 1400,
+        mx: 'auto',
+        width: '100%'
+      }}>
+        {/* Botón de regreso con mejor diseño */}
+        <Button
+          variant="contained"
+          onClick={() => {
+            if (userRole === "administrador") {
+              router.push('/dashboardAdmin');
+            } else if (userRole === "ayudante") {
+              router.push('/dashboardAyudante');
+            }
+          }}
+          startIcon={<ArrowBack />}
+          sx={{
+            mb: 4,
+            backgroundColor: 'darkorange',
+            '&:hover': {
+              backgroundColor: '#ff8c00',
+            }
+          }}
+        >
+          Volver al Dashboard
+        </Button>
+
+        <Grid container spacing={4}>
+          {/* Formulario */}
           <Grid item xs={12} md={4}>
-            <Box ref={formRef} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <Typography variant="h4" color="darkorange" gutterBottom>
+            <Paper
+              elevation={3}
+              sx={{
+                p: 3,
+                borderRadius: 2,
+                height: '100%',
+                backgroundColor: 'white'
+              }}
+              ref={formRef}
+            >
+              <Typography
+                variant="h5"
+                sx={{
+                  color: 'darkorange',
+                  mb: 3,
+                  fontWeight: 'bold',
+                  textAlign: 'center'
+                }}
+              >
                 {editingId ? 'Editar Estado' : 'Nuevo Estado'}
               </Typography>
 
-              <Box component="form" onSubmit={handleSubmit} sx={{ mt: 4, width: '100%' }}>
+              <Box component="form" onSubmit={handleSubmit}>
                 <TextField
                   fullWidth
-                  margin="normal"
                   label="Nombre del Estado"
                   name="nombre"
                   value={estado.nombre}
                   onChange={handleChange}
                   required
+                  variant="outlined"
+                  sx={{ mb: 2 }}
                 />
                 <TextField
                   fullWidth
-                  margin="normal"
                   label="Mensaje"
                   name="mensaje"
                   value={estado.mensaje}
                   onChange={handleChange}
                   multiline
+                  rows={4}
                   required
+                  variant="outlined"
+                  sx={{ mb: 3 }}
                 />
 
-                <Button variant="contained" color="primary" type="submit" fullWidth sx={{ mt: 2 }}>
+                <Button
+                  variant="contained"
+                  type="submit"
+                  fullWidth
+                  sx={{
+                    backgroundColor: 'darkorange',
+                    '&:hover': {
+                      backgroundColor: '#ff8c00',
+                    },
+                    py: 1.5
+                  }}
+                >
                   {editingId ? 'Actualizar Estado' : 'Crear Estado'}
                 </Button>
               </Box>
 
               {error && (
-                <Typography color="error" sx={{ mt: 2 }}>
+                <Alert severity="error" sx={{ mt: 2 }}>
                   {error}
-                </Typography>
+                </Alert>
               )}
-            </Box>
+            </Paper>
           </Grid>
 
+          {/* Tabla */}
           <Grid item xs={12} md={8}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <Typography variant="h4" color="darkorange" gutterBottom>
-                Lista de Estados
-              </Typography>
-              <TableContainer component={Paper}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>ID</TableCell>
-                      <TableCell>Nombre</TableCell>
-                      <TableCell>Mensaje</TableCell>
-                      <TableCell>Acciones</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {estados.map((estado) => (
-                      <TableRow key={estado.id}>
-                        <TableCell>{estado.id}</TableCell>
-                        <TableCell>{estado.nombre}</TableCell>
-                        <TableCell>{estado.mensaje}</TableCell>
-                        <TableCell>
-                          <IconButton color="primary" onClick={() => handleEdit(estado)}>
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton color="error" onClick={() => handleDelete(estado.id)}>
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
+            <Paper
+              elevation={3}
+              sx={{
+                borderRadius: 2,
+                overflow: 'hidden'
+              }}
+            >
+              <Box sx={{ p: 3, backgroundColor: 'white' }}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    color: 'darkorange',
+                    mb: 3,
+                    fontWeight: 'bold',
+                    textAlign: 'center'
+                  }}
+                >
+                  Lista de Estados
+                </Typography>
+
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>ID</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Nombre</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Mensaje</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Acciones</TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Box>
+                    </TableHead>
+                    <TableBody>
+                      {estados.map((estado) => (
+                        <TableRow
+                          key={estado.id}
+                          sx={{
+                            '&:hover': {
+                              backgroundColor: '#f8f8f8'
+                            }
+                          }}
+                        >
+                          <TableCell>{estado.id}</TableCell>
+                          <TableCell>{estado.nombre}</TableCell>
+                          <TableCell>{estado.mensaje}</TableCell>
+                          <TableCell>
+                            <IconButton
+                              onClick={() => handleEdit(estado)}
+                              sx={{
+                                color: 'darkorange',
+                                '&:hover': {
+                                  backgroundColor: 'rgba(255, 140, 0, 0.1)'
+                                }
+                              }}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton
+                              onClick={() => handleDelete(estado.id)}
+                              sx={{
+                                color: 'error.main',
+                                '&:hover': {
+                                  backgroundColor: 'rgba(211, 47, 47, 0.1)'
+                                }
+                              }}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Box>
+            </Paper>
           </Grid>
         </Grid>
       </Box>

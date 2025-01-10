@@ -37,10 +37,25 @@ function Login() {
             confirmButtonText: 'Aceptar'
           });
           router.push("/dashboardAdmin");
+        } else if (rol === "ayudante") {
+          // Guardar el token en una cookie para el ayudante
+          setCookie(null, 'token', token.token, {
+            maxAge: 30 * 24 * 60 * 60, // 30 días
+            path: '/',
+            sameSite: 'None',
+            secure: true,
+          });
+          Swal.fire({
+            title: 'Éxito!',
+            text: 'Login exitoso redirigiendo al Dashboard de Ayudante',
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+          });
+          router.push("/dashboardAyudante");
         } else {
           Swal.fire({
             title: 'Error!',
-            text: 'Solo los Adminstradores pueden acceder',
+            text: 'Solo los Administradores y Ayudantes pueden acceder',
             icon: 'error',
             confirmButtonText: 'Aceptar'
           });

@@ -17,7 +17,7 @@ import {
   Grid,
   IconButton,
 } from "@mui/material";
-import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
+import { Delete as DeleteIcon, Edit as EditIcon, ArrowBack } from '@mui/icons-material';
 import { parseCookies } from 'nookies';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -49,7 +49,7 @@ function Atributos() {
 
         const res = await axios.post(
           "https://fullwash.site/profile",
-          {},
+          {} ,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -186,29 +186,53 @@ function Atributos() {
   if (loading) return <p>Loading...</p>; // Mostrar mensaje de carga mientras se verifica el rol
 
   return (
-    <Box display="flex" flexDirection="column" minHeight="100vh">
+    <Box display="flex" flexDirection="column" minHeight="100vh" sx={{ backgroundColor: '#f5f5f5' }}>
       <Header />
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => router.push('./dashboardAdmin')}
-        sx={{ mt: 2, alignSelf: 'flex-start', fontSize: '0.75rem', padding: '4px 8px' }}
-      >
-        Volver
-      </Button>
+      
+      <Box sx={{ 
+        flexGrow: 1, 
+        p: 3, 
+        maxWidth: 1400, 
+        mx: 'auto',
+        width: '100%'
+      }}>
+        {/* Botón de regreso con mejor diseño */}
+        <Button
+          variant="contained"
+          onClick={() => router.push('./dashboardAdmin')}
+          startIcon={<ArrowBack />}
+          sx={{
+            mb: 4,
+            backgroundColor: 'darkorange',
+            '&:hover': {
+              backgroundColor: '#ff8c00',
+            }
+          }}
+        >
+          Volver al Dashboard
+        </Button>
 
-      <Box sx={{ flexGrow: 1, mt: 4 }}>
-        <Grid container spacing={2} justifyContent="center">
+        <Grid container spacing={3}>
+          {/* Formulario */}
           <Grid item xs={12} md={4}>
-            <Box
-              ref={formRef}
-              sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-            >
-              <Typography variant="h4" color="darkorange" gutterBottom>
+            <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+              <Typography 
+                variant="h5" 
+                sx={{ 
+                  color: 'darkorange',
+                  mb: 3,
+                  fontWeight: 'bold',
+                  textAlign: 'center'
+                }}
+              >
                 {editingId ? "Editar Atributo" : "Nuevo Atributo"}
               </Typography>
 
-              <Box component="form" onSubmit={handleSubmit} sx={{ mt: 4, width: '100%' }}>
+              <Box 
+                component="form" 
+                onSubmit={handleSubmit} 
+                ref={formRef}
+              >
                 <TextField
                   fullWidth
                   margin="normal"
@@ -217,19 +241,49 @@ function Atributos() {
                   value={atributo.nombre_atributo}
                   onChange={handleChange}
                   required
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      '&.Mui-focused fieldset': {
+                        borderColor: 'darkorange',
+                      },
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: 'darkorange',
+                    },
+                  }}
                 />
                 <TextField
                   fullWidth
                   margin="normal"
                   label="Costo del Atributo"
                   name="costo_atributo"
+                  type="number"
                   value={atributo.costo_atributo}
                   onChange={handleChange}
-                  type="number"
                   required
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      '&.Mui-focused fieldset': {
+                        borderColor: 'darkorange',
+                      },
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: 'darkorange',
+                    },
+                  }}
                 />
-
-                <Button variant="contained" color="primary" type="submit" fullWidth sx={{ mt: 2 }}>
+                <Button 
+                  variant="contained" 
+                  type="submit" 
+                  fullWidth 
+                  sx={{ 
+                    mt: 2,
+                    backgroundColor: 'darkorange',
+                    '&:hover': {
+                      backgroundColor: '#ff8c00',
+                    }
+                  }}
+                >
                   {editingId ? "Actualizar Atributo" : "Crear Atributo"}
                 </Button>
               </Box>
@@ -239,35 +293,67 @@ function Atributos() {
                   {error}
                 </Typography>
               )}
-            </Box>
+            </Paper>
           </Grid>
 
+          {/* Tabla de Atributos */}
           <Grid item xs={12} md={8}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <Typography variant="h4" color="darkorange" gutterBottom>
+            <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+              <Typography 
+                variant="h5" 
+                sx={{ 
+                  color: 'darkorange',
+                  mb: 3,
+                  fontWeight: 'bold',
+                  textAlign: 'center'
+                }}
+              >
                 Lista de Atributos
               </Typography>
-              <TableContainer component={Paper}>
+              <TableContainer>
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>ID</TableCell>
-                      <TableCell>Nombre del Atributo</TableCell>
-                      <TableCell>Costo del Atributo</TableCell>
-                      <TableCell>Acciones</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>ID</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Nombre del Atributo</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Costo</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Acciones</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {atributos.map((atributo) => (
-                      <TableRow key={atributo.id}>
+                      <TableRow 
+                        key={atributo.id}
+                        sx={{ 
+                          '&:hover': { 
+                            backgroundColor: '#f8f8f8' 
+                          }
+                        }}
+                      >
                         <TableCell>{atributo.id}</TableCell>
                         <TableCell>{atributo.nombre_atributo}</TableCell>
                         <TableCell>${atributo.costo_atributo}</TableCell>
                         <TableCell>
-                          <IconButton color="primary" onClick={() => handleEdit(atributo)}>
+                          <IconButton 
+                            onClick={() => handleEdit(atributo)}
+                            sx={{ 
+                              color: 'darkorange',
+                              '&:hover': {
+                                backgroundColor: 'rgba(255, 140, 0, 0.1)',
+                              }
+                            }}
+                          >
                             <EditIcon />
                           </IconButton>
-                          <IconButton color="error" onClick={() => handleDelete(atributo.id)}>
+                          <IconButton 
+                            onClick={() => handleDelete(atributo.id)}
+                            sx={{ 
+                              color: '#d32f2f',
+                              '&:hover': {
+                                backgroundColor: 'rgba(211, 47, 47, 0.1)',
+                              }
+                            }}
+                          >
                             <DeleteIcon />
                           </IconButton>
                         </TableCell>
@@ -276,7 +362,7 @@ function Atributos() {
                   </TableBody>
                 </Table>
               </TableContainer>
-            </Box>
+            </Paper>
           </Grid>
         </Grid>
       </Box>

@@ -7,10 +7,14 @@ import Footer from './components/Footer';
 import { useRouter } from 'next/navigation';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import NextImage  from 'next/image';
+import { parseCookies } from 'nookies';
+import axios from 'axios'; // Importa axios
+
 function HomePage() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [recomendaciones, setRecomendaciones] = useState([]); // Agrega el estado para recomendaciones
   const router = useRouter();
   const items = [
     {
@@ -103,6 +107,31 @@ function HomePage() {
       img.src = item.img;
     });
   }, []);
+  useEffect(() => {
+    const fetchRecomendaciones = async () => {
+      try {
+        const cookies = parseCookies();
+        const token = cookies.token;
+        const response = await axios.get('https://fullwash.site/encuestas', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.data.success) {
+          // Filtramos solo las encuestas que están publicadas y tienen dataSharing en "si"
+          const encuestasPublicadas = response.data.encuestas.filter(
+            encuesta => encuesta.publicado && encuesta.dataSharing === "si"
+          );
+          setRecomendaciones(encuestasPublicadas);
+        }
+      } catch (error) {
+        console.error('Error obteniendo recomendaciones:', error);
+      }
+    };
+
+    fetchRecomendaciones();
+  }, []); // Agrega el efecto para obtener recomendaciones
+
   const handleOpenModal = (servicio) => {
     setSelectedService(servicio);
     setOpenModal(true);
@@ -430,14 +459,7 @@ En Full Wash, nos especializamos en ofrecer un servicio de lavado de vehículos 
             RECOMENDACION DE CLIENTES
           </Typography>
           <Grid container spacing={3} justifyContent="center">
-            {[
-              { name: 'Sal Yesenia', text: 'Excelente servicio recomendado 100% 👍👍👏👏' },
-              { name: 'Jacqueline Jara', text: 'Quedamos muy conformes con el trabajo realizado en nuestra casa de cumpleaños party house. ¡Excelente servicio!' },
-              { name: 'Pipo To', text: 'Excelente servicio, barato y rápido.' },
-              { name: 'Braulio Francisco Coronado Olivera', text: 'Excelente servicio, muy rápido, económico y las alfombras quedan como nuevas.' },
-              { name: 'Esteban Venegas Alvial', text: 'Muy buen servicio, con muy buena atención 100% recomendado.' },
-              { name: 'Esteban Rodríguez García', text: 'Buena atención. Dejan los vehículos impecables.' },
-            ].map((client, index) => (
+            {recomendaciones.map((client, index) => (
               <Grid
                 item
                 xs={12}
@@ -463,10 +485,13 @@ En Full Wash, nos especializamos en ofrecer un servicio de lavado de vehículos 
                   }}
                 >
                   <Typography variant="h6" fontWeight="bold" gutterBottom>
-                    {client.name}
+                    {client.user?.username || 'Usuario Anónimo'}
                   </Typography>
-                  <Typography variant="body1" color="text.secondary">
-                    {client.text}
+                  <Typography variant="body1" color="text.secondary" gutterBottom>
+                    {client.comments}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Satisfacción: {client.satisfaction}/5
                   </Typography>
                 </Paper>
               </Grid>
