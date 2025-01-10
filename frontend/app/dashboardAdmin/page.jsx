@@ -410,7 +410,7 @@ function Dashboard() {
         {
           user_id: updatedReserva.user_id,
           servicio_id: updatedReserva.servicio_id,
-          fecha: updatedReserva.fecha,
+          fecha: updatedReserva.fecha.slice(0, 10),
           hora: updatedReserva.hora,
           estado_id: updatedReserva.estado_id,
           tipo_vehiculo_id: updatedReserva.tipo_vehiculo_id,

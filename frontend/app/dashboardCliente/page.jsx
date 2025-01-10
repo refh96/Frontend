@@ -655,7 +655,7 @@ function DashboardCliente() {
                       <IconButton
                         color="error"
                         onClick={() => handleDelete(reserva.id)}
-                        disabled={!["Pendiente", "Rechazado", "Aprobado"].includes(reserva.estado.nombre)}
+                        disabled={!["Pendiente", "Rechazado", "Aprobado","Recalendarizado"].includes(reserva.estado.nombre)}
                       >
                         <DeleteIcon />
                       </IconButton>
