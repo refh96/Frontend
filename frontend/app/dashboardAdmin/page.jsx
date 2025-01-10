@@ -673,11 +673,19 @@ function Dashboard() {
                           }}
                         >
                           {estados
-                            .map((estado) => (
-                              <MenuItem key={estado.id} value={estado.id}>
-                                {estado.nombre}
-                              </MenuItem>
-                            ))}
+  .filter(estado => 
+    estado.id === reserva.estado_id || // Mostrar el estado actual
+    estado.id !== 7 // Y mostrar todos excepto recalendarización
+  )
+  .map((estado) => (
+    <MenuItem 
+      key={estado.id} 
+      value={estado.id}
+      disabled={estado.id === 7}
+    >
+      {estado.nombre}
+    </MenuItem>
+  ))}
                         </Select>
 
 
