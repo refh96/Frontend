@@ -134,6 +134,7 @@ function DashboardCliente() {
 
     fetchProfile();
   }, [router]);
+  
 
 
   useEffect(() => {
@@ -647,7 +648,7 @@ function DashboardCliente() {
                       <IconButton
                         color="primary"
                         onClick={() => handleEdit(reserva)}
-                        disabled={!["Pendiente", "Rechazado", "Aprobado"].includes(reserva.estado.nombre)}
+                        disabled={!["Pendiente", "Rechazado", "Aprobado","Recalendarizado"].includes(reserva.estado.nombre)}
                       >
                         <EditIcon />
                       </IconButton>
