@@ -160,24 +160,36 @@ function RegistroRoles() {
   };
 
   return (
-    <Box display="flex" flexDirection="column" minHeight="100vh" sx={{ backgroundColor: '#f5f5f5' }}>
+    <Box 
+      display="flex" 
+      flexDirection="column" 
+      minHeight="100vh" 
+      sx={{ 
+        backgroundColor: '#f5f5f5',
+        width: '100%',
+        overflowX: 'hidden' // Previene scroll horizontal
+      }}
+    >
       <Header />
       
-      <Box sx={{ 
-        flexGrow: 1, 
-        p: 3, 
-        maxWidth: 1400, 
-        mx: 'auto',
-        width: '100%'
-      }}>
-        {/* Botón de regreso con mejor diseño */}
+      <Box 
+        sx={{ 
+          flexGrow: 1, 
+          p: { xs: 2, sm: 3, md: 4 }, // Padding responsivo
+          maxWidth: { xs: '100%', sm: '90%', md: 1400 },
+          mx: 'auto',
+          width: '100%'
+        }}
+      >
         <Button
           variant="contained"
           onClick={() => router.push('./dashboardAdmin')}
           startIcon={<ArrowBack />}
           sx={{
-            mb: 4,
+            mb: { xs: 2, sm: 3, md: 4 },
             backgroundColor: 'darkorange',
+            fontSize: { xs: '0.875rem', sm: '1rem' },
+            padding: { xs: '6px 12px', sm: '8px 16px' },
             '&:hover': {
               backgroundColor: '#ff8c00',
             }
@@ -186,24 +198,62 @@ function RegistroRoles() {
           Volver al Dashboard
         </Button>
 
-        <Grid container justifyContent="center">
-          <Grid item xs={12} md={6}>
-            <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+        <Grid 
+          container 
+          justifyContent="center"
+          sx={{ 
+            px: { xs: 1, sm: 2, md: 0 } // Padding horizontal responsivo
+          }}
+        >
+          <Grid 
+            item 
+            xs={12} 
+            sm={10} 
+            md={6}
+            sx={{
+              transition: 'all 0.3s ease',
+            }}
+          >
+            <Paper 
+              elevation={3} 
+              sx={{ 
+                p: { xs: 2, sm: 3 }, // Padding interno responsivo
+                borderRadius: { xs: 1, sm: 2 },
+                backgroundColor: '#ffffff',
+                transition: 'all 0.3s ease',
+              }}
+            >
               <Typography 
                 variant="h5" 
                 sx={{ 
                   color: 'darkorange',
-                  mb: 3,
+                  mb: { xs: 2, sm: 3 },
                   fontWeight: 'bold',
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  fontSize: { xs: '1.25rem', sm: '1.5rem', md: '1.75rem' }
                 }}
               >
                 Registro de Usuarios
               </Typography>
 
-              <Box component="form" onSubmit={handleSubmit}>
+              <Box 
+                component="form" 
+                onSubmit={handleSubmit}
+                sx={{
+                  '& .MuiTextField-root, & .MuiFormControl-root': {
+                    mb: { xs: 1.5, sm: 2 }, // Margen entre campos responsivo
+                  }
+                }}
+              >
                 {error && (
-                  <Typography color="error" variant="body2" sx={{ mb: 2 }}>
+                  <Typography 
+                    color="error" 
+                    variant="body2" 
+                    sx={{ 
+                      mb: 2,
+                      fontSize: { xs: '0.875rem', sm: '1rem' }
+                    }}
+                  >
                     {error}
                   </Typography>
                 )}
@@ -212,17 +262,23 @@ function RegistroRoles() {
                   label="Username"
                   variant="outlined"
                   fullWidth
-                  margin="normal"
                   required
                   onChange={(e) => setUser({ ...user, username: e.target.value })}
                   sx={{
                     '& .MuiOutlinedInput-root': {
+                      height: { xs: '45px', sm: '56px' },
                       '&.Mui-focused fieldset': {
                         borderColor: 'darkorange',
                       },
                     },
-                    '& .MuiInputLabel-root.Mui-focused': {
-                      color: 'darkorange',
+                    '& .MuiInputLabel-root': {
+                      fontSize: { xs: '0.875rem', sm: '1rem' },
+                      '&.Mui-focused': {
+                        color: 'darkorange',
+                      },
+                    },
+                    '& .MuiInputBase-input': {
+                      fontSize: { xs: '0.875rem', sm: '1rem' },
                     },
                   }}
                 />
@@ -231,17 +287,23 @@ function RegistroRoles() {
                   label="Número"
                   variant="outlined"
                   fullWidth
-                  margin="normal"
                   required
                   onChange={(e) => setUser({ ...user, numero: e.target.value })}
                   sx={{
                     '& .MuiOutlinedInput-root': {
+                      height: { xs: '45px', sm: '56px' },
                       '&.Mui-focused fieldset': {
                         borderColor: 'darkorange',
                       },
                     },
-                    '& .MuiInputLabel-root.Mui-focused': {
-                      color: 'darkorange',
+                    '& .MuiInputLabel-root': {
+                      fontSize: { xs: '0.875rem', sm: '1rem' },
+                      '&.Mui-focused': {
+                        color: 'darkorange',
+                      },
+                    },
+                    '& .MuiInputBase-input': {
+                      fontSize: { xs: '0.875rem', sm: '1rem' },
                     },
                   }}
                 />
@@ -251,17 +313,23 @@ function RegistroRoles() {
                   type="email"
                   variant="outlined"
                   fullWidth
-                  margin="normal"
                   required
                   onChange={(e) => setUser({ ...user, email: e.target.value })}
                   sx={{
                     '& .MuiOutlinedInput-root': {
+                      height: { xs: '45px', sm: '56px' },
                       '&.Mui-focused fieldset': {
                         borderColor: 'darkorange',
                       },
                     },
-                    '& .MuiInputLabel-root.Mui-focused': {
-                      color: 'darkorange',
+                    '& .MuiInputLabel-root': {
+                      fontSize: { xs: '0.875rem', sm: '1rem' },
+                      '&.Mui-focused': {
+                        color: 'darkorange',
+                      },
+                    },
+                    '& .MuiInputBase-input': {
+                      fontSize: { xs: '0.875rem', sm: '1rem' },
                     },
                   }}
                 />
@@ -271,33 +339,45 @@ function RegistroRoles() {
                   type="password"
                   variant="outlined"
                   fullWidth
-                  margin="normal"
                   required
                   onChange={(e) => setUser({ ...user, password: e.target.value })}
                   sx={{
                     '& .MuiOutlinedInput-root': {
+                      height: { xs: '45px', sm: '56px' },
                       '&.Mui-focused fieldset': {
                         borderColor: 'darkorange',
                       },
                     },
-                    '& .MuiInputLabel-root.Mui-focused': {
-                      color: 'darkorange',
+                    '& .MuiInputLabel-root': {
+                      fontSize: { xs: '0.875rem', sm: '1rem' },
+                      '&.Mui-focused': {
+                        color: 'darkorange',
+                      },
+                    },
+                    '& .MuiInputBase-input': {
+                      fontSize: { xs: '0.875rem', sm: '1rem' },
                     },
                   }}
                 />
 
                 <FormControl 
                   fullWidth 
-                  margin="normal"
                   required
                   sx={{
                     '& .MuiOutlinedInput-root': {
+                      height: { xs: '45px', sm: '56px' },
                       '&.Mui-focused fieldset': {
                         borderColor: 'darkorange',
                       },
                     },
-                    '& .MuiInputLabel-root.Mui-focused': {
-                      color: 'darkorange',
+                    '& .MuiInputLabel-root': {
+                      fontSize: { xs: '0.875rem', sm: '1rem' },
+                      '&.Mui-focused': {
+                        color: 'darkorange',
+                      },
+                    },
+                    '& .MuiSelect-select': {
+                      fontSize: { xs: '0.875rem', sm: '1rem' },
                     },
                   }}
                 >
@@ -320,11 +400,15 @@ function RegistroRoles() {
                   type="submit" 
                   fullWidth 
                   sx={{ 
-                    mt: 3,
+                    mt: { xs: 2, sm: 3 },
+                    height: { xs: '45px', sm: '56px' },
                     backgroundColor: 'darkorange',
+                    fontSize: { xs: '0.875rem', sm: '1rem' },
+                    fontWeight: 'bold',
                     '&:hover': {
                       backgroundColor: '#ff8c00',
-                    }
+                    },
+                    transition: 'all 0.3s ease',
                   }}
                 >
                   Registrar Usuario

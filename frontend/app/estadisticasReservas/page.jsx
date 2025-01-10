@@ -267,22 +267,42 @@ const EstadisticasReservas = () => {
   const metricas = mesSeleccionado ? calcularMetricasMensuales() : null;
 
   return (
-    <Box display="flex" flexDirection="column" minHeight="100vh" sx={{ backgroundColor: '#f5f5f5' }}>
+    <Box 
+      display="flex" 
+      flexDirection="column" 
+      minHeight="100vh" 
+      sx={{ 
+        backgroundColor: '#f5f5f5',
+        width: '100%',
+        overflowX: 'hidden'
+      }}
+    >
       <Box sx={{ 
         flexGrow: 1, 
-        p: 3, 
-        maxWidth: 1400, 
+        p: { xs: 2, sm: 3, md: 4 },
+        maxWidth: { xs: '100%', sm: '95%', md: 1400 },
         mx: 'auto',
         width: '100%'
       }}>
         {/* Cabecera y Controles */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+        <Box 
+          sx={{ 
+            display: 'flex', 
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: 'space-between', 
+            alignItems: { xs: 'stretch', sm: 'center' },
+            gap: 2,
+            mb: { xs: 3, sm: 4 }
+          }}
+        >
           <Button
             variant="contained"
             onClick={() => router.push('./dashboardAdmin')}
             startIcon={<ArrowBack />}
             sx={{
               backgroundColor: 'darkorange',
+              fontSize: { xs: '0.875rem', sm: '1rem' },
+              padding: { xs: '8px 16px', sm: '10px 20px' },
               '&:hover': {
                 backgroundColor: '#ff8c00',
               }
@@ -291,8 +311,25 @@ const EstadisticasReservas = () => {
             Volver al Dashboard
           </Button>
 
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-            <FormControl sx={{ minWidth: 200 }}>
+          <Box 
+            sx={{ 
+              display: 'flex', 
+              flexDirection: { xs: 'column', sm: 'row' },
+              gap: 2, 
+              alignItems: { xs: 'stretch', sm: 'center' }
+            }}
+          >
+            <FormControl 
+              sx={{ 
+                minWidth: { xs: '100%', sm: 200 },
+                '& .MuiInputLabel-root': {
+                  fontSize: { xs: '0.875rem', sm: '1rem' }
+                },
+                '& .MuiSelect-select': {
+                  fontSize: { xs: '0.875rem', sm: '1rem' }
+                }
+              }}
+            >
               <InputLabel>Seleccionar Mes</InputLabel>
               <Select
                 value={mesSeleccionado}
@@ -321,6 +358,7 @@ const EstadisticasReservas = () => {
                 onClick={exportarPDF}
                 sx={{ 
                   color: 'darkorange',
+                  alignSelf: { xs: 'center', sm: 'auto' },
                   '&:hover': { backgroundColor: 'rgba(255, 140, 0, 0.1)' }
                 }}
               >
@@ -335,10 +373,11 @@ const EstadisticasReservas = () => {
           <Typography 
             variant="h4" 
             sx={{ 
-              mb: 4, 
+              mb: { xs: 3, sm: 4 }, 
               color: 'darkorange',
               textAlign: 'center',
-              fontWeight: 'bold'
+              fontWeight: 'bold',
+              fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' }
             }}
           >
             Reporte de Reservas - {mesSeleccionado ? 
@@ -351,46 +390,122 @@ const EstadisticasReservas = () => {
           </Typography>
 
           {metricas && (
-            <Grid container spacing={3}>
+            <Grid container spacing={{ xs: 2, sm: 3 }}>
               {/* Métricas Principales */}
               <Grid item xs={12}>
-                <Grid container spacing={3}>
+                <Grid container spacing={{ xs: 2, sm: 3 }}>
                   <Grid item xs={12} sm={6} md={3}>
-                    <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
-                      <Typography variant="h6" sx={{ color: 'darkorange' }}>
+                    <Paper 
+                      elevation={3} 
+                      sx={{ 
+                        p: { xs: 2, sm: 3 }, 
+                        borderRadius: 2,
+                        height: '100%'
+                      }}
+                    >
+                      <Typography 
+                        variant="h6" 
+                        sx={{ 
+                          color: 'darkorange',
+                          fontSize: { xs: '1rem', sm: '1.25rem' }
+                        }}
+                      >
                         Reservas del Mes
                       </Typography>
-                      <Typography variant="h4">
+                      <Typography 
+                        variant="h4"
+                        sx={{
+                          fontSize: { xs: '1.5rem', sm: '2rem' },
+                          mt: 1
+                        }}
+                      >
                         {metricas.cantidadReservas}
                       </Typography>
                     </Paper>
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
-                    <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
-                      <Typography variant="h6" sx={{ color: 'darkorange' }}>
+                    <Paper 
+                      elevation={3} 
+                      sx={{ 
+                        p: { xs: 2, sm: 3 }, 
+                        borderRadius: 2,
+                        height: '100%'
+                      }}
+                    >
+                      <Typography 
+                        variant="h6" 
+                        sx={{ 
+                          color: 'darkorange',
+                          fontSize: { xs: '1rem', sm: '1.25rem' }
+                        }}
+                      >
                         Ingresos del Mes
                       </Typography>
-                      <Typography variant="h4">
+                      <Typography 
+                        variant="h4"
+                        sx={{
+                          fontSize: { xs: '1.5rem', sm: '2rem' },
+                          mt: 1
+                        }}
+                      >
                         ${metricas.ingresoTotal.toLocaleString()}
                       </Typography>
                     </Paper>
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
-                    <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
-                      <Typography variant="h6" sx={{ color: 'darkorange' }}>
+                    <Paper 
+                      elevation={3} 
+                      sx={{ 
+                        p: { xs: 2, sm: 3 }, 
+                        borderRadius: 2,
+                        height: '100%'
+                      }}
+                    >
+                      <Typography 
+                        variant="h6" 
+                        sx={{ 
+                          color: 'darkorange',
+                          fontSize: { xs: '1rem', sm: '1.25rem' }
+                        }}
+                      >
                         Clientes Únicos
                       </Typography>
-                      <Typography variant="h4">
+                      <Typography 
+                        variant="h4"
+                        sx={{
+                          fontSize: { xs: '1.5rem', sm: '2rem' },
+                          mt: 1
+                        }}
+                      >
                         {metricas.clientesUnicos}
                       </Typography>
                     </Paper>
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
-                    <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
-                      <Typography variant="h6" sx={{ color: 'darkorange' }}>
+                    <Paper 
+                      elevation={3} 
+                      sx={{ 
+                        p: { xs: 2, sm: 3 }, 
+                        borderRadius: 2,
+                        height: '100%'
+                      }}
+                    >
+                      <Typography 
+                        variant="h6" 
+                        sx={{ 
+                          color: 'darkorange',
+                          fontSize: { xs: '1rem', sm: '1.25rem' }
+                        }}
+                      >
                         Promedio por Reserva
                       </Typography>
-                      <Typography variant="h4">
+                      <Typography 
+                        variant="h4"
+                        sx={{
+                          fontSize: { xs: '1.5rem', sm: '2rem' },
+                          mt: 1
+                        }}
+                      >
                         ${Math.round(metricas.promedioIngreso).toLocaleString()}
                       </Typography>
                     </Paper>
@@ -398,116 +513,176 @@ const EstadisticasReservas = () => {
                 </Grid>
               </Grid>
 
+              {/* Gráficos */}
+              <Grid item xs={12}>
+                <Grid container spacing={{ xs: 2, sm: 3 }}>
+                  <Grid item xs={12} md={6}>
+                    <Paper 
+                      elevation={3} 
+                      sx={{ 
+                        p: { xs: 2, sm: 3 }, 
+                        borderRadius: 2,
+                        height: '100%',
+                        minHeight: { xs: 300, sm: 400 }
+                      }}
+                    >
+                      <Typography 
+                        variant="h6" 
+                        sx={{ 
+                          mb: 2,
+                          color: 'darkorange',
+                          fontSize: { xs: '1rem', sm: '1.25rem' },
+                          textAlign: 'center'
+                        }}
+                      >
+                        Distribución por Estado
+                      </Typography>
+                      <Box sx={{ height: { xs: 250, sm: 350 } }}>
+                        <Pie
+                          data={{
+                            labels: Object.keys(metricas.reservasPorEstado),
+                            datasets: [{
+                              data: Object.values(metricas.reservasPorEstado),
+                              backgroundColor: [
+                                '#FF6384',
+                                '#36A2EB',
+                                '#FFCE56',
+                                '#4BC0C0',
+                                '#9966FF'
+                              ]
+                            }]
+                          }}
+                          options={{
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                              legend: {
+                                position: 'bottom',
+                                labels: {
+                                  font: {
+                                    size: window.innerWidth < 600 ? 10 : 12
+                                  }
+                                }
+                              }
+                            }
+                          }}
+                        />
+                      </Box>
+                    </Paper>
+                  </Grid>
+
+                  <Grid item xs={12} md={6}>
+                    <Paper 
+                      elevation={3} 
+                      sx={{ 
+                        p: { xs: 2, sm: 3 }, 
+                        borderRadius: 2,
+                        height: '100%',
+                        minHeight: { xs: 300, sm: 400 }
+                      }}
+                    >
+                      <Typography 
+                        variant="h6" 
+                        sx={{ 
+                          mb: 2,
+                          color: 'darkorange',
+                          fontSize: { xs: '1rem', sm: '1.25rem' },
+                          textAlign: 'center'
+                        }}
+                      >
+                        Reservas por Día
+                      </Typography>
+                      <Box sx={{ height: { xs: 250, sm: 350 } }}>
+                        <Bar
+                          data={{
+                            labels: Object.keys(metricas.reservasPorDia),
+                            datasets: [{
+                              label: 'Reservas',
+                              data: Object.values(metricas.reservasPorDia),
+                              backgroundColor: 'rgba(255, 140, 0, 0.6)',
+                              borderColor: 'darkorange',
+                              borderWidth: 1
+                            }]
+                          }}
+                          options={{
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                              y: {
+                                beginAtZero: true,
+                                ticks: {
+                                  font: {
+                                    size: window.innerWidth < 600 ? 10 : 12
+                                  }
+                                }
+                              },
+                              x: {
+                                ticks: {
+                                  font: {
+                                    size: window.innerWidth < 600 ? 10 : 12
+                                  }
+                                }
+                              }
+                            },
+                            plugins: {
+                              legend: {
+                                display: false
+                              }
+                            }
+                          }}
+                        />
+                      </Box>
+                    </Paper>
+                  </Grid>
+                </Grid>
+              </Grid>
+
               {/* Tabla de Servicios Más Populares */}
-              <Grid item xs={12} md={6}>
-                <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
-                  <Typography variant="h6" sx={{ mb: 2, color: 'darkorange' }}>
-                    Servicios Más Solicitados
+              <Grid item xs={12}>
+                <Paper 
+                  elevation={3} 
+                  sx={{ 
+                    p: { xs: 2, sm: 3 }, 
+                    borderRadius: 2,
+                    overflowX: 'auto'
+                  }}
+                >
+                  <Typography 
+                    variant="h6" 
+                    sx={{ 
+                      mb: 2,
+                      color: 'darkorange',
+                      fontSize: { xs: '1rem', sm: '1.25rem' },
+                      textAlign: 'center'
+                    }}
+                  >
+                    Servicios Más Populares
                   </Typography>
                   <TableContainer>
-                    <Table>
+                    <Table 
+                      sx={{
+                        '& .MuiTableCell-root': {
+                          fontSize: { xs: '0.875rem', sm: '1rem' },
+                          padding: { xs: 1, sm: 2 }
+                        }
+                      }}
+                    >
                       <TableHead>
                         <TableRow>
-                          <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Servicio</TableCell>
-                          <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Cantidad</TableCell>
+                          <TableCell>Servicio</TableCell>
+                          <TableCell align="right">Cantidad</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {metricas.serviciosMasPopulares.map(([servicio, cantidad]) => (
                           <TableRow key={servicio}>
                             <TableCell>{servicio}</TableCell>
-                            <TableCell>{cantidad}</TableCell>
+                            <TableCell align="right">{cantidad}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
                     </Table>
                   </TableContainer>
-                </Paper>
-              </Grid>
-
-              {/* Distribución por Estado */}
-              <Grid item xs={12} md={6}>
-                <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
-                  <Typography variant="h6" sx={{ mb: 2, color: 'darkorange' }}>
-                    Estado de las Reservas
-                  </Typography>
-                  <TableContainer>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Estado</TableCell>
-                          <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>Cantidad</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {Object.entries(metricas.reservasPorEstado).map(([estado, cantidad]) => (
-                          <TableRow key={estado}>
-                            <TableCell>{estado}</TableCell>
-                            <TableCell>{cantidad}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Paper>
-              </Grid>
-
-              {/* Distribución por Día */}
-              <Grid item xs={12}>
-                <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
-                  <Typography variant="h6" sx={{ mb: 2, color: 'darkorange' }}>
-                    Distribución de Reservas por Día del Mes
-                  </Typography>
-                  <Box sx={{ height: 300 }}>
-                    <Bar
-                      data={{
-                        labels: Object.keys(metricas.reservasPorDia).map(dia => `Día ${dia}`),
-                        datasets: [{
-                          label: 'Cantidad de Reservas',
-                          data: Object.values(metricas.reservasPorDia),
-                          backgroundColor: 'rgba(255, 140, 0, 0.6)',
-                          borderColor: 'rgb(255, 140, 0)',
-                          borderWidth: 1,
-                        }]
-                      }}
-                      options={{
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                          y: {
-                            beginAtZero: true,
-                            ticks: {
-                              stepSize: 1
-                            },
-                            title: {
-                              display: true,
-                              text: 'Cantidad de Reservas'
-                            }
-                          },
-                          x: {
-                            title: {
-                              display: true,
-                              text: 'Día del Mes'
-                            }
-                          }
-                        },
-                        plugins: {
-                          tooltip: {
-                            callbacks: {
-                              title: (items) => {
-                                if (!items.length) return '';
-                                const dia = items[0].label.split(' ')[1];
-                                return `Día ${dia}`;
-                              },
-                              label: (item) => {
-                                return `${item.formattedValue} reserva${item.formattedValue !== '1' ? 's' : ''}`;
-                              }
-                            }
-                          }
-                        }
-                      }}
-                    />
-                  </Box>
                 </Paper>
               </Grid>
             </Grid>
