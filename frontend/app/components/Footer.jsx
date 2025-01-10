@@ -2,8 +2,24 @@ import React from 'react';
 import { Container, Typography, Box, Link, Grid, Button } from '@mui/material';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
+import { useRouter } from 'next/navigation';
+import { parseCookies } from 'nookies';
 
 const Footer = () => {
+  const router = useRouter();
+
+  const handleAdminClick = (e) => {
+    e.preventDefault();
+    const cookies = parseCookies();
+    const token = cookies.token;
+    
+    if (!token) {
+      router.push('/loginAdmin');
+    } else {
+      router.push('/dashboardAdmin');
+    }
+  };
+
   return (
     <footer>
       <Box
@@ -20,11 +36,10 @@ const Footer = () => {
           <Grid container spacing={2} justifyContent="center" alignItems="center">
             <Grid item xs={12} sm={6}>
               <Typography variant="body1">
-                © 2024 Full Wash Conce Spa. Todos los derechos reservados.
+                2024 Full Wash Conce Spa. Todos los derechos reservados.
               </Typography>
               <Button
-                component="a"
-                href="/dashboardAdmin"
+                onClick={handleAdminClick}
                 variant="text"
                 sx={{
                   color: 'white',

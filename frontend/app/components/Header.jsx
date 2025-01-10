@@ -4,6 +4,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useRouter } from 'next/navigation';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
+import { parseCookies } from 'nookies';
 
 // Horarios de atención
 const hours = {
@@ -42,6 +43,22 @@ const Header = () => {
     setHoursAnchorEl(null);
   };
 
+  const handleMenuItemClick = (link) => {
+    if (link === '/dashboardCliente') {
+      const cookies = parseCookies();
+      const token = cookies.token;
+      
+      if (!token) {
+        router.push('/loginCliente');
+      } else {
+        router.push(link);
+      }
+    } else {
+      router.push(link);
+    }
+    handleMenuClose();
+  };
+
   const menuItems = [
     { label: 'Inicio', link: '/' },
     { label: 'Servicios', link: '/servicios' },
@@ -49,11 +66,6 @@ const Header = () => {
     { label: 'Mi Cuenta', link: '/dashboardCliente' },
     { label: 'Registro', link: '/register' },
   ];
-
-  const handleNavigation = (link) => {
-    router.push(link);
-    handleMenuClose();
-  };
 
   return (
     <div>
@@ -117,7 +129,7 @@ const Header = () => {
                 onClose={handleMenuClose}
               >
                 {menuItems.map((item, index) => (
-                  <MenuItem key={index} onClick={() => handleNavigation(item.link)}>
+                  <MenuItem key={index} onClick={() => handleMenuItemClick(item.link)}>
                     {item.label}
                   </MenuItem>
                 ))}
@@ -128,7 +140,7 @@ const Header = () => {
               <Button
                 key={index}
                 color="inherit"
-                onClick={() => handleNavigation(item.link)}
+                onClick={() => handleMenuItemClick(item.link)}
                 sx={{
                   borderRadius: '50px',
                   margin: '0 10px',
