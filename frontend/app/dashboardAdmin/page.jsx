@@ -634,7 +634,7 @@ function Dashboard() {
                     <TableRow key={reserva.id}>
                       <TableCell>{reserva.user ? reserva.user.username : "N/A"}</TableCell>
                       <TableCell>{reserva.servicio?.nombre_servicio || "N/A"} - ${reserva.servicio?.precio || "N/A"}</TableCell>
-                      <TableCell>{new Date(reserva.fecha).toLocaleDateString()}</TableCell>
+                      <TableCell>{reserva.fecha.split('T')[0]}</TableCell>
                       <TableCell>{reserva.hora}</TableCell>
                       <TableCell>{reserva.tipo_vehiculo?.nombre || "N/A"}</TableCell>
                       <TableCell>

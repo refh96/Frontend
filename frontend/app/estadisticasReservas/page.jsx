@@ -187,20 +187,22 @@ const EstadisticasReservas = () => {
     const reservasPorDia = {};
     
     reservasFiltradas.forEach(reserva => {
-      // Usar la fecha de la reserva, no la fecha de creación
-      const fecha = new Date(reserva.fecha);
-      const dia = fecha.getUTCDate(); // Usar getUTCDate para evitar problemas de zona horaria
+      // Convertir la fecha UTC a fecha local
+      const fechaUTC = new Date(reserva.fecha);
+      const fechaLocal = new Date(fechaUTC.getTime() + fechaUTC.getTimezoneOffset() * 60000);
+      const dia = fechaLocal.getDate();
       reservasPorDia[dia] = (reservasPorDia[dia] || 0) + 1;
     });
 
     // Crear array con todos los días del mes
-    const fechaBase = new Date(reservasFiltradas[0].fecha);
+    const fechaBase = new Date(reservasFiltradas[0]?.fecha);
     const ultimoDia = new Date(
       fechaBase.getUTCFullYear(),
       fechaBase.getUTCMonth() + 1,
       0
     ).getDate();
 
+    // Inicializar todos los días del mes con 0 reservas
     const distribucionCompleta = {};
     for (let i = 1; i <= ultimoDia; i++) {
       distribucionCompleta[i] = reservasPorDia[i] || 0;

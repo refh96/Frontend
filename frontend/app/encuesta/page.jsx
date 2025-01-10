@@ -8,6 +8,8 @@ import axios from 'axios';
 import 'react-toastify/dist/ReactToastify.css';
 import { parseCookies, setCookie } from 'nookies';
 import CloseIcon from '@mui/icons-material/Close';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const Encuesta = () => {
   const [formData, setFormData] = useState({
@@ -117,7 +119,11 @@ const Encuesta = () => {
   };
 
   return (
+    <Box display="flex" flexDirection="column" minHeight="100vh">
+      {/* Header */}
+      <Header />
     <Box
+    
       sx={{
         display: 'flex',
         justifyContent: 'center',
@@ -283,6 +289,8 @@ const Encuesta = () => {
           </Button>
         </form>
       </Paper>
+    </Box>
+    <Footer />
     </Box>
   );
 };

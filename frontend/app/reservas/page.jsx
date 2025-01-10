@@ -287,11 +287,20 @@ const GestionReservas = () => {
                           onChange={(e) => handleEstadoChange(reserva.id, e.target.value)}
                           size="small"
                         >
-                          {estados.map((estado) => (
-                            <MenuItem key={estado.id} value={estado.id}>
-                              {estado.nombre}
-                            </MenuItem>
-                          ))}
+                          {estados
+                            .filter(estado => 
+                              estado.id === reserva.estado_id || // Mostrar el estado actual de la reserva
+                              estado.id !== 7 // Y mostrar todos los demás estados excepto recalendarización
+                            )
+                            .map((estado) => (
+                              <MenuItem 
+                                key={estado.id} 
+                                value={estado.id}
+                                disabled={estado.id === 7} // Deshabilitar la opción de recalendarización
+                              >
+                                {estado.nombre}
+                              </MenuItem>
+                            ))}
                         </Select>
                       </FormControl>
                     </TableCell>
