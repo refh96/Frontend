@@ -179,7 +179,7 @@ function Dashboard() {
           router.push("/dashboardAyudante");
           return;
         } else if (userRole !== "administrador") {
-          router.push("/dashboardCliente");
+          router.push("/dashboardClienteNuevo");
           return;
         }
         setUser(res.data.user);

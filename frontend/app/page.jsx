@@ -134,7 +134,7 @@ function HomePage() {
     setSelectedService(null);
   };
   const handleAddToOrder = () => {
-    router.push('/dashboardCliente');
+    router.push('/dashboardClienteNuevo');
     handleCloseModal();
   };
   const processItems = [
@@ -218,13 +218,16 @@ function HomePage() {
           <Paper
             key={index}
             style={{
-              height: '500px',  // Hace que el Paper ocupe todo el alto del contenedor
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'transparent',
-              boxShadow: 'none',
-              borderRadius: '20px',  // Aplica el borderRadius al Paper
+              height: '500px',
+  width: '100%',
+  position: 'relative',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: 'transparent',
+  boxShadow: 'none',
+  borderRadius: '20px',
+  overflow: 'hidden' // Aplica el borderRadius al Paper
             }}
             elevation={0}
           >

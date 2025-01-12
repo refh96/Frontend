@@ -188,7 +188,7 @@ const AceptarFecha = () => {
         }
       } finally {
         console.log('Redirigiendo al usuario...');
-        router.push('/dashboardCliente'); // Cambia esta ruta según el flujo de tu aplicación
+        router.push('/dashboardClienteNuevo'); // Cambia esta ruta según el flujo de tu aplicación
       }
     };
 

@@ -71,7 +71,7 @@ function LoginCliente() {
           timer: 2000,
         });
         setTimeout(() => {
-          router.push("/dashboardCliente");
+          router.push("/dashboardClienteNuevo");
         }, 2000);
       }
     } catch (error) {

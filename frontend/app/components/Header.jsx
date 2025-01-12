@@ -44,7 +44,7 @@ const Header = () => {
   };
 
   const handleMenuItemClick = (link) => {
-    if (link === '/dashboardCliente') {
+    if (link === '/dashboardClienteNuevo') {
       const cookies = parseCookies();
       const token = cookies.token;
       
@@ -63,7 +63,7 @@ const Header = () => {
     { label: 'Inicio', link: '/' },
     { label: 'Servicios', link: '/servicios' },
     { label: 'Quienes somos', link: '/datos' },
-    { label: 'Mi Cuenta', link: '/dashboardCliente' },
+    { label: 'Mi Cuenta', link: '/dashboardClienteNuevo' },
     { label: 'Registro', link: '/register' },
   ];
 

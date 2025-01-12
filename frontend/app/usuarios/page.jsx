@@ -243,6 +243,7 @@ const AdminUsuarios = () => {
                                                     >
                                                         <MenuItem value="usuario">Usuario</MenuItem>
                                                         <MenuItem value="administrador">Administrador</MenuItem>
+                                                        <MenuItem value="ayudante">Ayudante</MenuItem>
                                                     </Select>
                                                 </FormControl>
                                             </TableCell>
