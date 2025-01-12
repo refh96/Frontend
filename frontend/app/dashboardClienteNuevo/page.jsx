@@ -1113,6 +1113,8 @@ export default function DashboardClienteNuevo() {
             console.error('Fecha inválida:', reserva.fecha);
             return null;
           }
+          // Ajustar por la zona horaria
+          fecha.setMinutes(fecha.getMinutes() + fecha.getTimezoneOffset());
           return format(fecha, 'yyyy-MM-dd');
         })
         .filter(Boolean); // Eliminar fechas nulas
@@ -1127,12 +1129,15 @@ export default function DashboardClienteNuevo() {
   // Función para manejar la selección de fecha en el calendario
   const handleDateSelect = (date) => {
     try {
-      const formattedDate = format(date, 'yyyy-MM-dd');
+      const adjustedDate = new Date(date);
+      adjustedDate.setMinutes(adjustedDate.getMinutes() + adjustedDate.getTimezoneOffset());
+      const formattedDate = format(adjustedDate, 'yyyy-MM-dd');
       
       const reservasEnFecha = reservas.filter(reserva => {
         try {
-          const fechaReserva = format(new Date(reserva.fecha), 'yyyy-MM-dd');
-          return fechaReserva === formattedDate;
+          const fechaReserva = new Date(reserva.fecha);
+          fechaReserva.setMinutes(fechaReserva.getMinutes() + fechaReserva.getTimezoneOffset());
+          return format(fechaReserva, 'yyyy-MM-dd') === formattedDate;
         } catch (error) {
           console.error('Error procesando fecha de reserva:', reserva.fecha, error);
           return false;
