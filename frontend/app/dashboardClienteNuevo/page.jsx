@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { destroyCookie } from 'nookies';
 import axios from 'axios';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
+import { zonedTimeToUtc, utcToZonedTime } from 'date-fns-tz';
 import { es } from 'date-fns/locale';
 import Swal from 'sweetalert2';
 import { styled } from '@mui/material/styles';
@@ -1902,7 +1903,11 @@ export default function DashboardClienteNuevo() {
                                 <TableRow key={reserva.id}>
                                   <TableCell>{reserva.servicio.nombre_servicio}</TableCell>
                                   <TableCell>
-                                    {format(new Date(reserva.fecha), 'dd/MM/yyyy')}
+                                    {(() => {
+                                      const date = parseISO(reserva.fecha);
+                                      const zonedDate = utcToZonedTime(date, 'America/Santiago');
+                                      return format(zonedDate, 'dd/MM/yyyy');
+                                    })()}
                                   </TableCell>
                                   <TableCell>{reserva.hora}</TableCell>
                                   <TableCell>
