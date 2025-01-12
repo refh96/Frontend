@@ -1904,9 +1904,10 @@ export default function DashboardClienteNuevo() {
                                   <TableCell>{reserva.servicio.nombre_servicio}</TableCell>
                                   <TableCell>
                                     {(() => {
-                                      const date = parseISO(reserva.fecha);
-                                      const zonedDate = utcToZonedTime(date, 'America/Santiago');
-                                      return format(zonedDate, 'dd/MM/yyyy');
+                                      // Crear una fecha UTC y ajustarla a la zona horaria local
+                                      const fecha = new Date(reserva.fecha);
+                                      fecha.setMinutes(fecha.getMinutes() + fecha.getTimezoneOffset());
+                                      return format(fecha, 'dd/MM/yyyy');
                                     })()}
                                   </TableCell>
                                   <TableCell>{reserva.hora}</TableCell>
