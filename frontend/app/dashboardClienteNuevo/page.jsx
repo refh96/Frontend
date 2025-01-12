@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';

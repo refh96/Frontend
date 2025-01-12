@@ -24,57 +24,144 @@ const Footer = () => {
     <footer>
       <Box
         sx={{
-          backgroundColor: '#00bcd4', // Color calipso
+          backgroundColor: '#1a237e',
           color: 'white',
-          py: 3,
-          mt: 4,
+          py: 4,
+          mt: 'auto',
           width: '100%',
-          textAlign: 'center',
+          borderTop: '4px solid #ff6f00'
         }}
       >
         <Container maxWidth="lg">
-          <Grid container spacing={2} justifyContent="center" alignItems="center">
+          <Grid container spacing={4} justifyContent="center" alignItems="center">
             <Grid item xs={12} sm={6}>
-              <Typography variant="body1">
-                2024 Full Wash Conce Spa. Todos los derechos reservados.
-              </Typography>
-              <Button
-                onClick={handleAdminClick}
-                variant="text"
-                sx={{
-                  color: 'white',
-                  mt: 2,
-                  display: 'block',
-                  textTransform: 'none',
-                }}
-              >
-                Admin
-              </Button>
+              <Box sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
+                <Typography 
+                  variant="h6" 
+                  sx={{ 
+                    fontWeight: 600,
+                    mb: 2,
+                    color: '#ffffff'
+                  }}
+                >
+                  Full Wash Conce
+                </Typography>
+                <Typography 
+                  variant="body1" 
+                  sx={{ 
+                    mb: 2,
+                    color: 'rgba(255, 255, 255, 0.9)',
+                    fontSize: '0.95rem'
+                  }}
+                >
+                  2024 Full Wash Conce Spa. Todos los derechos reservados.
+                </Typography>
+                <Button
+                  onClick={handleAdminClick}
+                  variant="outlined"
+                  sx={{
+                    color: '#ffffff',
+                    borderColor: 'rgba(255, 255, 255, 0.5)',
+                    textTransform: 'none',
+                    px: 3,
+                    '&:hover': {
+                      borderColor: '#ffffff',
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                    }
+                  }}
+                >
+                  Admin
+                </Button>
+              </Box>
             </Grid>
-            <Grid item xs={12} sm={6} sx={{ textAlign: 'center' }}>
-              <Link
-                href="https://www.facebook.com/FullWashconce"
-                target="_blank"
-                sx={{ color: 'white', mx: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-              >
-                <FacebookIcon fontSize="large" sx={{ marginRight: '8px' }} />
-                <Typography variant="body1">Visita nuestro Facebook</Typography>
-              </Link>
-              <Link
-                href="https://www.instagram.com/fullwashconce/"
-                target="_blank"
-                sx={{ color: 'white', mx: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-              >
-                <InstagramIcon fontSize="large" sx={{ marginRight: '8px' }} />
-                <Typography variant="body1">Visita nuestro Instagram</Typography>
-              </Link>
-              <Link
-                href="https://www.tiktok.com/@fullwashconce"
-                target="_blank"
-                sx={{ color: 'white', display: 'block', ml: 2 }}
-              >
-                <Typography variant="body1">Visita nuestro TikTok</Typography>
-              </Link>
+            <Grid item xs={12} sm={6}>
+              <Box sx={{ 
+                display: 'flex', 
+                flexDirection: 'column',
+                alignItems: { xs: 'center', sm: 'flex-end' },
+                gap: 2
+              }}>
+                <Typography 
+                  variant="h6" 
+                  sx={{ 
+                    fontWeight: 600,
+                    mb: 1,
+                    color: '#ffffff'
+                  }}
+                >
+                  Síguenos en redes sociales
+                </Typography>
+                <Box sx={{ 
+                  display: 'flex', 
+                  flexDirection: 'column',
+                  gap: 2
+                }}>
+                  <Link
+                    href="https://www.facebook.com/FullWashconce"
+                    target="_blank"
+                    sx={{
+                      color: '#ffffff',
+                      textDecoration: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        color: '#4267B2',
+                        transform: 'translateX(5px)'
+                      }
+                    }}
+                  >
+                    <FacebookIcon sx={{ fontSize: 28, mr: 1 }} />
+                    <Typography variant="body1">Facebook</Typography>
+                  </Link>
+                  <Link
+                    href="https://www.instagram.com/fullwashconce/"
+                    target="_blank"
+                    sx={{
+                      color: '#ffffff',
+                      textDecoration: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        color: '#E1306C',
+                        transform: 'translateX(5px)'
+                      }
+                    }}
+                  >
+                    <InstagramIcon sx={{ fontSize: 28, mr: 1 }} />
+                    <Typography variant="body1">Instagram</Typography>
+                  </Link>
+                  <Link
+                    href="https://www.tiktok.com/@fullwashconce"
+                    target="_blank"
+                    sx={{
+                      color: '#ffffff',
+                      textDecoration: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        color: '#69C9D0',
+                        transform: 'translateX(5px)'
+                      }
+                    }}
+                  >
+                    <Box 
+                      component="span" 
+                      sx={{ 
+                        fontSize: '1.75rem',
+                        mr: 1,
+                        display: 'flex',
+                        alignItems: 'center'
+                      }}
+                    >
+                      🎵
+                    </Box>
+                    <Typography variant="body1">TikTok</Typography>
+                  </Link>
+                </Box>
+              </Box>
             </Grid>
           </Grid>
         </Container>

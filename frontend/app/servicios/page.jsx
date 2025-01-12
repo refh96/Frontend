@@ -58,7 +58,7 @@ const Page = () => {
   };
 
   const handleAddToOrder = () => {
-    router.push(`/dashboardClienteNuevo?showForm=true&servicio_id=${selectedService.id}`);    
+    router.push(`/dashboardClienteNuevo?showForm=true&servicio_id=${selectedService.id}`);
     handleCloseModal();
   };
 
@@ -71,137 +71,280 @@ const Page = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header />
-      <Container sx={{ marginTop: 4, flexGrow: 1 }}>
-        <Typography
-          variant="h2"
-          align="center"
-          sx={{
-            my: 4,
-            color: 'darkorange',
-            fontFamily: 'Helvetica',
-            fontSize: '3rem',
-            fontWeight: 'bold',
-          }}
-        >
-          Nuestros Servicios
-        </Typography>
-        <Typography
-          variant="h5"
-          align="center"
-          sx={{
-            my: 4,
-            color: 'gray',
-            fontFamily: 'Helvetica',
-            fontSize: '1.5rem',
-          }}
-        >
-          El costo de los servicios varía dependiendo del tamaño o tipo de vehículo
-        </Typography>
-  
-        {/* Mostrar los tipos de vehículos */}
-        <Grid container spacing={4} justifyContent="center">
-          {vehicleTypes.map((vehicle) => (
-            <Grid item xs={12} sm={6} md={4} key={vehicle.id}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  textAlign: 'center',
-                  padding: '20px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                  borderRadius: '12px',
-                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                  height: '100%',
-                  maxHeight: '350px',
-                }}
-              >
-                <Box sx={{ fontSize: '2.5rem', color: 'darkblue' }}>
-                  {vehicle.icon}
+      <Container sx={{ marginTop: 4, flexGrow: 1, maxWidth: 'lg' }}>
+        <Box sx={{ textAlign: 'center', mb: 6 }}>
+          <Typography
+            variant="h2"
+            sx={{
+              color: '#1a237e',
+              fontFamily: 'Helvetica',
+              fontSize: { xs: '2.5rem', md: '3.5rem' },
+              fontWeight: 'bold',
+              mb: 2,
+              position: 'relative',
+              '&::after': {
+                content: '""',
+                position: 'absolute',
+                bottom: '-10px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: '80px',
+                height: '4px',
+                backgroundColor: '#ff6f00',
+                borderRadius: '2px',
+              }
+            }}
+          >
+            Nuestros Servicios
+          </Typography>
+          <Typography
+            variant="h5"
+            sx={{
+              color: '#546e7a',
+              fontFamily: 'Helvetica',
+              fontSize: { xs: '1.2rem', md: '1.5rem' },
+              maxWidth: '800px',
+              margin: '0 auto',
+              mt: 4
+            }}
+          >
+            El costo de los servicios varía dependiendo del tamaño o tipo de vehículo
+          </Typography>
+        </Box>
+
+        {/* Tipos de vehículos */}
+        <Box sx={{ mb: 8 }}>
+          <Grid container spacing={4} justifyContent="center">
+            {vehicleTypes.map((vehicle) => (
+              <Grid item xs={12} sm={6} md={4} key={vehicle.id}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    padding: '2rem',
+                    backgroundColor: '#ffffff',
+                    borderRadius: '16px',
+                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                    height: '100%',
+                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                    '&:hover': {
+                      transform: 'translateY(-5px)',
+                      boxShadow: '0 8px 25px rgba(0, 0, 0, 0.12)',
+                    }
+                  }}
+                >
+                  <Box sx={{ 
+                    fontSize: '3rem', 
+                    color: '#1a237e',
+                    mb: 2,
+                    transition: 'transform 0.3s ease',
+                    '&:hover': {
+                      transform: 'scale(1.1)',
+                    }
+                  }}>
+                    {vehicle.icon}
+                  </Box>
+                  <Typography 
+                    variant="h6" 
+                    sx={{ 
+                      fontWeight: 600,
+                      color: '#263238',
+                      textAlign: 'center',
+                      lineHeight: 1.4
+                    }}
+                  >
+                    {vehicle.nombre}
+                  </Typography>
                 </Box>
-                <Typography color={'black'} variant="h6" sx={{ mt: 2, fontWeight: 'bold' }}>
-                  {vehicle.nombre}
-                </Typography>
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
-  
-        {/* Mostrar servicios */}
-        <Grid container spacing={4} justifyContent="center" sx={{ mt: 4 }}>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+
+        {/* Servicios */}
+        <Grid container spacing={4} sx={{ mb: 8 }}>
           {[{ title: 'Lavados de Vehículos', servicios: serviciosLavados }, { title: 'Otros Servicios', servicios: serviciosOtros }].map((categoria, index) => (
             <Grid item xs={12} md={6} key={index}>
               <Box
                 sx={{
-                  textAlign: 'center',
-                  padding: '20px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                  borderRadius: '12px',
-                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                  backgroundColor: '#ffffff',
+                  borderRadius: '20px',
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                  overflow: 'hidden',
+                  height: '100%'
                 }}
               >
-                <Typography variant="h5" sx={{ mb: 2, fontWeight: 'medium', color: 'darkblue' }}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    py: 3,
+                    px: 4,
+                    backgroundColor: '#1a237e',
+                    color: '#ffffff',
+                    fontWeight: 600,
+                    textAlign: 'center',
+                    borderBottom: '4px solid #ff6f00'
+                  }}
+                >
                   {categoria.title}
                 </Typography>
-                {Array.isArray(categoria.servicios) && categoria.servicios.map((servicio) => (
-                  <Box
-                    key={servicio.id}
-                    sx={{
-                      mb: 3,
-                      border: '1px solid #e0e0e0',
-                      borderRadius: '8px',
-                      padding: '16px',
-                      backgroundColor: '#fafafa',
-                      transition: 'transform 0.3s ease',
-                      '&:hover': {
-                        transform: 'scale(1.02)',
-                      },
-                    }}
-                  >
-                    <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'black', mb: 1 }}>
-                      {servicio.nombre_servicio}
-                    </Typography>
-  
-                    {/* Tiempo estimado */}
-                    <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'darkgray', mb: 1 }}>
-                      Tiempo estimado de servicio: {servicio.tiempo_estimado ? formatTime(servicio.tiempo_estimado) : 'No especificado'}
-                    </Typography>
-  
-                    {/* Detalles incluidos */}
-                    <Typography variant="body1" sx={{ color: 'gray', mb: 1 }}>
-                      El servicio incluye:
-                    </Typography>
-                    <Box component="ul" sx={{ paddingLeft: 0, marginTop: 0, color: 'black', listStyle: 'none' }}>
-                      {Array.isArray(servicio.detalles_incluidos)
-                        ? servicio.detalles_incluidos.map((detalle, idx) => (
-                            <Box component="li" key={idx} sx={{ marginBottom: '8px' }}>{detalle}</Box>
-                          ))
-                        : servicio.detalles_incluidos.split(',').map((detalle, idx) => (
-                            <Box component="li" key={idx} sx={{ marginBottom: '8px' }}>{detalle.trim()}</Box>
-                          ))}
-                    </Box>
-  
-                    {/* Precio */}
-                    <Typography variant="h6" sx={{ color: 'black', mt: 2 }}>
-                      Desde los: ${servicio.precio}
-                    </Typography>
-  
-                    {/* Botón */}
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      sx={{ mt: 2 }}
-                      onClick={() => handleOpenModal(servicio)}
+                <Box sx={{ p: 4 }}>
+                  {Array.isArray(categoria.servicios) && categoria.servicios.map((servicio) => (
+                    <Box
+                      key={servicio.id}
+                      sx={{
+                        mb: 4,
+                        backgroundColor: '#f8f9fa',
+                        borderRadius: '12px',
+                        padding: '24px',
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          transform: 'translateY(-5px)',
+                          boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)',
+                        },
+                        '&:last-child': {
+                          mb: 0
+                        }
+                      }}
                     >
-                      Solicitar Servicio
-                    </Button>
-                  </Box>
-                ))}
+                      <Typography 
+                        variant="h6" 
+                        sx={{ 
+                          fontWeight: 700,
+                          color: '#1a237e',
+                          mb: 2
+                        }}
+                      >
+                        {servicio.nombre_servicio}
+                      </Typography>
+
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: '#546e7a',
+                          mb: 2,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1
+                        }}
+                      >
+                        <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center' }}>
+                          ⏱️
+                        </Box>
+                        {servicio.tiempo_estimado ? formatTime(servicio.tiempo_estimado) : 'No especificado'}
+                      </Typography>
+
+                      <Typography 
+                        variant="subtitle1" 
+                        sx={{ 
+                          color: '#263238',
+                          fontWeight: 600,
+                          mb: 1
+                        }}
+                      >
+                        El servicio incluye:
+                      </Typography>
+
+                      <Box 
+                        component="ul" 
+                        sx={{ 
+                          listStyle: 'none',
+                          p: 0,
+                          m: 0
+                        }}
+                      >
+                        {Array.isArray(servicio.detalles_incluidos)
+                          ? servicio.detalles_incluidos.map((detalle, idx) => (
+                            <Box 
+                              component="li" 
+                              key={idx} 
+                              sx={{
+                                mb: 1,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 2,
+                                color: '#000000',
+                                '&::before': {
+                                  content: '"✓"',
+                                  color: '#4caf50',
+                                  fontWeight: 'bold'
+                                }
+                              }}
+                            >
+                              {detalle}
+                            </Box>
+                          ))
+                          : servicio.detalles_incluidos.split(',').map((detalle, idx) => (
+                            <Box 
+                              component="li" 
+                              key={idx} 
+                              sx={{
+                                mb: 1,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 2,
+                                color: '#000000',
+                                '&::before': {
+                                  content: '"✓"',
+                                  color: '#4caf50',
+                                  fontWeight: 'bold'
+                                }
+                              }}
+                            >
+                              {detalle.trim()}
+                            </Box>
+                          ))}
+                      </Box>
+
+                      <Box sx={{ 
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        mt: 3,
+                        pt: 2,
+                        borderTop: '1px solid #e0e0e0'
+                      }}>
+                        <Typography 
+                          variant="h6" 
+                          sx={{ 
+                            color: '#1a237e',
+                            fontWeight: 700
+                          }}
+                        >
+                          Desde ${servicio.precio}
+                        </Typography>
+
+                        <Button
+                          variant="contained"
+                          onClick={() => handleOpenModal(servicio)}
+                          sx={{
+                            backgroundColor: '#ff6f00',
+                            color: 'white',
+                            px: 3,
+                            py: 1,
+                            borderRadius: '8px',
+                            textTransform: 'none',
+                            fontWeight: 600,
+                            '&:hover': {
+                              backgroundColor: '#f57c00',
+                              transform: 'scale(1.05)',
+                            },
+                            transition: 'all 0.3s ease'
+                          }}
+                        >
+                          Solicitar Servicio
+                        </Button>
+                      </Box>
+                    </Box>
+                  ))}
+                </Box>
               </Box>
             </Grid>
           ))}
         </Grid>
       </Container>
-  
+
       <Dialog open={openModal} onClose={handleCloseModal}>
         <DialogContent>
           {selectedService && (
@@ -230,12 +373,10 @@ const Page = () => {
           </Button>
         </DialogActions>
       </Dialog>
-  
+
       <Footer />
     </div>
   );
-  
-
 };
 
 export default Page;
