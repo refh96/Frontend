@@ -76,114 +76,116 @@ const Header = () => {
           boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)'
         }}
       >
-        <Toolbar sx={{ py: 1 }}>
+        <Toolbar 
+          sx={{ 
+            py: { xs: 0.5, sm: 1 },
+            px: { xs: 1, sm: 2 },
+            display: 'flex',
+            justifyContent: 'space-between'
+          }}
+        >
           <Box
             sx={{
               display: 'flex',
               alignItems: 'center',
-              flexGrow: 1,
               cursor: 'pointer',
+              flexGrow: { xs: 1, sm: 0 }
             }}
+            onClick={() => router.push('/')}
           >
             <img
-              onClick={() => router.push('/')}
               src="https://i.ibb.co/7CYX4zX/logo-full-wash.jpg"
               alt="Logo"
               style={{
-                width: '60px',
-                height: '60px',
-                marginRight: '15px',
+                width: isMobile ? '40px' : '60px',
+                height: isMobile ? '40px' : '60px',
+                marginRight: isMobile ? '8px' : '15px',
                 borderRadius: '50%',
                 transition: 'transform 0.3s ease',
-                '&:hover': {
-                  transform: 'scale(1.05)'
-                }
               }}
             />
             <Typography 
-              variant="h5" 
+              variant={isMobile ? "h6" : "h5"}
               sx={{ 
                 color: '#1a237e',
                 fontWeight: 700,
-                letterSpacing: '0.5px'
+                letterSpacing: '0.5px',
+                fontSize: { xs: '1rem', sm: '1.5rem' },
+                display: 'block',  
+                textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)'  
               }}
             >
               FULL WASH CONCE
             </Typography>
           </Box>
 
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              ml: 2,
-              backgroundColor: '#f5f5f5',
-              borderRadius: '8px',
-              padding: '8px 16px'
-            }}
-          >
-            <Typography 
-              variant="body1" 
+          {!isMobile && (
+            <Box 
               sx={{ 
-                color: '#1a237e',
-                fontWeight: 500,
-                mr: 1 
+                display: 'flex', 
+                alignItems: 'center', 
+                ml: 2,
+                backgroundColor: '#f5f5f5',
+                borderRadius: '8px',
+                padding: '8px 16px'
               }}
             >
-              Horario:
-            </Typography>
-            <Button 
-              onClick={handleHoursMenuOpen} 
-              sx={{ 
-                color: '#1a237e',
-                textTransform: 'none',
-                fontWeight: 500,
-                '&:hover': {
-                  backgroundColor: 'rgba(26, 35, 126, 0.08)'
-                }
-              }}
-            >
-              {dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1)}: {currentHours || 'Horario no disponible'}
-            </Button>
-          </Box>
-
-          <Menu
-            anchorEl={hoursAnchorEl}
-            open={Boolean(hoursAnchorEl)}
-            onClose={handleHoursMenuClose}
-            PaperProps={{
-              sx: {
-                mt: 1,
-                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-                borderRadius: '8px'
-              }
-            }}
-          >
-            {Object.entries(hours).map(([day, hour], index) => (
-              <MenuItem 
-                key={index} 
-                onClick={handleHoursMenuClose}
-                sx={{
-                  py: 1.5,
-                  px: 3,
+              <Typography 
+                variant="body1" 
+                sx={{ 
+                  color: '#1a237e',
+                  fontWeight: 500,
+                  mr: 1 
+                }}
+              >
+                Horario:
+              </Typography>
+              <Button 
+                onClick={handleHoursMenuOpen} 
+                sx={{ 
+                  color: '#1a237e',
+                  textTransform: 'none',
+                  fontWeight: 500,
                   '&:hover': {
-                    backgroundColor: '#f5f5f5'
+                    backgroundColor: 'rgba(26, 35, 126, 0.08)'
                   }
                 }}
               >
-                <Typography sx={{ fontWeight: 500, color: '#1a237e' }}>{day}:</Typography>
-                <Typography sx={{ ml: 1, color: '#546e7a' }}>{hour}</Typography>
-              </MenuItem>
-            ))}
-          </Menu>
+                {dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1)}: {currentHours || 'Horario no disponible'}
+              </Button>
+            </Box>
+          )}
 
           {isMobile ? (
-            <>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Button
+                onClick={handleHoursMenuOpen}
+                sx={{
+                  minWidth: 'auto',
+                  padding: '6px',
+                  color: '#1a237e',
+                  '&:hover': {
+                    backgroundColor: 'rgba(26, 35, 126, 0.08)'
+                  }
+                }}
+              >
+                <Typography 
+                  variant="caption" 
+                  sx={{ 
+                    display: 'block',
+                    lineHeight: 1,
+                    fontWeight: 500
+                  }}
+                >
+                  Horario
+                </Typography>
+              </Button>
+              
               <IconButton
-                edge="start"
+                edge="end"
                 sx={{ 
                   color: '#1a237e',
-                  ml: 2,
+                  padding: '8px',
                   '&:hover': {
                     backgroundColor: 'rgba(26, 35, 126, 0.08)'
                   }
@@ -193,38 +195,7 @@ const Header = () => {
               >
                 <MenuIcon />
               </IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
-                PaperProps={{
-                  sx: {
-                    mt: 1,
-                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-                    borderRadius: '8px'
-                  }
-                }}
-              >
-                {menuItems.map((item, index) => (
-                  <MenuItem 
-                    key={index} 
-                    onClick={() => handleMenuItemClick(item.link)}
-                    sx={{
-                      py: 1.5,
-                      px: 3,
-                      '&:hover': {
-                        backgroundColor: '#f5f5f5'
-                      }
-                    }}
-                  >
-                    <Typography sx={{ fontWeight: 500, color: '#1a237e' }}>
-                      {item.label}
-                    </Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </>
+            </Box>
           ) : (
             <Box sx={{ display: 'flex', gap: 1 }}>
               {menuItems.map((item, index) => (
@@ -262,6 +233,88 @@ const Header = () => {
               ))}
             </Box>
           )}
+
+          <Menu
+            anchorEl={hoursAnchorEl}
+            open={Boolean(hoursAnchorEl)}
+            onClose={handleHoursMenuClose}
+            PaperProps={{
+              sx: {
+                mt: 1,
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+                borderRadius: '8px',
+                maxWidth: isMobile ? '280px' : '320px'
+              }
+            }}
+          >
+            {Object.entries(hours).map(([day, hour], index) => (
+              <MenuItem 
+                key={index} 
+                onClick={handleHoursMenuClose}
+                sx={{
+                  py: 1,
+                  px: 2,
+                  '&:hover': {
+                    backgroundColor: '#f5f5f5'
+                  }
+                }}
+              >
+                <Typography sx={{ 
+                  fontWeight: 500, 
+                  color: '#1a237e',
+                  fontSize: isMobile ? '0.875rem' : '1rem'
+                }}>
+                  {day}:
+                </Typography>
+                <Typography sx={{ 
+                  ml: 1, 
+                  color: '#546e7a',
+                  fontSize: isMobile ? '0.875rem' : '1rem'
+                }}>
+                  {hour}
+                </Typography>
+              </MenuItem>
+            ))}
+          </Menu>
+
+          <Menu
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+            PaperProps={{
+              sx: {
+                mt: 1,
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+                borderRadius: '8px',
+                width: '200px'
+              }
+            }}
+            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+          >
+            {menuItems.map((item, index) => (
+              <MenuItem 
+                key={index} 
+                onClick={() => handleMenuItemClick(item.link)}
+                sx={{
+                  py: 1.5,
+                  px: 2,
+                  '&:hover': {
+                    backgroundColor: '#f5f5f5'
+                  }
+                }}
+              >
+                <Typography sx={{ 
+                  fontWeight: 500, 
+                  color: '#1a237e',
+                  fontSize: '0.9rem'
+                }}>
+                  {item.label}
+                </Typography>
+              </MenuItem>
+            ))}
+          </Menu>
         </Toolbar>
       </AppBar>
     </div>

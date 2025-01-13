@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { Box, Paper, Skeleton, Typography, Grid, Container, Button, Dialog, DialogActions, DialogContent, IconButton } from '@mui/material';
+import { Box, Paper, Skeleton, Typography, Grid, Container, Button, Dialog, DialogActions, DialogContent, IconButton, Stack, Avatar, Rating } from '@mui/material';
 import Carousel from 'react-material-ui-carousel';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -253,85 +253,208 @@ function HomePage() {
 
   {/* Párrafo de texto descriptivo */}
   <Grid item xs={12} sm={6}>
-    <Paper
-      style={{
-        padding: '20px',
-        borderRadius: '8px',
-        backgroundColor: '#f5f5f5',
-        boxShadow: 'none',
+    <Box
+      sx={{
+        padding: '2rem',
+        borderRadius: '16px',
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255, 255, 255, 0.3)',
         height: '100%',
         display: 'flex',
-        alignItems: 'center',
+        flexDirection: 'column',
         justifyContent: 'center',
+        gap: 3,
+        position: 'relative',
+        overflow: 'hidden',
+        mr: { xs: 2, sm: 3, md: 4 },
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '4px',
+          background: 'linear-gradient(90deg, #1a237e, #F05B3C)',
+        }
       }}
     >
-      <Typography variant="h6" style={{ textAlign: 'center' }}>
-        {`Bienvenido a Full Wash – El mejor cuidado para tu vehículo
-
-En Full Wash, nos especializamos en ofrecer un servicio de lavado de vehículos de alta calidad, garantizando que tu automóvil reciba el tratamiento que se merece. Nuestro equipo de expertos utiliza productos de alta gama y técnicas de limpieza avanzadas para asegurar que tu vehículo quede impecable, tanto por dentro como por fuera. Ya sea que necesites un lavado rápido, detallado o un tratamiento especializado para tu coche, estamos aquí para satisfacer todas tus necesidades. Además, nuestra comodidad y atención al cliente son nuestra prioridad, ofreciendo un servicio eficiente y conveniente para que tu experiencia sea rápida y sin complicaciones. Confía en Full Wash para mantener tu vehículo en su mejor estado, con un acabado que te hará sentir como si fuera nuevo. ¡Visítanos hoy y descubre por qué somos la opción preferida para el cuidado de tu coche! `.split('\n').map((line, idx) => (
-                <React.Fragment key={idx}>
-                  {line}
-                  {idx < 2 && <br />}
-                </React.Fragment>
-              ))}
+      <Typography
+        variant="h3"
+        sx={{
+          color: '#1a237e',
+          fontWeight: 700,
+          textAlign: 'center',
+          fontSize: { xs: '1.8rem', sm: '2rem', md: '2.2rem' },
+          position: 'relative',
+          mb: 2,
+          fontFamily: 'Baloo, sans-serif',
+          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        Bienvenido a Full Wash
       </Typography>
-    </Paper>
+
+      <Typography
+        variant="h5"
+        sx={{
+          color: '#F05B3C',
+          textAlign: 'center',
+          fontSize: { xs: '1.2rem', sm: '1.3rem', md: '1.4rem' },
+          fontStyle: 'italic',
+          mb: 3,
+          fontWeight: 500,
+          letterSpacing: '0.5px'
+        }}
+      >
+        El mejor cuidado para tu vehículo
+      </Typography>
+
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: 2,
+        '& p': {
+          color: '#37474f',
+          fontSize: { xs: '0.95rem', md: '1rem' },
+          lineHeight: 1.8,
+          textAlign: 'justify',
+          '& strong': {
+            color: '#1a237e',
+            fontWeight: 600
+          }
+        }
+      }}>
+        <Typography>
+          En <strong>Full Wash</strong>, nos especializamos en ofrecer un servicio de lavado de vehículos de alta calidad, 
+          garantizando que tu automóvil reciba el tratamiento que se merece. Nuestro equipo de expertos utiliza 
+          <strong> productos de alta gama</strong> y <strong>técnicas de limpieza avanzadas</strong> para asegurar que tu 
+          vehículo quede impecable.
+        </Typography>
+
+        <Typography>
+          Ya sea que necesites un lavado rápido, detallado o un tratamiento especializado para tu coche, estamos aquí 
+          para satisfacer todas tus necesidades. Además, nuestra <strong>comodidad y atención al cliente</strong> son 
+          nuestra prioridad.
+        </Typography>
+
+        <Typography>
+          Confía en <strong>Full Wash</strong> para mantener tu vehículo en su mejor estado. ¡Visítanos hoy y descubre 
+          por qué somos la opción preferida para el cuidado de tu coche!
+        </Typography>
+      </Box>
+    </Box>
   </Grid>
 </Grid>
 
-          <div
-            style={{
-              flex: '1 1 100%',  // En pantallas pequeñas, este div ocupará el 100% del espacio
-              maxWidth: '100%',
-              overflow: 'hidden',
-              position: 'relative',
-              borderRadius: '8px',
-              marginBottom: '10px', // Añadido para espaciado en pantallas pequeñas
-            }}
-          >
-            <Typography
-              variant="h1"
-              align="center"
-              sx={{
-                my: 4,
-                color: '#F05B3C',
-                fontFamily: 'Baloo, sans-serif',
-                fontSize: { xs: '2rem', md: '3rem' },
-                textShadow: '5px 8px 4px rgba(0, 0, 0, 0.4)',
-                fontWeight: 'bold',
-                boxSizing: 'border-box', // Asegura que el padding y margin no causen desbordamiento
-                paddingLeft: { xs: 2, sm: 4 }, // Ajusta el padding según el tamaño de pantalla
-                paddingRight: { xs: 2, sm: 4 },
-                transition: "transform 0.3s ease-in-out",
-                "&:hover": {
-                  transform: "scale(1.05)",
-                },
-                animation: 'bounce 1.5s ease-in-out infinite',
-              }}
-            >
-              {`REGISTRATE Y RESERVA TU SERVICIO\n CALIDAD GARANTIZADA `.split('\n').map((line, idx) => (
-                <React.Fragment key={idx}>
-                  {line}
-                  {idx < 2 && <br />}
-                </React.Fragment>
-              ))}
-            </Typography>
-            <Button
-              variant="contained"
-              color="success"
-              sx={{
-                borderRadius: "20px",     // Bordes redondeados
-                paddingX: 3,              // Padding horizontal
-                paddingY: 1.5,            // Padding vertical
-                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",  // Sombra suave
-                mx: "auto",
-                display: "block"
-              }}
-              onClick={handleAddToOrder}
-            >
-              Agendar Servicio
-            </Button>
-          </div>
+          <Grid container justifyContent="center">
+            <Grid item xs={12} sm={10} md={8} lg={6}>
+              <Container maxWidth="lg">
+                <Grid 
+                  container 
+                  direction="column" 
+                  alignItems="center" 
+                  justifyContent="center"
+                  sx={{ minHeight: '50vh' }}
+                >
+                  <Grid item xs={12} md={8} sx={{ width: '100%' }}>
+                    <Container 
+                      maxWidth="lg" 
+                      sx={{ 
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minHeight: '50vh',
+                        py: 4
+                      }}
+                    >
+                      <Stack
+                        direction="column"
+                        alignItems="center"
+                        spacing={4}
+                        sx={{
+                          width: '100%',
+                          maxWidth: '800px',
+                          margin: '0 auto',
+                          py: 6
+                        }}
+                      >
+                        <Typography
+                          variant="h1"
+                          align="center"
+                          sx={{
+                            color: '#F05B3C',
+                            fontFamily: 'Baloo, sans-serif',
+                            fontSize: { xs: '2.5rem', sm: '3rem', md: '3.5rem' },
+                            textShadow: '5px 8px 4px rgba(0, 0, 0, 0.4)',
+                            fontWeight: 'bold',
+                            transition: "all 0.3s ease-in-out",
+                            position: 'relative',
+                            '&:hover': {
+                              transform: "scale(1.05)",
+                            },
+                            animation: 'bounce 1.5s ease-in-out infinite',
+                            '&::after': {
+                              content: '""',
+                              position: 'absolute',
+                              bottom: -15,
+                              left: '50%',
+                              transform: 'translateX(-50%)',
+                              width: '100px',
+                              height: '4px',
+                              background: 'linear-gradient(90deg, #1a237e, #F05B3C)',
+                              borderRadius: '2px'
+                            }
+                          }}
+                        >
+                          REGISTRATE Y RESERVA TU SERVICIO
+                        </Typography>
+                        
+                        <Typography
+                          variant="h2"
+                          align="center"
+                          sx={{
+                            color: '#1a237e',
+                            fontFamily: 'Baloo, sans-serif',
+                            fontSize: { xs: '1.8rem', sm: '2.2rem', md: '2.5rem' },
+                            fontWeight: 'bold',
+                            textShadow: '3px 4px 3px rgba(0, 0, 0, 0.2)',
+                            letterSpacing: '1px'
+                          }}
+                        >
+                          CALIDAD GARANTIZADA
+                        </Typography>
+
+                        <Button
+                          variant="contained"
+                          sx={{
+                            borderRadius: "25px",
+                            paddingX: 4,
+                            paddingY: 2,
+                            boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.2)",
+                            fontSize: "1.2rem",
+                            textTransform: "none",
+                            backgroundColor: '#1a237e',
+                            transition: 'all 0.3s ease',
+                            '&:hover': {
+                              backgroundColor: '#F05B3C',
+                              transform: 'translateY(-2px)',
+                              boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.25)",
+                            }
+                          }}
+                          onClick={handleAddToOrder}
+                        >
+                          Agendar Servicio
+                        </Button>
+                      </Stack>
+                    </Container>
+                  </Grid>
+                </Grid>
+              </Container>
+            </Grid>
+          </Grid>
         </div>
         <Container sx={{ marginY: 4, textAlign: 'center' }}>
           <Typography
@@ -430,253 +553,594 @@ En Full Wash, nos especializamos en ofrecer un servicio de lavado de vehículos 
         </Container>
         {/* Sección de Opiniones de Clientes */}
         <Container
-          sx={{
-            marginY: 4,
-            paddingX: 3,
-            paddingY: 4,
-            backgroundColor: '#f5f5f5',
-            borderRadius: '10px',
-            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-          }}
+          maxWidth="lg"
+          sx={{ my: 6 }}
         >
           <Typography
             variant="h4"
             align="center"
-            color="text.primary"
-            gutterBottom
             sx={{
-              fontWeight: 'bold',
-              fontSize: '2rem', // Ajusta el tamaño según lo que necesites
-              textTransform: 'uppercase', // Para hacerlo más destacado
-              letterSpacing: 1.5, // Espaciado entre letras
-              boxShadow: 2, // Sombra sutil
+              mb: 4,
+              color: '#1a237e',
+              fontWeight: 700,
+              fontSize: { xs: '1.75rem', sm: '2rem' },
+              textTransform: 'uppercase',
+              letterSpacing: 1,
+              position: 'relative',
+              '&::after': {
+                content: '""',
+                position: 'absolute',
+                bottom: -12,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: '50px',
+                height: '3px',
+                background: '#F05B3C',
+                borderRadius: '2px'
+              }
             }}
           >
-            RECOMENDACION DE CLIENTES
+            Recomendaciones de Clientes
           </Typography>
+
           <Grid container spacing={3} justifyContent="center">
-            {recomendaciones.map((client, index) => (
-              <Grid
-                item
-                xs={12}
-                sm={6}
-                md={4}
-                key={index}
-                sx={{
-                  transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
-                  '&:hover': {
-                    transform: 'scale(1.05)',
-                    boxShadow: '0px 6px 16px rgba(0, 0, 0, 0.2)',
-                  },
-                }}
-              >
-                <Paper
-                  elevation={3}
-                  sx={{
-                    padding: 3,
-                    textAlign: 'center',
-                    borderRadius: '12px',
-                    backgroundColor: '#ffffff',
-                    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-                  }}
-                >
-                  <Typography variant="h6" fontWeight="bold" gutterBottom>
-                    {client.user?.username || 'Usuario Anónimo'}
-                  </Typography>
-                  <Typography variant="body1" color="text.secondary" gutterBottom>
-                    {client.comments}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Satisfacción: {client.satisfaction}
-                  </Typography>
-                </Paper>
-              </Grid>
-            ))}
+            {recomendaciones.map((client, index) => {
+              // Convertir el nivel de satisfacción a número
+              const satisfactionMap = {
+                'muy-satisfecho': 5,
+                'satisfecho': 4,
+                'neutral': 3,
+                'insatisfecho': 2,
+                'muy-insatisfecho': 1
+              };
+              const ratingValue = satisfactionMap[client.satisfaction] || 5;
+
+              return (
+                <Grid item xs={12} sm={6} md={4} key={index}>
+                  <Paper
+                    elevation={2}
+                    sx={{
+                      p: 2.5,
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      borderRadius: '12px',
+                      transition: 'transform 0.3s ease',
+                      '&:hover': {
+                        transform: 'translateY(-6px)'
+                      }
+                    }}
+                  >
+                    <Avatar
+                      sx={{
+                        width: 60,
+                        height: 60,
+                        bgcolor: '#1a237e',
+                        fontSize: '1.5rem',
+                        mb: 1.5
+                      }}
+                    >
+                      {client.user?.username?.charAt(0) || 'A'}
+                    </Avatar>
+
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 600,
+                        mb: 0.5,
+                        color: '#1a237e',
+                        fontSize: '1.1rem'
+                      }}
+                    >
+                      {client.user?.username || 'Usuario Anónimo'}
+                    </Typography>
+
+                    <Rating
+                      value={ratingValue}
+                      readOnly
+                      size="small"
+                      precision={1}
+                      sx={{
+                        mb: 2,
+                        '& .MuiRating-iconFilled': {
+                          color: '#F05B3C'
+                        }
+                      }}
+                    />
+
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        mb: 2,
+                        color: '#37474f',
+                        textAlign: 'center',
+                        fontStyle: 'italic',
+                        lineHeight: 1.6,
+                        fontSize: '0.9rem'
+                      }}
+                    >
+                      "{client.comments}"
+                    </Typography>
+
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: '#78909c',
+                        mt: 'auto',
+                        pt: 1.5,
+                        borderTop: '1px solid #e0e0e0',
+                        width: '100%',
+                        textAlign: 'right',
+                        fontSize: '0.75rem'
+                      }}
+                    >
+                      {new Date(client.created_at).toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </Typography>
+                  </Paper>
+                </Grid>
+              );
+            })}
           </Grid>
         </Container>
-        <Container sx={{ marginY: 4, paddingX: 2 }}>
-          <Grid container spacing={4} direction="column" alignItems="center">
-            {/* Sección de Productos que Utilizamos */}
-            <Grid item xs={12} sx={{ width: '100%', maxWidth: 800 }}>
-              <div
-                style={{
-                  padding: '30px 20px',
-                  textAlign: 'center',
-                  color: 'white',
-                  backgroundColor: '#2E86C1',
-                  borderRadius: '15px',
-                  boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-                }}
-              >
-                <Typography variant="h4" sx={{ marginBottom: 1 }}>GUÍA DE LAVADO DE TU VEHÍCULO</Typography>
-                <Typography variant="body1" sx={{ marginY: 2 }}>
-                      Como lavar el vehículo de forma correcta.
-                </Typography>
-                <div style={{ width: '100%', overflow: 'hidden', marginBottom: '10px', position: 'relative' }}>
-                  <Carousel
-                    autoPlay
-                    animation="slide"
-                    timeout={500}
-                    navButtonsAlwaysVisible
-                    indicatorContainerProps={{ sx: { mt: 2 } }}
-                  >
-                    {items2.map((item, index) => (
-                      <Paper
-                        key={index}
-                        sx={{
-                          height: { xs: '40vh', md: '50vh' },
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          color: 'black',
-                          backgroundColor: '#2E86C1',
-                          boxShadow: 'none',
-                          borderRadius: '10px',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <img
-                          src={item.img}
-                          alt={item.alt}
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'contain',
-                            borderRadius: '10px',
-                          }}
-                        />
-                      </Paper>
-                    ))}
-                  </Carousel>
-                </div>
-              </div>
-            </Grid>
-            {/* Sección de Herramientas que Utilizamos */}
-            <Grid item xs={12} sx={{ width: '100%', maxWidth: 800 }}>
-              <div
-                style={{
-                  padding: '30px 20px',
-                  textAlign: 'center',
-                  color: 'white',
-                  backgroundColor: '#58D68D',
-                  borderRadius: '15px',
-                  boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-                }}
-              >
-                <Typography variant="h4" sx={{ marginBottom: 1 }}>PRODUCTOS Y HERRAMIENTAS QUE UTILIZAMOS</Typography>
-                <Typography variant="body1" sx={{ marginY: 2 }}>
-                  Contamos con herramientas de última tecnología para asegurar un lavado profundo y detallado en cada vehículo.
-                  Utilizamos productos de alta calidad, específicos para mantener la pintura, los interiores y los vidrios de tu vehículo en óptimas condiciones.
-                </Typography>
-                <div style={{ width: '100%', overflow: 'hidden', marginBottom: '10px', position: 'relative' }}>
-                  <Carousel
-                    autoPlay
-                    animation="slide"
-                    timeout={500}
-                    navButtonsAlwaysVisible
-                    indicatorContainerProps={{ sx: { mt: 2 } }}
-                  >
-                    {items1.map((item, index) => (
-                      <Paper
-                        key={index}
-                        sx={{
-                          height: { xs: '40vh', md: '50vh' },
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          color: 'black',
-                          backgroundColor: '#58D68D',
-                          boxShadow: 'none',
-                          borderRadius: '10px',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <img
-                          src={item.img}
-                          alt={item.alt}
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'contain',
-                            borderRadius: '10px',
-                          }}
-                        />
-                      </Paper>
-                    ))}
-                  </Carousel>
-                </div>
-              </div>
-            </Grid>
-          </Grid>
-        </Container>
-        <Container
-          sx={{
-            marginY: 4,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(245, 245, 245, 0.9)',
-            borderRadius: '15px',
-            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-            padding: '20px',
+        <Box 
+          sx={{ 
+            bgcolor: '#f5f5f5',
+            py: 6,
+            borderTop: '1px solid rgba(0, 0, 0, 0.12)',
+            borderBottom: '1px solid rgba(0, 0, 0, 0.12)'
           }}
         >
-          <Grid container spacing={3} sx={{ maxWidth: 800 }}>
-            <Grid item xs={12}>
-              <div
-                style={{
-                  textAlign: 'center',
-                  padding: '20px',
-                  color: 'black',
-                  backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                  borderRadius: '15px',
-                  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-                }}
-              >
-                <Typography variant="h4" sx={{ marginBottom: '16px', fontFamily: 'Arial, sans-serif' }}>
-                  Visita Nuestras Redes Sociales Para Más Contenido
-                </Typography>
-                <Grid container spacing={2} justifyContent="center">
-                  {isLoading ? (
-                    Array.from(new Array(3)).map((_, index) => (
-                      <Grid item xs={12} sm={6} md={4} key={index}>
-                        <Skeleton variant="rectangular" width="100%" height={180} />
-                      </Grid>
-                    ))
-                  ) : (
-                    ['video.mp4', 'video2.mp4', 'video3.mp4', 'video4.mp4', 'video5.mp4', 'video6.mp4'].map((src, index) => (
-                      <Grid
-                        item
-                        xs={12}
-                        sm={6}
-                        md={4}
-                        key={index}
-                        sx={{
-                          transition: 'transform 0.3s ease-in-out',
-                          '&:hover': {
-                            transform: 'scale(1.05)', // Sutil aumento al hacer hover
-                          },
-                        }}
-                      >
+          <Container maxWidth="lg">
+            <Typography 
+              variant="h4" 
+              align="center" 
+              gutterBottom
+              sx={{ 
+                color:'#F05B3C',
+                fontWeight: 600,
+                mb: 4,
+                position: 'relative',
+                '&:after': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: -10,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: 60,
+                  height: 4,
+                  backgroundColor: '#1a237e'
+                }
+              }}
+            >
+              Nuestros Trabajos
+            </Typography>
+            
+            <Grid container spacing={3}>
+              {isLoading ? (
+                Array.from(new Array(6)).map((_, index) => (
+                  <Grid item xs={12} sm={6} md={4} key={index}>
+                    <Paper
+                      elevation={2}
+                      sx={{
+                        p: 2,
+                        height: '100%',
+                        bgcolor: 'background.paper',
+                        borderRadius: 2
+                      }}
+                    >
+                      <Skeleton 
+                        variant="rectangular" 
+                        width="100%" 
+                        height={200}
+                        sx={{ borderRadius: 1 }}
+                      />
+                    </Paper>
+                  </Grid>
+                ))
+              ) : (
+                ['video.mp4', 'video2.mp4', 'video3.mp4', 'video4.mp4', 'video5.mp4', 'video6.mp4'].map((src, index) => {
+                  const titles = [
+                    'Lavados de vehículo',
+                    'Pulido de focos',
+                    'Cambio de aceite',
+                    'Mantención general de vehículo',
+                    'Desmontaje y lavado de alfombras',
+                    'Limpieza de vehículos'
+                  ];
+                  return (
+                  <Grid item xs={12} sm={6} md={4} key={index}>
+                    <Paper
+                      elevation={3}
+                      sx={{
+                        p: 2,
+                        height: '100%',
+                        bgcolor: 'background.paper',
+                        borderRadius: 2,
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          transform: 'translateY(-4px)',
+                          boxShadow: 6,
+                          '& .video-title': {
+                            color: '#F05B3C'
+                          }
+                        }
+                      }}
+                    >
+                      <Box sx={{ position: 'relative', mb: 2 }}>
                         <video
                           width="100%"
-                          height="180"
+                          height="200"
                           controls
                           style={{
-                            borderRadius: '10px',
-                            overflow: 'hidden',
-                            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
-                            marginBottom: '16px',
+                            borderRadius: '8px',
+                            backgroundColor: '#000'
                           }}
                         >
                           <source src={src} type="video/mp4" />
                           Tu navegador no soporta el elemento de video.
                         </video>
-                      </Grid>
-                    ))
-                  )}
-                </Grid>
-              </div>
+                      </Box>
+                      <Typography 
+                        className="video-title"
+                        variant="subtitle1" 
+                        sx={{ 
+                          fontWeight: 500,
+                          transition: 'color 0.3s ease',
+                          textAlign: 'center'
+                        }}
+                      >
+                        {titles[index]}
+                      </Typography>
+                    </Paper>
+                  </Grid>
+                )})
+              )}
+            </Grid>
+
+            <Box 
+              sx={{ 
+                mt: 5,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 2
+              }}
+            >
+              <Typography color={'black'} variant="h6" sx={{ fontWeight: 500, mb: 1 }}>
+                ¡Síguenos para ver más contenido!
+              </Typography>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <Button
+                  variant="contained"
+                  href="https://www.instagram.com/fullwashconce/"
+                  target="_blank"
+                  sx={{
+                    bgcolor: '#1a237e',
+                    px: 3,
+                    py: 1,
+                    borderRadius: 2,
+                    textTransform: 'none',
+                    fontSize: '1rem',
+                    '&:hover': {
+                      bgcolor: '#0d47a1'
+                    }
+                  }}
+                >
+                  Instagram
+                </Button>
+                <Button
+                  variant="outlined"
+                  href="https://www.tiktok.com/@fullwashconce"
+                  target="_blank"
+                  sx={{
+                    borderColor: '#1a237e',
+                    color: '#1a237e',
+                    px: 3,
+                    py: 1,
+                    borderRadius: 2,
+                    textTransform: 'none',
+                    fontSize: '1rem',
+                    '&:hover': {
+                      borderColor: '#0d47a1',
+                      bgcolor: 'rgba(26, 35, 126, 0.04)'
+                    }
+                  }}
+                >
+                  TikTok
+                </Button>
+              </Stack>
+            </Box>
+          </Container>
+        </Box>
+        <Container sx={{ marginY: 4, paddingX: 2 }}>
+          <Grid container spacing={4} direction="column" alignItems="center">
+            {/* Sección de Guía de Lavado */}
+            <Grid item xs={12} sx={{ width: '100%', maxWidth: 1000 }}>
+              <Paper
+                elevation={3}
+                sx={{
+                  background: 'linear-gradient(135deg, #1a237e 0%, #0d47a1 100%)',
+                  borderRadius: '16px',
+                  overflow: 'hidden',
+                  position: 'relative',
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: '4px',
+                    background: '#F05B3C'
+                  }
+                }}
+              >
+                <Box sx={{ p: { xs: 3, md: 4 } }}>
+                  <Typography 
+                    variant="h3" 
+                    align="center" 
+                    sx={{ 
+                      color: 'white',
+                      fontWeight: 'bold',
+                      mb: 2,
+                      textTransform: 'uppercase',
+                      letterSpacing: 1.5,
+                      fontSize: { xs: '1.8rem', sm: '2.2rem', md: '2.5rem' }
+                    }}
+                  >
+                    Guía de Lavado de tu Vehículo
+                  </Typography>
+                  <Typography 
+                    variant="h6" 
+                    align="center" 
+                    sx={{ 
+                      color: 'rgba(255,255,255,0.9)',
+                      mb: 3,
+                      maxWidth: '800px',
+                      mx: 'auto'
+                    }}
+                  >
+                    Como lavar el vehículo de forma correcta
+                  </Typography>
+                  
+                  <Box sx={{ maxWidth: '100%', mx: 'auto' }}>
+                    <Carousel
+                      autoPlay
+                      animation="fade"
+                      duration={800}
+                      interval={6000}
+                      swipe
+                      navButtonsAlwaysVisible
+                      cycleNavigation
+                      sx={{
+                        '& .MuiIconButton-root': {
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            transform: 'scale(1.1)',
+                            backgroundColor: 'rgba(255,255,255,0.4)'
+                          }
+                        }
+                      }}
+                      indicatorContainerProps={{
+                        style: {
+                          marginTop: '20px',
+                          marginBottom: '10px',
+                          gap: '8px'
+                        }
+                      }}
+                      navButtonsProps={{
+                        style: {
+                          backgroundColor: 'rgba(255,255,255,0.2)',
+                          color: 'white',
+                          borderRadius: '50%',
+                          padding: '12px',
+                          margin: '0 20px',
+                          transition: 'all 0.3s ease'
+                        }
+                      }}
+                      navButtonsWrapperProps={{
+                        style: {
+                          padding: '0 20px'
+                        }
+                      }}
+                      indicatorIconButtonProps={{
+                        style: {
+                          color: 'rgba(255,255,255,0.4)',
+                          padding: '5px',
+                          transition: 'all 0.3s ease'
+                        }
+                      }}
+                      activeIndicatorIconButtonProps={{
+                        style: {
+                          color: '#F05B3C',
+                          transform: 'scale(1.2)'
+                        }
+                      }}
+                    >
+                      {items2.map((item, index) => (
+                        <Paper
+                          key={index}
+                          elevation={0}
+                          sx={{
+                            height: { xs: '40vh', sm: '50vh', md: '60vh' },
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: 'transparent',
+                            position: 'relative',
+                            mx: 2,
+                            overflow: 'hidden',
+                            '& img': {
+                              transition: 'all 0.5s ease-in-out',
+                              filter: 'brightness(0.95)',
+                            },
+                            '&:hover img': {
+                              transform: 'scale(1.03)',
+                              filter: 'brightness(1)'
+                            }
+                          }}
+                        >
+                          <img
+                            src={item.img}
+                            alt={item.alt}
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'contain'
+                            }}
+                          />
+                        </Paper>
+                      ))}
+                    </Carousel>
+                  </Box>
+                </Box>
+              </Paper>
+            </Grid>
+
+            {/* Sección de Productos y Herramientas */}
+            <Grid item xs={12} sx={{ width: '100%', maxWidth: 1000, mt: 4 }}>
+              <Paper
+                elevation={3}
+                sx={{
+                  background: 'linear-gradient(135deg, #F05B3C 0%, #ff8a65 100%)',
+                  borderRadius: '16px',
+                  overflow: 'hidden',
+                  position: 'relative',
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: '4px',
+                    background: '#1a237e'
+                  }
+                }}
+              >
+                <Box sx={{ p: { xs: 3, md: 4 } }}>
+                  <Typography 
+                    variant="h3" 
+                    align="center" 
+                    sx={{ 
+                      color: 'white',
+                      fontWeight: 'bold',
+                      mb: 2,
+                      textTransform: 'uppercase',
+                      letterSpacing: 1.5,
+                      fontSize: { xs: '1.8rem', sm: '2.2rem', md: '2.5rem' }
+                    }}
+                  >
+                    Productos y Herramientas Profesionales
+                  </Typography>
+                  <Typography 
+                    variant="h6" 
+                    align="center" 
+                    sx={{ 
+                      color: 'rgba(255,255,255,0.9)',
+                      mb: 3,
+                      maxWidth: '800px',
+                      mx: 'auto'
+                    }}
+                  >
+                    Utilizamos productos de alta calidad y herramientas especializadas
+                  </Typography>
+
+                  <Box sx={{ maxWidth: '100%', mx: 'auto' }}>
+                    <Carousel
+                      autoPlay
+                      animation="fade"
+                      duration={800}
+                      interval={6000}
+                      swipe
+                      navButtonsAlwaysVisible
+                      cycleNavigation
+                      sx={{
+                        '& .MuiIconButton-root': {
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            transform: 'scale(1.1)',
+                            backgroundColor: 'rgba(255,255,255,0.4)'
+                          }
+                        }
+                      }}
+                      indicatorContainerProps={{
+                        style: {
+                          marginTop: '20px',
+                          marginBottom: '10px',
+                          gap: '8px'
+                        }
+                      }}
+                      navButtonsProps={{
+                        style: {
+                          backgroundColor: 'rgba(255,255,255,0.2)',
+                          color: 'white',
+                          borderRadius: '50%',
+                          padding: '12px',
+                          margin: '0 20px',
+                          transition: 'all 0.3s ease'
+                        }
+                      }}
+                      navButtonsWrapperProps={{
+                        style: {
+                          padding: '0 20px'
+                        }
+                      }}
+                      indicatorIconButtonProps={{
+                        style: {
+                          color: 'rgba(255,255,255,0.4)',
+                          padding: '5px',
+                          transition: 'all 0.3s ease'
+                        }
+                      }}
+                      activeIndicatorIconButtonProps={{
+                        style: {
+                          color: '#1a237e',
+                          transform: 'scale(1.2)'
+                        }
+                      }}
+                    >
+                      {items1.map((item, index) => (
+                        <Paper
+                          key={index}
+                          elevation={0}
+                          sx={{
+                            height: { xs: '40vh', sm: '50vh', md: '60vh' },
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: 'transparent',
+                            position: 'relative',
+                            mx: 2,
+                            overflow: 'hidden',
+                            '& img': {
+                              transition: 'all 0.5s ease-in-out',
+                              filter: 'brightness(0.95)',
+                            },
+                            '&:hover img': {
+                              transform: 'scale(1.03)',
+                              filter: 'brightness(1)'
+                            }
+                          }}
+                        >
+                          <img
+                            src={item.img}
+                            alt={item.alt}
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'contain'
+                            }}
+                          />
+                        </Paper>
+                      ))}
+                    </Carousel>
+                  </Box>
+                </Box>
+              </Paper>
             </Grid>
           </Grid>
         </Container>
