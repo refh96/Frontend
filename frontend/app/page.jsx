@@ -483,79 +483,74 @@ function HomePage() {
             container
             spacing={3}
             justifyContent="center"
-            sx={{
-              flexDirection: { xs: 'row', sm: 'row', md: 'row', lg: 'row' },
-              overflowX: { xs: 'auto', sm: 'visible' },
-              display: 'flex',
-              flexWrap: { xs: 'wrap', sm: 'wrap' },
-              paddingX: { xs: 1 },
-            }}
           >
             {processItems.map((item, index) => (
               <Grid
                 item
-                xs={6}
+                xs={12}
                 sm={6}
                 md={4}
                 key={index}
-                sx={{
-                  transition: "transform 0.3s ease-in-out",
-                  minWidth: { xs: '45%' },
-                  "&:hover": {
-                    transform: "scale(1.05)",
-                  },
-                }}
-                onClick={() => handleOpenModal(item)} // Agrega el evento onClick
               >
-                <div
-                  style={{
-                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                    borderRadius: '8px',
+                <Paper
+                  elevation={2}
+                  onClick={() => handleOpenModal(item)}
+                  sx={{
+                    height: '100%',
+                    borderRadius: '12px',
                     overflow: 'hidden',
-                    transition: 'transform 0.3s',
                     cursor: 'pointer',
+                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                    '&:hover': {
+                      transform: 'translateY(-8px)',
+                      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)'
+                    }
                   }}
                 >
-                  <Typography
-                    variant="h6"
-                    align="center"
-                    color="black"
-                    gutterBottom
+                  <Box
                     sx={{
-                      backgroundColor: '#f5f5f5',
-                      padding: '8px',
-                      fontWeight: 'bold',
-                      height: '60px',
-                      overflow: 'hidden',
-                      whiteSpace: 'normal', // Permite que el texto se divida
-                      wordWrap: 'break-word', // Asegura que el texto largo se divida
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: { xs: '0.85rem', sm: '1rem', md: '1.1rem' },
+                      p: 2,
+                      bgcolor: '#f5f5f5',
+                      borderBottom: '1px solid rgba(0, 0, 0, 0.1)'
                     }}
                   >
-                    {item.title}
-                  </Typography>
-                  <img
+                    <Typography
+                      variant="h6"
+                      align="center"
+                      sx={{
+                        fontWeight: 600,
+                        color: '#1a237e',
+                        fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' },
+                        height: '48px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        textAlign: 'center',
+                        lineHeight: 1.2
+                      }}
+                    >
+                      {item.title}
+                    </Typography>
+                  </Box>
+
+                  <Box
+                    component="img"
                     src={item.img}
                     alt={item.title}
-                    style={{
+                    sx={{
                       width: '100%',
                       height: '200px',
                       objectFit: 'cover',
+                      display: 'block'
                     }}
                   />
-                </div>
+                </Paper>
               </Grid>
             ))}
           </Grid>
         </Container>
         {/* Sección de Opiniones de Clientes */}
-        <Container
-          maxWidth="lg"
-          sx={{ my: 6 }}
-        >
+        <Container maxWidth="lg" sx={{ my: 6 }}>
           <Typography
             variant="h4"
             align="center"
@@ -585,7 +580,6 @@ function HomePage() {
 
           <Grid container spacing={3} justifyContent="center">
             {recomendaciones.map((client, index) => {
-              // Convertir el nivel de satisfacción a número
               const satisfactionMap = {
                 'muy-satisfecho': 5,
                 'satisfecho': 4,
@@ -660,7 +654,7 @@ function HomePage() {
                         fontSize: '0.9rem'
                       }}
                     >
-                      "{client.comments}"
+                      {client.comments}
                     </Typography>
 
                     <Typography
