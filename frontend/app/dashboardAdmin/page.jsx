@@ -577,6 +577,9 @@ function Dashboard() {
               <ListItem button onClick={() => router.push("../nuevoServicio")}>
                 <ListItemText primary="Administrar Servicios" />
               </ListItem>
+              <ListItem button onClick={() => router.push("../costRules")}>
+                <ListItemText primary="Costo adicional al total" />
+              </ListItem>
               <ListItem button onClick={() => router.push("../estados")}>
                 <ListItemText primary="Administrar Estados" />
               </ListItem>
