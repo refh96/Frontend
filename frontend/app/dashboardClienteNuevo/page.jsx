@@ -163,7 +163,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function DashboardClienteNuevo() {
   const router = useRouter();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElNotif, setAnchorElNotif] = useState(null);
   const [anchorElServicios, setAnchorElServicios] = useState(null);
@@ -216,6 +216,10 @@ export default function DashboardClienteNuevo() {
   const [showMisReservas, setShowMisReservas] = useState(false);
 
   const [shouldRefreshReservas, setShouldRefreshReservas] = useState(false);
+
+  const [showStepper, setShowStepper] = useState(false);
+
+  const [costRules, setCostRules] = useState([]);
 
   const getEstadoColor = (estado) => {
     switch (estado.toLowerCase()) {
@@ -452,13 +456,23 @@ export default function DashboardClienteNuevo() {
         }
       };
 
+      const fetchCostRules = async () => {
+        try {
+          const res = await axios.get("https://fullwash.site/cost-rules");
+          setCostRules(res.data.data);
+        } catch (error) {
+          console.error("Error fetching cost rules:", error.message);
+        }
+      };
+
       await Promise.all([
         fetchServicios(),
         fetchTipoVehiculo(),
         fetchAtributos(),
         fetchReservas(),
         fetchServiciosLavados(),
-        fetchServiciosOtros()
+        fetchServiciosOtros(),
+        fetchCostRules()
       ]);
 
       setError(null);
@@ -569,72 +583,21 @@ export default function DashboardClienteNuevo() {
       let nuevoTotal = 0;
 
       if (servicio && tipoVehiculo) {
-        // Ajustar el costo del vehículo según el servicio
+        // Buscar si existe una regla de costo específica
+        const costRule = costRules.find(
+          rule => rule.servicio_id === parseInt(reservation.servicio_id) && 
+                 rule.tipo_vehiculo_id === parseInt(reservation.tipo_vehiculo_id)
+        );
+
+        // Calcular el costo base
         let costoVehiculoAjustado = tipoVehiculo.costo;
 
-        if (servicio.nombre_servicio === "Lavado Detailing") {
-          if (tipoVehiculo.id === 2) {
-            costoVehiculoAjustado += 45000;
-          } else if (tipoVehiculo.id === 3) {
-            costoVehiculoAjustado += 90000;
-          }
+        // Aplicar el costo adicional de la regla si existe
+        if (costRule) {
+          costoVehiculoAjustado += costRule.costo_adicional;
         }
 
-        if (servicio.nombre_servicio === "Lavado de Tapices") {
-          if (tipoVehiculo.id === 2) {
-            costoVehiculoAjustado -= 5000;
-          } else if (tipoVehiculo.id === 3) {
-            costoVehiculoAjustado += 10000;
-          }
-        }
-
-        if (servicio.nombre_servicio === "Lavado de Alfombra") {
-          if (tipoVehiculo.id === 3) {
-            costoVehiculoAjustado += 5000;
-          }
-        }
-
-        if (servicio.nombre_servicio === "Limpieza de Chasis") {
-          if (tipoVehiculo.id === 2) {
-            costoVehiculoAjustado += 5000;
-          } if (tipoVehiculo.id === 3) {
-            costoVehiculoAjustado += 5000;
-          }
-        }
-
-        if (servicio.nombre_servicio === "Pulido Basico") {
-          if (tipoVehiculo.id === 2) {
-            costoVehiculoAjustado += 50000;
-          } if (tipoVehiculo.id === 3) {
-            costoVehiculoAjustado += 95000;
-          }
-        }
-
-        if (servicio.nombre_servicio === "Pulido Avanzado") {
-          if (tipoVehiculo.id === 2) {
-            costoVehiculoAjustado += 45000;
-          } if (tipoVehiculo.id === 3) {
-            costoVehiculoAjustado += 90000;
-          }
-        }
-
-        if (servicio.nombre_servicio === "Limpieza de Motor") {
-          if (tipoVehiculo.id === 2) {
-            costoVehiculoAjustado += 5000;
-          } if (tipoVehiculo.id === 3) {
-            costoVehiculoAjustado += 15000;
-          }
-        }
-
-        if (servicio.nombre_servicio === "Descontaminado y Sellado de Vidrios") {
-          if (tipoVehiculo.id === 2) {
-            costoVehiculoAjustado += 10000;
-          } if (tipoVehiculo.id === 3) {
-            costoVehiculoAjustado += 5000;
-          }
-        }
-
-        // Sumar costos del servicio, vehículo ajustado y atributos seleccionados
+        // Calcular el total final
         nuevoTotal =
           servicio.precio +
           costoVehiculoAjustado +
@@ -656,6 +619,7 @@ export default function DashboardClienteNuevo() {
     selectedAtributos,
     servicios,
     tipo_vehiculos,
+    costRules,
   ]);
 
   const handleAtributoToggle = (event) => {
@@ -1151,6 +1115,7 @@ export default function DashboardClienteNuevo() {
         setShowReservationSelector(false);
       }
       setSelectedDate(date);
+      setShowStepper(true);
     } catch (error) {
       console.error('Error en handleDateSelect:', error);
     }
@@ -1173,6 +1138,13 @@ export default function DashboardClienteNuevo() {
             <Typography variant="body1" color="text.secondary">
               {getEstadoMensaje(reserva.estado.nombre)}
             </Typography>
+            <Button
+              variant="outlined"
+              onClick={() => setShowStepper(false)}
+              sx={{ mt: 2 }}
+            >
+              Ocultar Seguimiento
+            </Button>
           </Box>
         </Box>
       );
@@ -1192,6 +1164,13 @@ export default function DashboardClienteNuevo() {
             </Step>
           ))}
         </Stepper>
+        <Button
+          variant="outlined"
+          onClick={() => setShowStepper(false)}
+          sx={{ mt: 2 }}
+        >
+          Ocultar Seguimiento
+        </Button>
       </Box>
     );
   };
@@ -1434,108 +1413,131 @@ export default function DashboardClienteNuevo() {
                 variant="h6"
                 color="inherit"
                 noWrap
-                sx={{ flexGrow: 1 }}
+                sx={{ 
+                  flexGrow: 1,
+                  display: { xs: 'none', sm: 'block' }
+                }}
               >
                 Panel de Control
               </Typography>
             </Box>
 
             <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-              <Button
-                color="inherit"
-                onClick={handleServiciosClick}
-                startIcon={<CarRepairIcon />}
-                sx={{
-                  textTransform: 'none',
-                  fontSize: '1rem',
-                  fontWeight: 500,
-                  '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)'
-                  }
-                }}
-              >
-                Servicios
-              </Button>
-              <Menu
-                anchorEl={anchorElServicios}
-                open={Boolean(anchorElServicios)}
-                onClose={handleServiciosClose}
-                PaperProps={{
-                  sx: {
-                    mt: 1.5,
-                    width: 400,
-                    maxHeight: 600,
-                    borderRadius: 2,
-                    boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
-                  }
-                }}
-              >
-                <Box sx={{ p: 2 }}>
-                  {[
-                    { title: 'Lavados de Vehículos', servicios: serviciosLavados },
-                    { title: 'Otros Servicios', servicios: serviciosOtros }
-                  ].map((categoria, index) => (
-                    <Box key={index} sx={{ mb: index === 0 ? 3 : 0 }}>
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          color: '#1a237e',
-                          fontWeight: 600,
-                          borderBottom: '2px solid #1a237e',
-                          pb: 1,
-                          mb: 2
-                        }}
-                      >
-                        {categoria.title}
-                      </Typography>
-                      {categoria.servicios.map((servicio) => (
-                        <Box
-                          key={servicio.id}
-                          onClick={() => handleServiceSelect(servicio)}
+              <Box>
+                <Button
+                  color="inherit"
+                  onClick={handleServiciosClick}
+                  startIcon={<CarRepairIcon />}
+                  sx={{
+                    textTransform: 'none',
+                    fontSize: '1rem',
+                    fontWeight: 500,
+                    '& .MuiButton-startIcon': {
+                      marginRight: { xs: 0, sm: 1 }
+                    },
+                    '& .MuiButton-label': {
+                      display: { xs: 'none', sm: 'block' }
+                    },
+                    minWidth: { xs: 40, sm: 'auto' },
+                    padding: { xs: 1, sm: '6px 16px' },
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                    }
+                  }}
+                >
+                  Servicios
+                </Button>
+                <Menu
+                  anchorEl={anchorElServicios}
+                  open={Boolean(anchorElServicios)}
+                  onClose={handleServiciosClose}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                  }}
+                  PaperProps={{
+                    sx: {
+                      mt: 1.5,
+                      width: 400,
+                      maxHeight: '80vh', // Limita la altura al 80% de la ventana
+                      overflowY: 'auto', // Habilita el scroll vertical
+                      borderRadius: 2,
+                      boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
+                    }
+                  }}
+                >
+                  <Box sx={{ p: 2 }}>
+                    {[
+                      { title: 'Lavados de Vehículos', servicios: serviciosLavados },
+                      { title: 'Otros Servicios', servicios: serviciosOtros }
+                    ].map((categoria, index) => (
+                      <Box key={index} sx={{ mb: index === 0 ? 3 : 0 }}>
+                        <Typography
+                          variant="h6"
                           sx={{
-                            p: 2,
-                            mb: 2,
-                            borderRadius: 2,
-                            cursor: 'pointer',
-                            transition: 'all 0.3s ease',
-                            '&:hover': {
-                              backgroundColor: '#e3f2fd',
-                              transform: 'translateY(-2px)',
-                              boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
-                            }
+                            color: '#1a237e',
+                            fontWeight: 600,
+                            borderBottom: '2px solid #1a237e',
+                            pb: 1,
+                            mb: 2
                           }}
                         >
-                          <Typography
-                            variant="subtitle1"
-                            sx={{ fontWeight: 600, color: '#1a237e', mb: 1 }}
+                          {categoria.title}
+                        </Typography>
+                        {categoria.servicios.map((servicio) => (
+                          <Box
+                            key={servicio.id}
+                            onClick={() => handleServiceSelect(servicio)}
+                            sx={{
+                              p: 2,
+                              mb: 2,
+                              borderRadius: 2,
+                              cursor: 'pointer',
+                              transition: 'all 0.3s ease',
+                              '&:hover': {
+                                backgroundColor: '#e3f2fd',
+                                transform: 'translateY(-2px)',
+                                boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                              }
+                            }}
                           >
-                            {servicio.nombre_servicio}
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{ mb: 1 }}
-                          >
-                            Tiempo estimado: {formatTime(servicio.tiempo_estimado)}
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            sx={{ color: '#1a237e', fontWeight: 500 }}
-                          >
-                            Desde ${servicio.precio}
-                          </Typography>
-                        </Box>
-                      ))}
-                    </Box>
-                  ))}
-                </Box>
-              </Menu>
-              <Box sx={{ position: 'relative' }}>
-                <IconButton
-                  color="inherit"
+                            <Typography
+                              variant="subtitle1"
+                              sx={{ fontWeight: 600, color: '#1a237e', mb: 1 }}
+                            >
+                              {servicio.nombre_servicio}
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              sx={{ mb: 1 }}
+                            >
+                              Tiempo estimado: {formatTime(servicio.tiempo_estimado)}
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              sx={{ color: '#1a237e', fontWeight: 500 }}
+                            >
+                              Desde ${servicio.precio}
+                            </Typography>
+                          </Box>
+                        ))}
+                      </Box>
+                    ))}
+                  </Box>
+                </Menu>
+              </Box>
+              <Box>
+                <IconButton 
+                  color="inherit" 
                   onClick={handleNotificationClick}
                   id="notificationIcon"
                   sx={{
+                    padding: { xs: 1, sm: 1.5 },
                     '&:hover': {
                       backgroundColor: 'rgba(255, 255, 255, 0.1)'
                     }
@@ -1551,7 +1553,7 @@ export default function DashboardClienteNuevo() {
                       }
                     }}
                   >
-                    <NotificationsIcon />
+                    <NotificationsIcon sx={{ fontSize: { xs: '1.2rem', sm: '1.5rem' } }} />
                   </Badge>
                 </IconButton>
                 <Menu
@@ -1779,7 +1781,16 @@ export default function DashboardClienteNuevo() {
               <Grid container spacing={3}>
                 {/* Contenido actual de reservas */}
                 <Grid item xs={12} md={4}>
-                  <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                  <Paper 
+                    sx={{ 
+                      p: 2, 
+                      display: 'flex', 
+                      flexDirection: 'column',
+                      height: 'auto',
+                      minHeight: 240,
+                      overflow: 'hidden'
+                    }}
+                  >
                     <Typography component="h2" variant="h6" color="primary" gutterBottom>
                       Resumen de Reservas
                     </Typography>
@@ -1819,7 +1830,14 @@ export default function DashboardClienteNuevo() {
                 </Grid>
 
                 <Grid item xs={12} md={8}>
-                  <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                  <Paper 
+                    sx={{ 
+                      p: { xs: 1, sm: 2 }, 
+                      display: 'flex', 
+                      flexDirection: 'column',
+                      overflow: 'hidden'
+                    }}
+                  >
                     <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Typography component="h2" variant="h6" color="primary">
                         Seguimiento de Reservas
@@ -1828,42 +1846,89 @@ export default function DashboardClienteNuevo() {
                         variant="contained"
                         startIcon={<AddIcon />}
                         onClick={handleOpenNewReservation}
+                        sx={{
+                          display: { xs: 'none', sm: 'flex' }
+                        }}
                       >
                         Nueva Reserva
                       </Button>
-                    </Box>
-                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                      <DateCalendar
-                        value={selectedDate}
-                        onChange={handleDateSelect}
-                        shouldDisableDate={(date) => {
-                          try {
-                            const formattedDate = format(date, 'yyyy-MM-dd');
-                            return !reservedDates.includes(formattedDate);
-                          } catch (error) {
-                            console.error('Error en shouldDisableDate:', error);
-                            return true;
-                          }
-                        }}
+                      <IconButton
+                        color="primary"
+                        onClick={handleOpenNewReservation}
                         sx={{
-                          '& .MuiPickersDay-root': {
-                            '&.Mui-selected': {
-                              backgroundColor: 'primary.main',
-                              color: 'white',
-                              '&:hover': {
-                                backgroundColor: 'primary.dark',
-                              },
-                            },
-                          },
-                          '& .MuiPickersDay-dayWithMarker': {
-                            '&::after': {
-                              backgroundColor: 'primary.main',
-                            },
-                          },
+                          display: { xs: 'flex', sm: 'none' }
                         }}
-                      />
-                    </LocalizationProvider>
-                    {selectedReservation && <ReservationStepper reserva={selectedReservation} />}
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </Box>
+                    <Box sx={{ 
+                      flex: 1,
+                      width: '100%',
+                      overflow: 'auto'
+                    }}>
+                      <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                        <DateCalendar
+                          value={selectedDate}
+                          onChange={handleDateSelect}
+                          shouldDisableDate={(date) => {
+                            try {
+                              const formattedDate = format(date, 'yyyy-MM-dd');
+                              return !reservedDates.includes(formattedDate);
+                            } catch (error) {
+                              console.error('Error en shouldDisableDate:', error);
+                              return true;
+                            }
+                          }}
+                          sx={{
+                            width: '100%',
+                            maxWidth: '100%',
+                            '& .MuiPickersCalendarHeader-root': {
+                              padding: { xs: '0 8px', sm: '0 16px' },
+                              '& .MuiPickersArrowSwitcher-root': {
+                                gap: { xs: 0.5, sm: 1 }
+                              }
+                            },
+                            '& .MuiDayCalendar-header': {
+                              display: 'flex',
+                              justifyContent: 'space-around',
+                              padding: '0 6px',
+                              '& .MuiDayCalendar-weekDayLabel': {
+                                width: { xs: 28, sm: 36, md: 40 },
+                                height: { xs: 28, sm: 36, md: 40 },
+                                fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                                margin: '0',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                              }
+                            },
+                            '& .MuiDayCalendar-weekContainer': {
+                              justifyContent: 'space-around',
+                              margin: { xs: '2px 0', sm: '4px 0' }
+                            },
+                            '& .MuiPickersDay-root': {
+                              width: { xs: 28, sm: 36, md: 40 },
+                              height: { xs: 28, sm: 36, md: 40 },
+                              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                              margin: '0',
+                              '&.Mui-selected': {
+                                backgroundColor: 'primary.main',
+                                color: 'white',
+                                '&:hover': {
+                                  backgroundColor: 'primary.dark',
+                                },
+                              }
+                            },
+                          }}
+                        />
+                      </LocalizationProvider>
+                    </Box>
+                    {selectedReservation && showStepper && (
+                      <Box sx={{ mt: 2 }}>
+                        <ReservationStepper reserva={selectedReservation} />
+                      </Box>
+                    )}
                   </Paper>
                 </Grid>
 
