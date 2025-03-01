@@ -8,12 +8,12 @@ import { parseCookies } from 'nookies';
 
 // Horarios de atención
 const hours = {
-  Lunes: '09:00 AM - 06:00 PM',
-  Martes: '09:00 AM - 06:00 PM',
-  Miércoles: '09:00 AM - 06:00 PM',
-  Jueves: '09:00 AM - 06:00 PM',
-  Viernes: '09:00 AM - 06:00 PM',
-  Sábado: '09:00 AM - 06:00 PM',
+  Lunes: '09:30 AM - 06:00 PM',
+  Martes: '09:30 AM - 06:00 PM',
+  Miércoles: '09:30 AM - 06:00 PM',
+  Jueves: '09:30 AM - 06:00 PM',
+  Viernes: '09:30 AM - 06:00 PM',
+  Sábado: '10:00 AM - 14:00 PM',
   Domingo: 'Cerrado',
 };
 

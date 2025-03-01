@@ -1330,11 +1330,16 @@ export default function DashboardClienteNuevo() {
       const newReservation = {
         ...prev,
         [name]: value,
-        // Mantener user_id, estado_id y atributos si ya existen
         user_id: prev.user_id || user?.id || "",
         estado_id: prev.estado_id || estadoPendienteId || "",
         atributo_ids: selectedAtributos
       };
+
+      // Si el cambio es en tipo_vehiculo_id, resetear los atributos seleccionados
+      if (name === 'tipo_vehiculo_id') {
+        setSelectedAtributos([]);
+      }
+
       console.log('Nueva reserva después de handleChange:', newReservation);
       return newReservation;
     });
@@ -1343,6 +1348,110 @@ export default function DashboardClienteNuevo() {
   const canEditReservation = (reserva) => {
     const estadosNoEditables = [4, 5, 6]; // IDs de En Proceso, Completado, Finalizado
     return !estadosNoEditables.includes(reserva.estado_id);
+  };
+
+  const ReservationSummary = ({ reservation, total, servicios, tipo_vehiculos, atributos }) => {
+    const servicio = servicios.find(s => s.id === parseInt(reservation.servicio_id));
+    const tipoVehiculo = tipo_vehiculos.find(t => t.id === parseInt(reservation.tipo_vehiculo_id));
+    const atributosSeleccionados = atributos.filter(a => reservation.atributo_ids?.includes(a.id));
+
+    // Encontrar la regla de costo específica si existe
+    const costRule = costRules.find(
+      rule => rule.servicio_id === parseInt(reservation.servicio_id) && 
+              rule.tipo_vehiculo_id === parseInt(reservation.tipo_vehiculo_id)
+    );
+
+    // Calcular el costo del vehículo
+    const costoVehiculo = tipoVehiculo ? (
+      tipoVehiculo.costo + (costRule ? costRule.costo_adicional : 0)
+    ) : 0;
+
+    return (
+      <Grid container justifyContent="center">
+        <Grid item xs={12} md={8}>
+          <Paper elevation={3} sx={{ p: 3, mt: 2, mb: 2, backgroundColor: '#f5f5f5' }}>
+            <Typography variant="h6" align="center" gutterBottom sx={{ color: '#1976d2', borderBottom: '1px solid #1976d2', pb: 1 }}>
+              Resumen de tu Reserva
+            </Typography>
+            
+            <Box sx={{ mt: 2 }}>
+              {servicio && (
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1.5 }}>
+                  <Typography variant="body1">
+                    <strong>Servicio:</strong> {servicio.nombre_servicio}
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: '#1976d2' }}>
+                    ${servicio.precio.toLocaleString('es-CL')}
+                  </Typography>
+                </Box>
+              )}
+              
+              {tipoVehiculo && (
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1.5 }}>
+                  <Typography variant="body1">
+                    <strong>Tipo de Vehículo:</strong> {tipoVehiculo.nombre}
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: '#1976d2' }}>
+                    ${costoVehiculo.toLocaleString('es-CL')}
+                  </Typography>
+                </Box>
+              )}
+              
+              {reservation.fecha && (
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1.5 }}>
+                  <Typography variant="body1">
+                    <strong>Fecha:</strong> {format(new Date(reservation.fecha), 'dd/MM/yyyy')}
+                  </Typography>
+                </Box>
+              )}
+              
+              {reservation.hora && (
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1.5 }}>
+                  <Typography variant="body1">
+                    <strong>Hora:</strong> {reservation.hora.substring(0, 5)} hrs
+                  </Typography>
+                </Box>
+              )}
+              
+              {atributosSeleccionados.length > 0 && (
+                <>
+                  <Typography variant="body1" gutterBottom sx={{ mt: 2 }}>
+                    <strong>Servicios Adicionales:</strong>
+                  </Typography>
+                  <Box sx={{ backgroundColor: '#fff', p: 2, borderRadius: 1 }}>
+                    {atributosSeleccionados.map(atributo => (
+                      <Box key={atributo.id} sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                        <Typography variant="body2">
+                          <strong>Servicio Extra:</strong> {atributo.nombre_atributo || atributo.nombre}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: '#1976d2' }}>
+                          ${atributo.costo_atributo.toLocaleString('es-CL')}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </>
+              )}
+              
+              <Box sx={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                mt: 3,
+                pt: 2,
+                borderTop: '2px solid #1976d2'
+              }}>
+                <Typography variant="h6">
+                  <strong>Total:</strong>
+                </Typography>
+                <Typography variant="h6" sx={{ color: '#1976d2' }}>
+                  ${total.toLocaleString('es-CL')}
+                </Typography>
+              </Box>
+            </Box>
+          </Paper>
+        </Grid>
+      </Grid>
+    );
   };
 
   if (isLoading) {
@@ -1364,6 +1473,45 @@ export default function DashboardClienteNuevo() {
     router.push('/loginCliente');
     return null;
   }
+
+  // Función para filtrar atributos según el tipo de vehículo
+  const getAtributosFiltrados = (tipoVehiculoId) => {
+    if (!tipoVehiculoId || !atributos) return [];
+    
+    const tipoVehiculo = tipo_vehiculos.find(tv => tv.id === parseInt(tipoVehiculoId));
+    if (!tipoVehiculo) return [];
+
+    // Obtener el código del tipo de vehículo (C1, C2 o C3)
+    const codigoVehiculo = tipoVehiculo.nombre.split(':')[0].trim();
+
+    return atributos.filter(atributo => {
+      const nombreAtributo = atributo.nombre_atributo.toUpperCase();
+      
+      // Casos especiales para SUV 7 asientos (C3)
+      if (codigoVehiculo === 'C3') {
+        return nombreAtributo.includes('C3') || 
+               nombreAtributo.includes('SUV 7') ||
+               nombreAtributo.includes('PLASTICOS C2 Y C3');
+      }
+      
+      // Casos especiales para C2
+      if (codigoVehiculo === 'C2') {
+        return nombreAtributo.includes('C2') || 
+               nombreAtributo.includes('CAMIONETAS XL') ||
+               nombreAtributo.includes('PLASTICOS C2') ||
+               (nombreAtributo.includes('DESCONTAMINADO DE VIDRIOS') && !nombreAtributo.includes('SUV 7'));
+      }
+      
+      // Casos para C1
+      if (codigoVehiculo === 'C1') {
+        return nombreAtributo.includes('C1') ||
+               (nombreAtributo.includes('DESCONTAMINADO DE VIDRIOS') && !nombreAtributo.includes('SUV 7')) ||
+               nombreAtributo.includes('PULIDO DE FOCOS');
+      }
+
+      return false;
+    });
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -1999,7 +2147,7 @@ export default function DashboardClienteNuevo() {
                                     {reserva.atributos && reserva.atributos.map((atributo, index) => (
                                       <Chip
                                         key={atributo.id}
-                                        label={atributo.nombre_atributo}
+                                        label={atributo.nombre_atributo || atributo.nombre}
                                         size="small"
                                         sx={{ mr: 0.5, mb: 0.5 }}
                                       />
@@ -2247,15 +2395,15 @@ export default function DashboardClienteNuevo() {
                     return selected
                       .map((id) => {
                         const atributo = atributos.find((a) => a.id === id);
-                        return atributo ? `${atributo.nombre_atributo} - $${new Intl.NumberFormat('es-CL').format(atributo.costo_atributo)}` : '';
+                        return atributo ? `${atributo.nombre_atributo || atributo.nombre} - $${new Intl.NumberFormat('es-CL').format(atributo.costo_atributo)}` : '';
                       })
                       .filter(Boolean)
                       .join(", ");
                   }}
                 >
-                  {atributos.map((atributo) => (
+                  {getAtributosFiltrados(reservation.tipo_vehiculo_id).map((atributo) => (
                     <MenuItem key={atributo.id} value={atributo.id}>
-                      {atributo.nombre_atributo} - ${new Intl.NumberFormat('es-CL').format(atributo.costo_atributo)}
+                      {atributo.nombre_atributo || atributo.nombre} - ${new Intl.NumberFormat('es-CL').format(atributo.costo_atributo)}
                     </MenuItem>
                   ))}
                 </Select>
@@ -2292,11 +2440,17 @@ export default function DashboardClienteNuevo() {
               </FormControl>
             </Grid>
 
-            <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom>
-                Total: ${new Intl.NumberFormat('es-CL').format(total)}
-              </Typography>
-            </Grid>
+            {(reservation.servicio_id || reservation.tipo_vehiculo_id || reservation.fecha || reservation.hora || selectedAtributos.length > 0) && (
+              <Grid item xs={12}>
+                <ReservationSummary
+                  reservation={reservation}
+                  total={total}
+                  servicios={servicios}
+                  tipo_vehiculos={tipo_vehiculos}
+                  atributos={atributos}
+                />
+              </Grid>
+            )}
           </Grid>
         </DialogContent>
         <DialogActions>
@@ -2370,15 +2524,15 @@ export default function DashboardClienteNuevo() {
                     return selected
                       .map((id) => {
                         const atributo = atributos.find((a) => a.id === id);
-                        return atributo ? `${atributo.nombre_atributo} - $${new Intl.NumberFormat('es-CL').format(atributo.costo_atributo)}` : '';
+                        return atributo ? `${atributo.nombre_atributo || atributo.nombre} - $${new Intl.NumberFormat('es-CL').format(atributo.costo_atributo)}` : '';
                       })
                       .filter(Boolean)
                       .join(", ");
                   }}
                 >
-                  {atributos.map((atributo) => (
+                  {getAtributosFiltrados(reservation.tipo_vehiculo_id).map((atributo) => (
                     <MenuItem key={atributo.id} value={atributo.id}>
-                      {atributo.nombre_atributo} - ${new Intl.NumberFormat('es-CL').format(atributo.costo_atributo)}
+                      {atributo.nombre_atributo || atributo.nombre} - ${new Intl.NumberFormat('es-CL').format(atributo.costo_atributo)}
                     </MenuItem>
                   ))}
                 </Select>
@@ -2415,11 +2569,17 @@ export default function DashboardClienteNuevo() {
               </FormControl>
             </Grid>
 
-            <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom>
-                Total: ${new Intl.NumberFormat('es-CL').format(total)}
-              </Typography>
-            </Grid>
+            {(reservation.servicio_id || reservation.tipo_vehiculo_id || reservation.fecha || reservation.hora || selectedAtributos.length > 0) && (
+              <Grid item xs={12}>
+                <ReservationSummary
+                  reservation={reservation}
+                  total={total}
+                  servicios={servicios}
+                  tipo_vehiculos={tipo_vehiculos}
+                  atributos={atributos}
+                />
+              </Grid>
+            )}
           </Grid>
         </DialogContent>
         <DialogActions>

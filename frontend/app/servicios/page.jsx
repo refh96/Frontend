@@ -312,7 +312,7 @@ const Page = () => {
                             fontWeight: 700
                           }}
                         >
-                          Desde ${servicio.precio}
+                          Desde ${servicio.precio.toLocaleString('es-CL')}
                         </Typography>
 
                         <Button
@@ -360,7 +360,7 @@ const Page = () => {
                       <li key={idx}>{detalle.trim()}</li>
                     ))}
               </ul>
-              <Typography variant="h6">Desde los: ${selectedService.precio}</Typography>
+              <Typography variant="h6">Desde los: ${selectedService.precio.toLocaleString('es-CL')}</Typography>
             </>
           )}
         </DialogContent>
