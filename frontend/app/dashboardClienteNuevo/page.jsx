@@ -1400,7 +1400,11 @@ export default function DashboardClienteNuevo() {
               {reservation.fecha && (
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1.5 }}>
                   <Typography variant="body1">
-                    <strong>Fecha:</strong> {format(new Date(reservation.fecha), 'dd/MM/yyyy')}
+                    <strong>Fecha:</strong> {(() => {
+                      const fecha = new Date(reservation.fecha);
+                      fecha.setMinutes(fecha.getMinutes() + fecha.getTimezoneOffset());
+                      return format(fecha, 'dd/MM/yyyy');
+                    })()}
                   </Typography>
                 </Box>
               )}
