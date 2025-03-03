@@ -33,6 +33,7 @@ import {
   Select,
   MenuItem,
   FormControl,
+  FormHelperText,
   Table,
   TableBody,
   TableCell,
@@ -1033,35 +1034,36 @@ export default function DashboardClienteNuevo() {
   };
 
   // Función para generar las horas disponibles
-  const generarHorasDisponibles = () => {
-    const horas = [];
-    const fechaSeleccionada = reservation.fecha;
-    const horaActual = reservation.hora;
-  
-    // Obtener reservas que coincidan con la fecha seleccionada
-    const reservasEnFecha = reservas.filter(reserva => {
-      const reservaFecha = new Date(reserva.fecha).toISOString().split('T')[0];
-      return reservaFecha === fechaSeleccionada && 
-             reserva.estado.nombre !== 'Cancelada' && // No considerar reservas canceladas
-             reserva.estado.nombre !== 'Rechazado' && // No considerar reservas rechazadas
-             (!editing || reserva.id !== editReservation?.id); // No filtrar la hora actual si estamos editando
-    });
-  
-    for (let i = 9; i <= 18; i++) { // Horas de 9 AM a 6 PM
-      const hora = `${i < 10 ? '0' : ''}${i}:00`;
-      const horaCompleta = `${hora}:00`; // Formato HH:mm:ss para comparar con la base de datos
-      
-      const horaOcupada = reservasEnFecha.some(reserva => 
-        reserva.hora === horaCompleta
-      );
-  
-      // Incluir la hora si está disponible o si es la hora actual de la reserva que se está editando
-      if (!horaOcupada || (editing && horaCompleta === editReservation?.hora)) {
-        horas.push(hora); // Usar formato HH:mm para el select
-      }
+  const getHorasDisponibles = (fecha) => {
+    if (!fecha) return [];
+    
+    // Ajustar la fecha para la zona horaria local
+    const fechaLocal = new Date(fecha);
+    fechaLocal.setMinutes(fechaLocal.getMinutes() + fechaLocal.getTimezoneOffset());
+    const dia = fechaLocal.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
+    
+    console.log('Fecha original:', fecha);
+    console.log('Fecha ajustada:', fechaLocal);
+    console.log('Día de la semana:', dia);
+    
+    // Si es domingo, no hay horarios disponibles
+    if (dia === 0) return [];
+    
+    // Si es sábado
+    if (dia === 6) {
+      return [
+        "10:00", "10:30", "11:00", "11:30",
+        "12:00", "12:30", "13:00", "13:30", "14:00"
+      ];
     }
-  
-    return horas;
+    
+    // De lunes a viernes
+    return [
+      "09:30", "10:00", "10:30", "11:00", "11:30",
+      "12:00", "12:30", "13:00", "13:30", "14:00",
+      "14:30", "15:00", "15:30", "16:00", "16:30",
+      "17:00", "17:30", "18:00"
+    ];
   };
 
   // Función para obtener las fechas con reservas
@@ -1517,6 +1519,23 @@ export default function DashboardClienteNuevo() {
     });
   };
 
+  const shouldDisableDate = (date) => {
+    try {
+      // Ajustar la fecha para la zona horaria local
+      const fechaLocal = new Date(date);
+      fechaLocal.setMinutes(fechaLocal.getMinutes() + fechaLocal.getTimezoneOffset());
+      
+      // Deshabilitar domingos
+      if (fechaLocal.getDay() === 0) return true;
+      
+      const formattedDate = format(date, 'yyyy-MM-dd');
+      return !reservedDates.includes(formattedDate);
+    } catch (error) {
+      console.error('Error en shouldDisableDate:', error);
+      return true;
+    }
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex' }}>
@@ -1634,8 +1653,7 @@ export default function DashboardClienteNuevo() {
                             color: '#1a237e',
                             fontWeight: 600,
                             borderBottom: '2px solid #1a237e',
-                            pb: 1,
-                            mb: 2
+                            pb: 1
                           }}
                         >
                           {categoria.title}
@@ -2023,15 +2041,7 @@ export default function DashboardClienteNuevo() {
                         <DateCalendar
                           value={selectedDate}
                           onChange={handleDateSelect}
-                          shouldDisableDate={(date) => {
-                            try {
-                              const formattedDate = format(date, 'yyyy-MM-dd');
-                              return !reservedDates.includes(formattedDate);
-                            } catch (error) {
-                              console.error('Error en shouldDisableDate:', error);
-                              return true;
-                            }
-                          }}
+                          shouldDisableDate={shouldDisableDate}
                           sx={{
                             width: '100%',
                             maxWidth: '100%',
@@ -2431,16 +2441,22 @@ export default function DashboardClienteNuevo() {
                 <InputLabel>Hora</InputLabel>
                 <Select
                   name="hora"
-                  value={reservation.hora}
+                  value={reservation.hora || ""}
                   onChange={handleTimeChange}
-                  label="Hora"
+                  disabled={!reservation.fecha}
                 >
-                  {generarHorasDisponibles().map((hora) => (
+                  {getHorasDisponibles(reservation.fecha).map((hora) => (
                     <MenuItem key={hora} value={hora}>
-                      {hora}
+                      {hora} hrs
                     </MenuItem>
                   ))}
                 </Select>
+                <FormHelperText>
+                  {!reservation.fecha ? "Primero selecciona una fecha" : 
+                   getHorasDisponibles(reservation.fecha).length === 0 ? 
+                   "No hay horarios disponibles para este día" : 
+                   "Selecciona un horario disponible"}
+                </FormHelperText>
               </FormControl>
             </Grid>
 
@@ -2560,16 +2576,22 @@ export default function DashboardClienteNuevo() {
                 <InputLabel>Hora</InputLabel>
                 <Select
                   name="hora"
-                  value={reservation.hora}
+                  value={reservation.hora || ""}
                   onChange={handleTimeChange}
-                  label="Hora"
+                  disabled={!reservation.fecha}
                 >
-                  {generarHorasDisponibles().map((hora) => (
+                  {getHorasDisponibles(reservation.fecha).map((hora) => (
                     <MenuItem key={hora} value={hora}>
-                      {hora}
+                      {hora} hrs
                     </MenuItem>
                   ))}
                 </Select>
+                <FormHelperText>
+                  {!reservation.fecha ? "Primero selecciona una fecha" : 
+                   getHorasDisponibles(reservation.fecha).length === 0 ? 
+                   "No hay horarios disponibles para este día" : 
+                   "Selecciona un horario disponible"}
+                </FormHelperText>
               </FormControl>
             </Grid>
 
