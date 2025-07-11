@@ -1,5 +1,6 @@
 import React from 'react';
-import { Container, Typography, Box, Link, Grid, Button } from '@mui/material';
+import { Container, Typography, Box, Link as MuiLink, Grid, Button } from '@mui/material';
+import NextLink from 'next/link';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import { useRouter } from 'next/navigation';
@@ -56,18 +57,23 @@ const Footer = () => {
                 >
                   2024 Full Wash Conce Spa. Todos los derechos reservados.
                 </Typography>
+                <MuiLink component={NextLink} href="/politica-privacidad" sx={{ color: 'white', textDecoration: 'underline', display: 'block', mt: 2 }}>
+                  Política de Privacidad
+                </MuiLink>
                 <Button
                   onClick={handleAdminClick}
                   variant="outlined"
+                  size="small"
                   sx={{
-                    color: '#ffffff',
-                    borderColor: 'rgba(255, 255, 255, 0.5)',
-                    textTransform: 'none',
-                    px: 3,
+                    borderColor: 'white',
+                    color: 'white',
+                    mt: 1.5,
+                    fontSize: '0.75rem',
+                    padding: '2px 8px',
                     '&:hover': {
-                      borderColor: '#ffffff',
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)'
-                    }
+                      borderColor: '#ff6f00',
+                      backgroundColor: 'rgba(255, 111, 0, 0.1)',
+                    },
                   }}
                 >
                   Admin
@@ -96,7 +102,7 @@ const Footer = () => {
                   flexDirection: 'column',
                   gap: 2
                 }}>
-                  <Link
+                  <MuiLink
                     href="https://www.facebook.com/FullWashconce"
                     target="_blank"
                     sx={{
@@ -113,8 +119,8 @@ const Footer = () => {
                   >
                     <FacebookIcon sx={{ fontSize: 28, mr: 1 }} />
                     <Typography variant="body1">Facebook</Typography>
-                  </Link>
-                  <Link
+                  </MuiLink>
+                  <MuiLink
                     href="https://www.instagram.com/fullwashconce/"
                     target="_blank"
                     sx={{
@@ -131,8 +137,8 @@ const Footer = () => {
                   >
                     <InstagramIcon sx={{ fontSize: 28, mr: 1 }} />
                     <Typography variant="body1">Instagram</Typography>
-                  </Link>
-                  <Link
+                  </MuiLink>
+                  <MuiLink
                     href="https://www.tiktok.com/@fullwashconce"
                     target="_blank"
                     sx={{
@@ -159,7 +165,7 @@ const Footer = () => {
                       🎵
                     </Box>
                     <Typography variant="body1">TikTok</Typography>
-                  </Link>
+                  </MuiLink>
                 </Box>
               </Box>
             </Grid>

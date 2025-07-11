@@ -1,28 +1,63 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { Box, Paper, Skeleton, Typography, Grid, Container, Button, Dialog, DialogActions, DialogContent, IconButton, Stack, Avatar, Rating } from '@mui/material';
+import Slider from 'react-slick';
 import Carousel from 'react-material-ui-carousel';
+import SwipeIcon from '@mui/icons-material/Swipe';
+import VideoSlide from './VideoSlide';
+import "./slick-carousel.css";
 import Header from './components/Header';
 import Footer from './components/Footer';
 import { useRouter } from 'next/navigation';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import ShieldIcon from '@mui/icons-material/Shield';
+import CloseIcon from '@mui/icons-material/Close';
+import { DialogTitle } from '@mui/material';
 import NextImage  from 'next/image';
 import axios from 'axios'; // Importa axios
+import AdBlock from './components/AdBlock';
 
 function HomePage() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
+  const [servicesModalOpen, setServicesModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [recomendaciones, setRecomendaciones] = useState([]); // Agrega el estado para recomendaciones
+  const [activeVideo, setActiveVideo] = React.useState(null);
+  const titles = [
+    'Lavados de vehículo',
+    'Pulido de focos',
+    'Cambio de aceite',
+    'Mantención general de vehículo',
+    'Desmontaje y lavado de alfombras',
+    'Limpieza de vehículos'
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImageIndex(prevIndex => (prevIndex + 1) % items.length);
+    }, 5000); // Cambia la imagen cada 5 segundos
+
+    return () => clearInterval(timer); // Limpia el intervalo cuando el componente se desmonta
+  }, []);
+  const [recomendaciones, setRecomendaciones] = useState([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const router = useRouter();
   const items = [
     {
-      img: 'https://i.ibb.co/LNydfT4/349359557-636255998051932-7868626956502682837-n.jpg',
+      img: 'https://i.ibb.co/YBCZJR1V/cropped-486484352-1256961306224420-7307001460088481918-n.jpg',
       alt: 'imagen 1',
     },
     {
-      img: 'https://i.ibb.co/zVmHmMh/350146187-936849570953786-3203082689587698559-n.jpg',
+      img: 'https://i.ibb.co/qMc7xVgV/cropped-486854138-1256943286226222-3349781135465086132-n.jpg',
       alt: 'imagen 2',
+    },
+    {
+      img: 'https://i.ibb.co/gLk2ML6Y/cropped-486213381-1256649116255639-7081635997758175113-n.jpg',
+      alt: 'imagen 3',
+    },
+    {
+      img: 'https://i.ibb.co/vxnGYNS9/cropped-483507969-1247898850463999-4403049873569540797-n.jpg',
+      alt: 'imagen 4',
     },
   ];
   const items1 = [
@@ -150,7 +185,7 @@ function HomePage() {
     },
     {
       title: 'LIMPIEZA DE VIDRIOS Y PLÁSTICOS',
-      img: 'https://media.giphy.com/media/87wlWjovL0O6Q/giphy.gif',
+      img: 'https://i.ibb.co/S471nksH/listing04-480x480.webp',
       description: 'Este servicio ofrece una limpieza detallada y profesional de todas las superficies de vidrio y plástico del vehículo. Eliminamos manchas, polvo y residuos, asegurando una apariencia impecable. Ideal para mejorar la visibilidad y mantener el interior y exterior del vehículo en óptimas condiciones',
     },
     {
@@ -179,375 +214,190 @@ function HomePage() {
     >
       <Header />
       <Box flex="1" p={0} sx={{ width: '100%' }}>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',  // En pantallas grandes, los elementos estarán en una fila
-            width: '100%',
-            marginBottom: '10px',
-            backgroundColor: '#f5f5f5',
-            padding: '10px',
-            flexWrap: 'wrap',  // Permite que los elementos se acomoden en pantallas pequeñas
-          }}
-        >
-        <Grid container spacing={2} alignItems="center">
-  {/* Carrusel */}
-  <Grid item xs={11.5} sm={6}>
-    <div
-      style={{
-        width: '100%',  // Hace que el carrusel ocupe todo el ancho de la pantalla
-        height: '100%', // Hace que el carrusel ocupe todo el alto de la pantalla
-        overflow: 'hidden',  // Asegura que no sobresalga nada del borde curvado
-        position: 'relative',
-        borderRadius: '20px',  // Aplica el borderRadius al contenedor
-        marginBottom: '10px',
-        marginRight: '20px', // Añade margen a la derecha
-      }}
-    >
-      <Carousel
-        autoPlay
-        animation="fade"
-        timeout={700}
-        indicators={true}
-        navButtonsAlwaysInvisible={true}
-        indicatorContainerProps={{
-          style: { marginTop: '5px' },
-        }}
-      >
-        {items.map((item, index) => (
-          <Paper
-            key={index}
-            style={{
-              height: '500px',
-  width: '100%',
-  position: 'relative',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  backgroundColor: 'transparent',
-  boxShadow: 'none',
-  borderRadius: '20px',
-  overflow: 'hidden' // Aplica el borderRadius al Paper
-            }}
-            elevation={0}
-          >
-            <NextImage
-              width={'1000'}
-              height={'1000'}
-              src={item.img}
-              alt={item.alt}
-              layout="intrinsic"
-              style={{
-                width: '66%',
-                height: '70%',
-                objectFit: 'cover',  // Asegura que la imagen cubra todo el espacio del contenedor
-                objectPosition: 'center center', // Posiciona la imagen en el centro
-                borderRadius: '20px',  // Aplica el borderRadius a la imagen
-              }}
-            />
-          </Paper>
-        ))}
-      </Carousel>
-    </div>
-  </Grid>
-
-  {/* Párrafo de texto descriptivo */}
-  <Grid item xs={12} sm={6}>
-    <Box
-      sx={{
-        padding: '2rem',
-        borderRadius: '16px',
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.3)',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        gap: 3,
-        position: 'relative',
-        overflow: 'hidden',
-        mr: { xs: 2, sm: 3, md: 4 },
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '4px',
-          background: 'linear-gradient(90deg, #1a237e, #F05B3C)',
-        }
-      }}
-    >
-      <Typography
-        variant="h3"
-        sx={{
-          color: '#1a237e',
-          fontWeight: 700,
-          textAlign: 'center',
-          fontSize: { xs: '1.8rem', sm: '2rem', md: '2.2rem' },
+        <Box sx={{
           position: 'relative',
-          mb: 2,
-          fontFamily: 'Baloo, sans-serif',
-          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        Bienvenido a Full Wash
-      </Typography>
+          height: '90vh',
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'white',
+          overflow: 'hidden', // Esconde el exceso del zoom
+          backgroundColor: 'black', // Fondo de respaldo para el 'contain'
+        }}>
+          {/* Contenedor de la imagen de fondo animada */}
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundImage: `url(${items[currentImageIndex].img})`,
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center', // Centra la imagen perfectamente
+              transition: 'background-image 1s ease-in-out',
+              animation: 'kenburns 40s ease-in-out infinite alternate',
+              '@keyframes kenburns': {
+                '0%': {
+                  transform: 'scale(1)',
+                },
+                '100%': {
+                  transform: 'scale(1.05)', // Zoom muy sutil
+                },
+              },
+              zIndex: 0,
+            }}
+          />
+          {/* Overlay oscuro */}
+          <Box sx={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1 }} />
 
-      <Typography
-        variant="h5"
-        sx={{
-          color: '#F05B3C',
-          textAlign: 'center',
-          fontSize: { xs: '1.2rem', sm: '1.3rem', md: '1.4rem' },
-          fontStyle: 'italic',
-          mb: 3,
-          fontWeight: 500,
-          letterSpacing: '0.5px'
-        }}
-      >
-        El mejor cuidado para tu vehículo
-      </Typography>
-
-      <Box sx={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        gap: 2,
-        '& p': {
-          color: '#37474f',
-          fontSize: { xs: '0.95rem', md: '1rem' },
-          lineHeight: 1.8,
-          textAlign: 'justify',
-          '& strong': {
-            color: '#1a237e',
-            fontWeight: 600
-          }
-        }
-      }}>
-        <Typography>
-          En <strong>Full Wash</strong>, nos especializamos en ofrecer un servicio de lavado de vehículos de alta calidad, 
-          garantizando que tu automóvil reciba el tratamiento que se merece. Nuestro equipo de expertos utiliza 
-          <strong> productos de alta gama</strong> y <strong>técnicas de limpieza avanzadas</strong> para asegurar que tu 
-          vehículo quede impecable.
-        </Typography>
-
-        <Typography>
-          Ya sea que necesites un lavado rápido, detallado o un tratamiento especializado para tu coche, estamos aquí 
-          para satisfacer todas tus necesidades. Además, nuestra <strong>comodidad y atención al cliente</strong> son 
-          nuestra prioridad.
-        </Typography>
-
-        <Typography>
-          Confía en <strong>Full Wash</strong> para mantener tu vehículo en su mejor estado. ¡Visítanos hoy y descubre 
-          por qué somos la opción preferida para el cuidado de tu coche!
-        </Typography>
-      </Box>
-    </Box>
-  </Grid>
-</Grid>
-
-          <Grid container justifyContent="center">
-            <Grid item xs={12} sm={10} md={8} lg={6}>
-              <Container maxWidth="lg">
-                <Grid 
-                  container 
-                  direction="column" 
-                  alignItems="center" 
-                  justifyContent="center"
-                  sx={{ minHeight: '50vh' }}
+          {/* Contenido superpuesto */}
+          <Container maxWidth="md" sx={{ textAlign: 'center', position: 'relative', zIndex: 2 }}>
+            <Typography
+              variant="h2"
+              component="h1"
+              sx={{
+                fontWeight: 700,
+                fontSize: { xs: '2.5rem', sm: '3.5rem', md: '4rem' },
+                textShadow: '2px 2px 8px rgba(0,0,0,0.7)',
+                letterSpacing: 1.5,
+              }}
+            >
+              El Cuidado que tu Vehículo Merece
+            </Typography>
+            <Typography
+              variant="h6"
+              component="p"
+              sx={{
+                mt: 2,
+                mb: 4,
+                maxWidth: '700px',
+                mx: 'auto',
+                fontSize: { xs: '1rem', sm: '1.2rem' },
+                textShadow: '1px 1px 4px rgba(0,0,0,0.7)',
+              }}
+            >
+              Servicios de limpieza premium. Calidad, confianza y un acabado impecable para tu auto.
+            </Typography>
+            <Typography
+              variant="h6"
+              component="p"
+              sx={{
+                mt: 2,
+                mb: 4,
+                maxWidth: '700px',
+                mx: 'auto',
+                fontSize: { xs: '1rem', sm: '1.2rem' },
+                textShadow: '1px 1px 4px rgba(0,0,0,0.7)',
+              }}
+            >
+              Encuentranos en Las heras 1430, Concepción, Chile.
+            </Typography>
+            <Button
+              variant="contained"
+              size="large"
+              onClick={handleAddToOrder}
+              sx={{
+                bgcolor: '#F05B3C',
+                color: 'white',
+                fontSize: { xs: '1rem', md: '1.2rem' },
+                px: { xs: 4, md: 6 },
+                py: { xs: 1.5, md: 2 },
+                borderRadius: '50px',
+                transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+                '&:hover': {
+                  bgcolor: '#E65100',
+                  transform: 'scale(1.05)',
+                  boxShadow: '0 8px 25px rgba(0,0,0,0.3)',
+                },
+              }}
+            >
+              Reserva tu Lavado Ahora
+            </Button>
+            <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1, opacity: 0.9 }}>
+              <ShieldIcon sx={{ fontSize: '1.2rem' }} />
+              <Typography variant="body2">Calidad Garantizada</Typography>
+            </Box>
+          </Container>
+        </Box>
+        <Container sx={{ marginY: 4, textAlign: 'center' }}>
+        </Container>
+        <Box sx={{ py: 10, backgroundColor: '#f7f9fc' }}>
+          <Container maxWidth="lg">
+            <Grid container spacing={{ xs: 6, md: 10 }} alignItems="center">
+              <Grid item xs={12} md={6}>
+                <Typography variant="h2" component="h2" sx={{ fontWeight: 700, mb: 2, lineHeight: 1.2, color: '#2c3e50' }}>
+                  Bienvenido a Full Wash
+                </Typography>
+                <Typography variant="h5" sx={{ fontWeight: 400, color: '#576574', mb: 4 }}>
+                  El mejor cuidado para tu vehículo.
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 2, color: '#34495e' }}>
+                  En Full Wash, nos especializamos en ofrecer un servicio de lavado de vehículos de alta calidad, garantizando que tu automóvil reciba el tratamiento que se merece. Nuestro equipo de expertos utiliza productos de alta gama y técnicas de limpieza avanzadas para asegurar que tu vehículo quede impecable.
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 4, color: '#34495e' }}>
+                  Confía en Full Wash para mantener tu vehículo en su mejor estado. ¡Visítanos hoy y descubre por qué somos la opción preferida para el cuidado de tu coche!
+                </Typography>
+                <Button
+                  variant="contained"
+                  size="large"
+                  onClick={() => setServicesModalOpen(true)}
+                  sx={{ bgcolor: '#F05B3C', color: 'white', px: 4, py: 1.5, borderRadius: '50px' }}
                 >
-                  <Grid item xs={12} md={8} sx={{ width: '100%' }}>
-                    <Container 
-                      maxWidth="lg" 
-                      sx={{ 
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        minHeight: '50vh',
-                        py: 4
-                      }}
-                    >
-                      <Stack
-                        direction="column"
-                        alignItems="center"
-                        spacing={4}
+                  Nuestros Procesos
+                </Button>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Box sx={{ position: 'relative', height: { xs: 400, sm: 500, md: 600 }, minHeight: '400px' }}>
+                  {processItems.slice(0, 3).map((item, index) => {
+                    const styles = [
+                      { top: '5%', left: '0%', width: '60%', height: '60%', zIndex: 2 },
+                      { bottom: '5%', right: '0%', width: '55%', height: '55%', zIndex: 1 },
+                      { top: '25%', right: '15%', width: '40%', height: '40%', zIndex: 3, display: { xs: 'none', sm: 'block' } },
+                    ];
+                    return (
+                      <Paper
+                        key={item.title}
+                        elevation={12}
+                        onClick={() => handleOpenModal(item)}
                         sx={{
-                          width: '100%',
-                          maxWidth: '800px',
-                          margin: '0 auto',
-                          py: 6
+                          position: 'absolute',
+                          overflow: 'hidden',
+                          borderRadius: '16px',
+                          cursor: 'pointer',
+                          transition: 'transform 0.3s ease-in-out',
+                          '&:hover': {
+                            transform: 'scale(1.05)',
+                            zIndex: 4,
+                          },
+                          ...styles[index],
                         }}
                       >
-                        <Typography
-                          variant="h1"
-                          align="center"
-                          sx={{
-                            color: '#F05B3C',
-                            fontFamily: 'Baloo, sans-serif',
-                            fontSize: { xs: '2.5rem', sm: '3rem', md: '3.5rem' },
-                            textShadow: '5px 8px 4px rgba(0, 0, 0, 0.4)',
-                            fontWeight: 'bold',
-                            transition: "all 0.3s ease-in-out",
-                            position: 'relative',
-                            '&:hover': {
-                              transform: "scale(1.05)",
-                            },
-                            animation: 'bounce 1.5s ease-in-out infinite',
-                            '&::after': {
-                              content: '""',
-                              position: 'absolute',
-                              bottom: -15,
-                              left: '50%',
-                              transform: 'translateX(-50%)',
-                              width: '100px',
-                              height: '4px',
-                              background: 'linear-gradient(90deg, #1a237e, #F05B3C)',
-                              borderRadius: '2px'
-                            }
-                          }}
-                        >
-                          REGISTRATE Y RESERVA TU SERVICIO
-                        </Typography>
-                        
-                        <Typography
-                          variant="h2"
-                          align="center"
-                          sx={{
-                            color: '#1a237e',
-                            fontFamily: 'Baloo, sans-serif',
-                            fontSize: { xs: '1.8rem', sm: '2.2rem', md: '2.5rem' },
-                            fontWeight: 'bold',
-                            textShadow: '3px 4px 3px rgba(0, 0, 0, 0.2)',
-                            letterSpacing: '1px'
-                          }}
-                        >
-                          CALIDAD GARANTIZADA
-                        </Typography>
-
-                        <Button
-                          variant="contained"
-                          sx={{
-                            borderRadius: "25px",
-                            paddingX: 4,
-                            paddingY: 2,
-                            boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.2)",
-                            fontSize: "1.2rem",
-                            textTransform: "none",
-                            backgroundColor: '#1a237e',
-                            transition: 'all 0.3s ease',
-                            '&:hover': {
-                              backgroundColor: '#F05B3C',
-                              transform: 'translateY(-2px)',
-                              boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.25)",
-                            }
-                          }}
-                          onClick={handleAddToOrder}
-                        >
-                          Agendar Servicio
-                        </Button>
-                      </Stack>
-                    </Container>
-                  </Grid>
-                </Grid>
-              </Container>
-            </Grid>
-          </Grid>
-        </div>
-        <Container sx={{ marginY: 4, textAlign: 'center' }}>
-          <Typography
-            variant="h4"
-            align="center"
-            color="black"
-            gutterBottom
-            sx={{
-              backgroundColor: '#00ced1',
-              padding: '10px',
-              borderRadius: '8px',
-              display: 'inline-block',
-              border: '3px solid #00e5e5',
-              color: '#white',
-              fontFamily: 'arial',
-              textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)',
-              transition: "transform 0.3s ease-in-out",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
-            }}
-          >
-            DESCUBRE NUESTROS PROCESOS
-          </Typography>
-          <Grid
-            container
-            spacing={3}
-            justifyContent="center"
-          >
-            {processItems.map((item, index) => (
-              <Grid
-                item
-                xs={12}
-                sm={6}
-                md={4}
-                key={index}
-              >
-                <Paper
-                  elevation={2}
-                  onClick={() => handleOpenModal(item)}
-                  sx={{
-                    height: '100%',
-                    borderRadius: '12px',
-                    overflow: 'hidden',
-                    cursor: 'pointer',
-                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                    '&:hover': {
-                      transform: 'translateY(-8px)',
-                      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)'
-                    }
-                  }}
-                >
-                  <Box
-                    sx={{
-                      p: 2,
-                      bgcolor: '#f5f5f5',
-                      borderBottom: '1px solid rgba(0, 0, 0, 0.1)'
-                    }}
-                  >
-                    <Typography
-                      variant="h6"
-                      align="center"
-                      sx={{
-                        fontWeight: 600,
-                        color: '#1a237e',
-                        fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' },
-                        height: '48px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        textAlign: 'center',
-                        lineHeight: 1.2
-                      }}
-                    >
-                      {item.title}
-                    </Typography>
-                  </Box>
-
-                  <Box
-                    component="img"
-                    src={item.img}
-                    alt={item.title}
-                    sx={{
-                      width: '100%',
-                      height: '200px',
-                      objectFit: 'cover',
-                      display: 'block'
-                    }}
-                  />
-                </Paper>
+                        <Box
+                          component="img"
+                          src={item.img}
+                          alt={item.title}
+                          sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      </Paper>
+                    );
+                  })}
+                </Box>
               </Grid>
-            ))}
-          </Grid>
+            </Grid>
+          </Container>
+        </Box>
+
+        {/* Espacio para Anuncio de AdSense */}
+        <Container sx={{ my: 4 }}>
+          <Typography variant="caption" sx={{ textAlign: 'center', display: 'block', color: 'text.secondary' }}>
+            Publicidad
+          </Typography>
+          <Paper elevation={2} sx={{ p: 2, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '280px' }}>
+            <AdBlock adSlot="8607537116" />
+          </Paper>
         </Container>
         {/* Sección de Opiniones de Clientes */}
         <Container maxWidth="lg" sx={{ my: 6 }}>
@@ -737,62 +587,45 @@ function HomePage() {
                   </Grid>
                 ))
               ) : (
-                ['video.mp4', 'video2.mp4', 'video3.mp4', 'video4.mp4', 'video5.mp4', 'video6.mp4'].map((src, index) => {
-                  const titles = [
-                    'Lavados de vehículo',
-                    'Pulido de focos',
-                    'Cambio de aceite',
-                    'Mantención general de vehículo',
-                    'Desmontaje y lavado de alfombras',
-                    'Limpieza de vehículos'
-                  ];
-                  return (
-                  <Grid item xs={12} sm={6} md={4} key={index}>
-                    <Paper
-                      elevation={3}
-                      sx={{
-                        p: 2,
-                        height: '100%',
-                        bgcolor: 'background.paper',
-                        borderRadius: 2,
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          transform: 'translateY(-4px)',
-                          boxShadow: 6,
-                          '& .video-title': {
-                            color: '#F05B3C'
-                          }
+                <Slider
+                  dots={true}
+                  infinite={true}
+                  speed={500}
+                  slidesToShow={1}
+                  slidesToScroll={1}
+                  arrows={true}
+                  adaptiveHeight={true}
+                  style={{ maxWidth: 600, margin: '0 auto', marginBottom: 24, width: '100%' }}
+                  afterChange={() => setActiveVideo(null)}
+                >
+                  {(() => {
+                    // Crear array de refs solo una vez
+                    if (!window._videoRefs || window._videoRefs.length !== titles.length) {
+                      window._videoRefs = Array(titles.length).fill().map(() => React.createRef());
+                    }
+                    const videoRefs = window._videoRefs;
+                    const pauseAllExcept = (currentIdx) => {
+                      videoRefs.forEach((ref, idx) => {
+                        if (idx !== currentIdx && ref.current) {
+                          ref.current.pause();
                         }
-                      }}
-                    >
-                      <Box sx={{ position: 'relative', mb: 2 }}>
-                        <video
-                          width="100%"
-                          height="200"
-                          controls
-                          style={{
-                            borderRadius: '8px',
-                            backgroundColor: '#000'
-                          }}
-                        >
-                          <source src={src} type="video/mp4" />
-                          Tu navegador no soporta el elemento de video.
-                        </video>
-                      </Box>
-                      <Typography 
-                        className="video-title"
-                        variant="subtitle1" 
-                        sx={{ 
-                          fontWeight: 500,
-                          transition: 'color 0.3s ease',
-                          textAlign: 'center'
-                        }}
-                      >
-                        {titles[index]}
-                      </Typography>
-                    </Paper>
-                  </Grid>
-                )})
+                      });
+                    };
+                    return ['video.mp4', 'video2.mp4', 'video3.mp4', 'video4.mp4', 'video5.mp4', 'video6.mp4'].map((src, index) => (
+                      <VideoSlide
+                        key={index}
+                        src={src}
+                        title={titles[index]}
+                        index={index}
+                        activeVideo={activeVideo}
+                        setActiveVideo={setActiveVideo}
+                        videoRef={videoRefs[index]}
+                        pauseAllExcept={pauseAllExcept}
+                      />
+                    ));
+                  })()}
+
+                </Slider>
               )}
             </Grid>
 
@@ -1168,20 +1001,88 @@ function HomePage() {
           </DialogActions>
         </Dialog>
         <Footer />
-        <IconButton
-          style={{
-            position: 'fixed',
-            bottom: 16,
-            right: 16,
-            backgroundColor: '#25D366',
-            color: 'white',
-            zIndex: 1000,
-          }}
-          onClick={() => window.open('https://wa.me/56992646017?text=¡Hola, me comunico desde su pagina web!')}
-        >
-          <WhatsAppIcon style={{ fontSize: 50 }} /> {/* Ajusta el tamaño aquí */}
-        </IconButton>
+        <Box sx={{ position: 'fixed', bottom: 16, right: 16, zIndex: 1000, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Paper elevation={3} sx={{ bgcolor: 'white', px: 1.5, py: 0.5, borderRadius: '8px', mb: 1, boxShadow: '0 4px 8px rgba(0,0,0,0.2)' }}>
+            <Typography variant="caption" sx={{ fontWeight: 'bold', color: 'black' }}>
+              Contáctenos
+            </Typography>
+          </Paper>
+          <IconButton
+            sx={{
+              backgroundColor: '#25D366',
+              color: 'white',
+              '&:hover': {
+                backgroundColor: '#128C7E'
+              }
+            }}
+            onClick={() => window.open('https://wa.me/56992646017?text=¡Hola, me comunico desde su pagina web!')}
+            aria-label="Contactar por WhatsApp"
+          >
+            <WhatsAppIcon sx={{ fontSize: 50 }} />
+          </IconButton>
+        </Box>
       </Box>
+      <Dialog
+        open={servicesModalOpen}
+        onClose={() => setServicesModalOpen(false)}
+        fullWidth
+        maxWidth="lg"
+        PaperProps={{ sx: { borderRadius: '16px' } }}
+      >
+        <DialogTitle sx={{ m: 0, p: 2, fontWeight: 700 }}>
+          Nuestros Procesos
+          <IconButton
+            aria-label="close"
+            onClick={() => setServicesModalOpen(false)}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          <Grid container spacing={4} justifyContent="center" sx={{ pt: 2 }}>
+            {processItems.map((item) => (
+              <Grid item xs={12} sm={6} md={4} key={item.title}>
+                <Paper
+                  elevation={4}
+                  onClick={() => {
+                    setServicesModalOpen(false); // Cierra el modal de servicios
+                    handleOpenModal(item); // Abre el modal de detalles
+                  }}
+                  sx={{
+                    height: '100%',
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    cursor: 'pointer',
+                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                    '&:hover': {
+                      transform: 'translateY(-8px)',
+                      boxShadow: '0 12px 28px rgba(0, 0, 0, 0.15)',
+                    },
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={item.img}
+                    alt={item.title}
+                    sx={{ width: '100%', height: 220, objectFit: 'cover' }}
+                  />
+                  <Box sx={{ p: 3 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, minHeight: '64px' }}>
+                      {item.title}
+                    </Typography>
+                  </Box>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 }
