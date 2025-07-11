@@ -30,7 +30,7 @@ export default function VideoSlide({ src, title, index, activeVideo, setActiveVi
   return (
     <Box sx={{ width: '100%' }}>
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-        <Box sx={{ position: 'relative', borderRadius: 3, overflow: 'hidden', boxShadow: '0 4px 24px rgba(26,35,126,0.10)', bgcolor: '#000', width: { xs: '100%', md: 700 }, mx: 'auto' }}>
+        <Box sx={{ position: 'relative', borderRadius: 3, overflow: 'hidden', boxShadow: '0 4px 24px rgba(26,35,126,0.10)', bgcolor: '#000', width: { xs: '100%', md: 700 }, mx: 'auto', ml: { xs: 3, sm: 4, md: 0 } }}>
           <video
             ref={videoRef}
             src={src}
@@ -46,7 +46,7 @@ export default function VideoSlide({ src, title, index, activeVideo, setActiveVi
               display: 'block',
             }}
           controls={isActive}
-          onPause={handlePause}
+          onPause={() => {}}
           onEnded={handlePause}
           autoPlay={false}
           muted={false}

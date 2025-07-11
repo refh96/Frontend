@@ -340,14 +340,16 @@ function HomePage() {
                 <Typography variant="body1" sx={{ mb: 4, color: '#34495e' }}>
                   Confía en Full Wash para mantener tu vehículo en su mejor estado. ¡Visítanos hoy y descubre por qué somos la opción preferida para el cuidado de tu coche!
                 </Typography>
-                <Button
-                  variant="contained"
-                  size="large"
-                  onClick={() => setServicesModalOpen(true)}
-                  sx={{ bgcolor: '#F05B3C', color: 'white', px: 4, py: 1.5, borderRadius: '50px' }}
-                >
-                  Nuestros Procesos
-                </Button>
+                <Box sx={{ width: '100%', display: { xs: 'flex', md: 'block' }, justifyContent: { xs: 'center', md: 'flex-start' } }}>
+  <Button
+    variant="contained"
+    size="large"
+    onClick={() => setServicesModalOpen(true)}
+    sx={{ bgcolor: '#F05B3C', color: 'white', px: 4, py: 1.5, borderRadius: '50px' }}
+  >
+    Nuestros Procesos
+  </Button>
+</Box>
               </Grid>
               <Grid item xs={12} md={6}>
                 <Box sx={{ position: 'relative', height: { xs: 400, sm: 500, md: 600 }, minHeight: '400px' }}>
