@@ -55,7 +55,7 @@ function LoginCliente() {
     setLoading(true);
 
     try {
-      const res = await axios.post("https://fullwash.site/login", credentials);
+      const res = await axios.post("https://fullwash.online/login", credentials);
       if (res.data.res) {
         setCookie(null, 'token', res.data.token.token, {
           maxAge: 30 * 24 * 60 * 60, // 30 días

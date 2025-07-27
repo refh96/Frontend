@@ -15,7 +15,7 @@ const PoliticaPrivacidad = () => {
             Política de Privacidad
           </Typography>
           <Typography variant="body1" paragraph sx={{ color: 'black' }}>
-            En Full Wash Conce, accesible desde fullwashconce.cl, una de nuestras principales prioridades es la privacidad de nuestros visitantes. Este documento de Política de Privacidad contiene tipos de información que se recopilan y registran por Full Wash Conce y cómo la usamos.
+            En Full Wash Conce, accesible desde fullwash.cl, una de nuestras principales prioridades es la privacidad de nuestros visitantes. Este documento de Política de Privacidad contiene tipos de información que se recopilan y registran por Full Wash Conce y cómo la usamos.
           </Typography>
           <Typography variant="h5" component="h2" gutterBottom sx={{ color: 'black', mt: 3 }}>
             Archivos de Registro
@@ -33,7 +33,7 @@ const PoliticaPrivacidad = () => {
             Google DoubleClick DART Cookie
           </Typography>
           <Typography variant="body1" paragraph sx={{ color: 'black' }}>
-            Google es uno de los proveedores de terceros en nuestro sitio. También utiliza cookies, conocidas como cookies DART, para publicar anuncios a los visitantes de nuestro sitio en función de su visita a www.website.com y otros sitios en Internet. Sin embargo, los visitantes pueden optar por rechazar el uso de cookies DART visitando la Política de privacidad de la red de contenido y anuncios de Google en la siguiente URL: <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer">https://policies.google.com/technologies/ads</a>
+            Google es uno de los proveedores de terceros en nuestro sitio. También utiliza cookies, conocidas como cookies DART, para publicar anuncios a los visitantes de nuestro sitio en función de su visita a www.fullwash.cl y otros sitios en Internet. Sin embargo, los visitantes pueden optar por rechazar el uso de cookies DART visitando la Política de privacidad de la red de contenido y anuncios de Google en la siguiente URL: <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer">https://policies.google.com/technologies/ads</a>
           </Typography>
           <Typography variant="h5" component="h2" gutterBottom sx={{ color: 'black', mt: 3 }}>
             Nuestros Socios Publicitarios

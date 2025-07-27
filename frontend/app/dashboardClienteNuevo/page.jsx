@@ -307,7 +307,7 @@ export default function DashboardClienteNuevo() {
         }
 
         const res = await axios.post(
-          'https://fullwash.site/profile',
+          'https://fullwash.online/profile',
           {},
           {
             headers: {
@@ -334,7 +334,7 @@ export default function DashboardClienteNuevo() {
       try {
         const cookies = parseCookies();
         const token = cookies.token;
-        const response = await axios.get('https://fullwash.site/estados', {
+        const response = await axios.get('https://fullwash.online/estados', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -385,7 +385,7 @@ export default function DashboardClienteNuevo() {
       setIsLoading(true);
       const fetchServicios = async () => {
         try {
-          const res = await axios.get("https://fullwash.site/servicios");
+          const res = await axios.get("https://fullwash.online/servicios");
           setServicios(Array.isArray(res.data.data) ? res.data.data : []);
         } catch (error) {
           console.error("Error fetching services:", error.message);
@@ -395,7 +395,7 @@ export default function DashboardClienteNuevo() {
 
       const fetchTipoVehiculo = async () => {
         try {
-          const res = await axios.get("https://fullwash.site/tipo_vehiculos");
+          const res = await axios.get("https://fullwash.online/tipo_vehiculos");
           setTipoVehiculo(res.data);
         } catch (error) {
           console.error("Error fetching tipoVehiculo:", error.message);
@@ -411,7 +411,7 @@ export default function DashboardClienteNuevo() {
           }
 
           const res = await axios.get(
-            `https://fullwash.site/reservas/user/${user.id}`,
+            `https://fullwash.online/reservas/user/${user.id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -432,7 +432,7 @@ export default function DashboardClienteNuevo() {
 
       const fetchAtributos = async () => {
         try {
-          const res = await axios.get("https://fullwash.site/atributos");
+          const res = await axios.get("https://fullwash.online/atributos");
           setAtributos(res.data);
         } catch (error) {
           console.error("Error fetching attributes:", error.message);
@@ -441,7 +441,7 @@ export default function DashboardClienteNuevo() {
 
       const fetchServiciosLavados = async () => {
         try {
-          const res = await axios.get('https://fullwash.site/servicios?txtBuscar=lavados');
+          const res = await axios.get('https://fullwash.online/servicios?txtBuscar=lavados');
           setServiciosLavados(res.data.data || []);
         } catch (error) {
           console.error('Error fetching servicios lavados:', error);
@@ -450,7 +450,7 @@ export default function DashboardClienteNuevo() {
 
       const fetchServiciosOtros = async () => {
         try {
-          const res = await axios.get('https://fullwash.site/servicios?txtBuscar=otros');
+          const res = await axios.get('https://fullwash.online/servicios?txtBuscar=otros');
           setServiciosOtros(res.data.data || []);
         } catch (error) {
           console.error('Error fetching servicios otros:', error);
@@ -459,7 +459,7 @@ export default function DashboardClienteNuevo() {
 
       const fetchCostRules = async () => {
         try {
-          const res = await axios.get("https://fullwash.site/cost-rules");
+          const res = await axios.get("https://fullwash.online/cost-rules");
           setCostRules(res.data.data);
         } catch (error) {
           console.error("Error fetching cost rules:", error.message);
@@ -501,7 +501,7 @@ export default function DashboardClienteNuevo() {
           if (!token) return;
 
           const res = await axios.get(
-            `https://fullwash.site/reservas/user/${user.id}`,
+            `https://fullwash.online/reservas/user/${user.id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -541,7 +541,7 @@ export default function DashboardClienteNuevo() {
         if (!token) return;
 
         const res = await axios.get(
-          `https://fullwash.site/reservas/user/${user.id}`,
+          `https://fullwash.online/reservas/user/${user.id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -795,7 +795,7 @@ export default function DashboardClienteNuevo() {
       };
 
       const response = await axios.post(
-        'https://fullwash.site/reservas',
+        'https://fullwash.online/reservas',
         nuevaReserva,
         {
           headers: {
@@ -866,7 +866,7 @@ export default function DashboardClienteNuevo() {
       };
 
       const response = await axios.put(
-        `https://fullwash.site/reservas/${editReservation.id}`,
+        `https://fullwash.online/reservas/${editReservation.id}`,
         requestData,
         {
           headers: {
@@ -989,7 +989,7 @@ export default function DashboardClienteNuevo() {
         const cookies = parseCookies();
         const token = cookies.token;
         
-        await axios.delete(`https://fullwash.site/reservas/${id}`, {
+        await axios.delete(`https://fullwash.online/reservas/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -1267,7 +1267,7 @@ export default function DashboardClienteNuevo() {
       }
 
       await axios.put(
-        `https://fullwash.site/users/${user.id}`,
+        `https://fullwash.online/users/${user.id}`,
         {
           username: user.username,
           email: user.email,

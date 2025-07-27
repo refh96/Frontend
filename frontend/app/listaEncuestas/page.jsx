@@ -44,7 +44,7 @@ const ListaEncuestas = () => {
         }
 
         const profileRes = await axios.post(
-          "https://fullwash.site/profile",
+          "https://fullwash.online/profile",
           {},
           {
             headers: {
@@ -82,7 +82,7 @@ const ListaEncuestas = () => {
     try {
       const cookies = parseCookies();
       const token = cookies.token;
-      const response = await axios.get('https://fullwash.site/encuestas', {
+      const response = await axios.get('https://fullwash.online/encuestas', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -138,7 +138,7 @@ const ListaEncuestas = () => {
         const cookies = parseCookies();
         const token = cookies.token;
         
-        await axios.delete(`https://fullwash.site/encuestas/${id}`, {
+        await axios.delete(`https://fullwash.online/encuestas/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -182,7 +182,7 @@ const ListaEncuestas = () => {
         
         // En lugar de crear una nueva recomendación, actualizamos la encuesta
         encuesta.publicado = true;
-        await axios.put(`https://fullwash.site/encuestas/${encuesta.id}`, encuesta, {
+        await axios.put(`https://fullwash.online/encuestas/${encuesta.id}`, encuesta, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

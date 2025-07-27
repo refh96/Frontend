@@ -68,7 +68,7 @@ export default function CostRules() {
 
   const fetchCostRules = async () => {
     try {
-      const response = await axios.get('https://fullwash.site/cost-rules', {
+      const response = await axios.get('https://fullwash.online/cost-rules', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -84,7 +84,7 @@ export default function CostRules() {
 
   const fetchServices = async () => {
     try {
-      const response = await axios.get('https://fullwash.site/servicios', {
+      const response = await axios.get('https://fullwash.online/servicios', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -100,7 +100,7 @@ export default function CostRules() {
 
   const fetchVehicleTypes = async () => {
     try {
-      const response = await axios.get('https://fullwash.site/tipo_vehiculos', {
+      const response = await axios.get('https://fullwash.online/tipo_vehiculos', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -141,14 +141,14 @@ export default function CostRules() {
     e.preventDefault();
     try {
       if (editingId) {
-        await axios.put(`https://fullwash.site/cost-rules/${editingId}`, formData, {
+        await axios.put(`https://fullwash.online/cost-rules/${editingId}`, formData, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         });
         showSnackbar('Regla de costo actualizada exitosamente', 'success');
       } else {
-        await axios.post('https://fullwash.site/cost-rules', formData, {
+        await axios.post('https://fullwash.online/cost-rules', formData, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -167,7 +167,7 @@ export default function CostRules() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://fullwash.site/cost-rules/${id}`, {
+      await axios.delete(`https://fullwash.online/cost-rules/${id}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

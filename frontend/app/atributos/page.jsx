@@ -48,7 +48,7 @@ function Atributos() {
         }
 
         const res = await axios.post(
-          "https://fullwash.site/profile",
+          "https://fullwash.online/profile",
           {} ,
           {
             headers: {
@@ -76,7 +76,7 @@ function Atributos() {
 
   const fetchAtributos = async () => {
     try {
-      const res = await axios.get("https://fullwash.site/atributos");
+      const res = await axios.get("https://fullwash.online/atributos");
       setAtributos(res.data);
     } catch (error) {
       console.error("Error fetching attributes:", error.message);
@@ -102,7 +102,7 @@ function Atributos() {
     try {
       if (editingId) {
         await axios.put(
-          `https://fullwash.site/atributos/${editingId}`,
+          `https://fullwash.online/atributos/${editingId}`,
           atributo,
           {
             headers: {
@@ -120,7 +120,7 @@ function Atributos() {
         });
       } else {
         await axios.post(
-          "https://fullwash.site/atributos",
+          "https://fullwash.online/atributos",
           atributo,
           {
             headers: {
@@ -160,7 +160,7 @@ function Atributos() {
         return;
       }
 
-      await axios.delete(`https://fullwash.site/atributos/${id}`, {
+      await axios.delete(`https://fullwash.online/atributos/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

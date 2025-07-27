@@ -36,7 +36,7 @@ const Encuesta = () => {
     setIsLoading(true);
     
     try {
-      const res = await axios.post('https://fullwash.site/login', loginData);
+      const res = await axios.post('https://fullwash.online/login', loginData);
       
       if(res.data.res) {
         // Guardar el token
@@ -88,7 +88,7 @@ const Encuesta = () => {
         return;
       }
 
-      const response = await axios.post('https://fullwash.site/encuestas', surveyData, {
+      const response = await axios.post('https://fullwash.online/encuestas', surveyData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

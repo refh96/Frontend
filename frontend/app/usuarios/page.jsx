@@ -37,7 +37,7 @@ const AdminUsuarios = () => {
             const cookies = parseCookies();
             const token = cookies.token;
             try {
-                const response = await axios.get('https://fullwash.site/users',
+                const response = await axios.get('https://fullwash.online/users',
                     {
                       headers: {
                         Authorization: `Bearer ${token}`,
@@ -66,7 +66,7 @@ const AdminUsuarios = () => {
             }
     
             const res = await axios.post(
-              "https://fullwash.site/profile",
+              "https://fullwash.online/profile",
               {},
               {
                 headers: {
@@ -98,7 +98,7 @@ const AdminUsuarios = () => {
         const cookies = parseCookies();
         const token = cookies.token;
         try {
-            await axios.put(`https://fullwash.site/users/${id}`,
+            await axios.put(`https://fullwash.online/users/${id}`,
                 {
                   headers: {
                     Authorization: `Bearer ${token}`,
@@ -123,7 +123,7 @@ const AdminUsuarios = () => {
         const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este usuario?');
         if (confirmDelete) {
             try {
-                await axios.delete(`https://fullwash.site/users/${id}`,
+                await axios.delete(`https://fullwash.online/users/${id}`,
                     {
                       headers: {
                         Authorization: `Bearer ${token}`,

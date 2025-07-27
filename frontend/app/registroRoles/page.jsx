@@ -50,7 +50,7 @@ function RegistroRoles() {
         }
 
         const res = await axios.post(
-          "https://fullwash.site/profile",
+          "https://fullwash.online/profile",
           {},
           {
             headers: {
@@ -112,7 +112,7 @@ function RegistroRoles() {
     try {
       const userWith = { ...user };
 
-      const res = await axios.post("https://fullwash.site/users", userWith);
+      const res = await axios.post("https://fullwash.online/users", userWith);
 
       // Verificar si la respuesta contiene un error a pesar del status 200
       if (res.status === 200) {

@@ -26,7 +26,7 @@ const AceptarFecha = () => {
     setLoading(true);
     try {
       console.log('Intentando login con:', { email: loginData.email });
-      const response = await axios.post('https://fullwash.site/login', loginData);
+      const response = await axios.post('https://fullwash.online/login', loginData);
       console.log('Respuesta del servidor:', response.data);
 
       if (response.data.res && response.data.token) {
@@ -79,7 +79,7 @@ const AceptarFecha = () => {
         return;
       }
 
-      const response = await axios.get('https://fullwash.site/reservas', {
+      const response = await axios.get('https://fullwash.online/reservas', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Accept': 'application/json',
@@ -154,7 +154,7 @@ const AceptarFecha = () => {
           : [];
 
         const response = await axios.put(
-          `https://fullwash.site/reservas/${reservas_id}`,
+          `https://fullwash.online/reservas/${reservas_id}`,
           {
             user_id: reservaToUpdate.user_id,
             servicio_id: reservaToUpdate.servicio_id,

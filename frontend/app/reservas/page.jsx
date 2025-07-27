@@ -47,7 +47,7 @@ const GestionReservas = () => {
         }
 
         const profileRes = await axios.post(
-          "https://fullwash.site/profile",
+          "https://fullwash.online/profile",
           {},
           {
             headers: {
@@ -85,7 +85,7 @@ const GestionReservas = () => {
     try {
       const cookies = parseCookies();
       const token = cookies.token;
-      const response = await axios.get('https://fullwash.site/reservas', {
+      const response = await axios.get('https://fullwash.online/reservas', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -105,7 +105,7 @@ const GestionReservas = () => {
 
   const fetchEstados = async () => {
     try {
-      const response = await axios.get('https://fullwash.site/estados');
+      const response = await axios.get('https://fullwash.online/estados');
       setEstados(response.data);
     } catch (error) {
       console.error('Error obteniendo estados:', error);
@@ -158,7 +158,7 @@ const GestionReservas = () => {
         : [];
 
       await axios.put(
-        `https://fullwash.site/reservas/${reservaId}`,
+        `https://fullwash.online/reservas/${reservaId}`,
         {
           user_id: reservaToUpdate.user_id,
           servicio_id: reservaToUpdate.servicio_id,

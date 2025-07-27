@@ -44,7 +44,7 @@ const EstadisticasEncuestas = () => {
         try {
           // Verificar el perfil y rol del usuario
           const profileRes = await axios.post(
-            "https://fullwash.site/profile",
+            "https://fullwash.online/profile",
             {},
             {
               headers: {
@@ -67,7 +67,7 @@ const EstadisticasEncuestas = () => {
           }
 
           // Si el usuario es admin, procedemos a cargar las estadísticas
-          const response = await axios.get('https://fullwash.site/encuestas', {
+          const response = await axios.get('https://fullwash.online/encuestas', {
             headers: {
               Authorization: `Bearer ${token}`,
             },

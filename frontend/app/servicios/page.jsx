@@ -27,8 +27,8 @@ const Page = () => {
   useEffect(() => {
     async function fetchServicios() {
       try {
-        const responseLavados = await axios.get('https://fullwash.site/servicios?txtBuscar=lavados');
-        const responseOtros = await axios.get('https://fullwash.site/servicios?txtBuscar=otros');
+        const responseLavados = await axios.get('https://fullwash.online/servicios?txtBuscar=lavados');
+        const responseOtros = await axios.get('https://fullwash.online/servicios?txtBuscar=otros');
         setServiciosLavados(responseLavados.data.data || []);
         setServiciosOtros(responseOtros.data.data || []);
       } catch (error) {

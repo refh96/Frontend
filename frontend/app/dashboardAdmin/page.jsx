@@ -75,7 +75,7 @@ function Dashboard() {
       try {
         const cookies = parseCookies();
         const token = cookies.token; // Asegúrate de obtener el token de cookies
-        const { data } = await axios.get('https://fullwash.site/notifications/all', {
+        const { data } = await axios.get('https://fullwash.online/notifications/all', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setNotifications(data);
@@ -122,7 +122,7 @@ function Dashboard() {
       const token = cookies.token; // Asegúrate de obtener el token de cookies
       try {
         await axios.post(
-          'https://fullwash.site/notifications/mark-as-read',  // Ruta para marcar como leídas
+          'https://fullwash.online/notifications/mark-as-read',  // Ruta para marcar como leídas
           { ids: unreadNotificationIds },  // Enviar los IDs de las notificaciones no leídas
           {
             headers: {
@@ -164,7 +164,7 @@ function Dashboard() {
         }
 
         const res = await axios.post(
-          "https://fullwash.site/profile",
+          "https://fullwash.online/profile",
           {},
           {
             headers: {
@@ -206,7 +206,7 @@ function Dashboard() {
         }
 
         const res = await axios.get(
-          "https://fullwash.site/reservas",
+          "https://fullwash.online/reservas",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -223,7 +223,7 @@ function Dashboard() {
 
     const fetchEstados = async () => {
       try {
-        const res = await axios.get("https://fullwash.site/estados");
+        const res = await axios.get("https://fullwash.online/estados");
         setEstados(res.data); // Guardar los estados obtenidos
       } catch (error) {
         console.error("Error fetching estados:", error.message);
@@ -263,7 +263,7 @@ function Dashboard() {
 
       // Envía todos los campos necesarios
       await axios.put(
-        `https://fullwash.site/reservas/${id}`,
+        `https://fullwash.online/reservas/${id}`,
         {
           user_id: reservaToUpdate.user_id,
           servicio_id: reservaToUpdate.servicio_id,
@@ -296,7 +296,7 @@ function Dashboard() {
       const cookies = parseCookies();
       const token = cookies.token;
 
-      await axios.delete(`https://fullwash.site/reservas/${id}`, {
+      await axios.delete(`https://fullwash.online/reservas/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -350,7 +350,7 @@ function Dashboard() {
       }
 
       await axios.put(
-        `https://fullwash.site/users/${user.id}`, // Usa el ID del usuario
+        `https://fullwash.online/users/${user.id}`, // Usa el ID del usuario
         {
           username: user.username,
           email: user.email,
@@ -406,7 +406,7 @@ function Dashboard() {
       const token = cookies.token;
 
       await axios.put(
-        `https://fullwash.site/reservas/${updatedReserva.id}`,
+        `https://fullwash.online/reservas/${updatedReserva.id}`,
         {
           user_id: updatedReserva.user_id,
           servicio_id: updatedReserva.servicio_id,

@@ -48,7 +48,7 @@ function TiposDeVehiculo() {
         }
 
         const res = await axios.post(
-          "https://fullwash.site/profile",
+          "https://fullwash.online/profile",
           {},
           {
             headers: {
@@ -76,7 +76,7 @@ function TiposDeVehiculo() {
 
   const fetchTiposDeVehiculo = async () => {
     try {
-      const res = await axios.get("https://fullwash.site/tipo_vehiculos");
+      const res = await axios.get("https://fullwash.online/tipo_vehiculos");
       setTiposVehiculo(res.data);
     } catch (error) {
       console.error("Error fetching vehicle types:", error.message);
@@ -102,7 +102,7 @@ function TiposDeVehiculo() {
     try {
       if (editingId) {
         await axios.put(
-          `https://fullwash.site/tipo_vehiculos/${editingId}`,
+          `https://fullwash.online/tipo_vehiculos/${editingId}`,
           tipoVehiculo,
           {
             headers: {
@@ -120,7 +120,7 @@ function TiposDeVehiculo() {
         });
       } else {
         await axios.post(
-          "https://fullwash.site/tipo_vehiculos",
+          "https://fullwash.online/tipo_vehiculos",
           tipoVehiculo,
           {
             headers: {
@@ -160,7 +160,7 @@ function TiposDeVehiculo() {
         return;
       }
 
-      await axios.delete(`https://fullwash.site/tipo_vehiculos/${id}`, {
+      await axios.delete(`https://fullwash.online/tipo_vehiculos/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -72,7 +72,7 @@ const Header = () => {
       <AppBar 
         position="sticky" 
         sx={{ 
-          backgroundColor: '#ffffff',
+          backgroundColor: '#f5f5f5',
           boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)'
         }}
       >

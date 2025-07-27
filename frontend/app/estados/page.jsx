@@ -49,7 +49,7 @@ function Estados() {
         }
 
         const res = await axios.post(
-          "https://fullwash.site/profile",
+          "https://fullwash.online/profile",
           {},
           {
             headers: {
@@ -78,7 +78,7 @@ function Estados() {
 
   const fetchEstados = async () => {
     try {
-      const res = await axios.get('https://fullwash.site/estados');
+      const res = await axios.get('https://fullwash.online/estados');
       setEstados(res.data);
     } catch (error) {
       console.error('Error fetching states:', error.message);
@@ -103,7 +103,7 @@ function Estados() {
 
     try {
       if (editingId) {
-        await axios.put(`https://fullwash.site/estados/${editingId}`, estado, {
+        await axios.put(`https://fullwash.online/estados/${editingId}`, estado, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -117,7 +117,7 @@ function Estados() {
           timerProgressBar: true,
         });
       } else {
-        await axios.post('https://fullwash.site/estados', estado, {
+        await axios.post('https://fullwash.online/estados', estado, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -153,7 +153,7 @@ function Estados() {
         return;
       }
 
-      await axios.delete(`https://fullwash.site/estados/${id}`, {
+      await axios.delete(`https://fullwash.online/estados/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

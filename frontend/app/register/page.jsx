@@ -56,7 +56,7 @@ function Register() {
 
     try {
       const userWithRole = { ...user, rol: "usuario" };
-      const res = await axios.post("https://fullwash.site/users", userWithRole);
+      const res = await axios.post("https://fullwash.online/users", userWithRole);
 
       if (res.status === 200) {
         Swal.fire({

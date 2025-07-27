@@ -31,7 +31,7 @@ const DashboardAyudante = () => {
         }
 
         const profileRes = await axios.post(
-          "https://fullwash.site/profile",
+          "https://fullwash.online/profile",
           {},
           {
             headers: {

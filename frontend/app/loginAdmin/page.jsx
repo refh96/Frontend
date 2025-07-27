@@ -19,7 +19,7 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("https://fullwash.site/login", credentials);
+      const res = await axios.post("https://fullwash.online/login", credentials);
       if (res.data.res) {
         const { rol, token } = res.data;
         if (rol === "administrador") {

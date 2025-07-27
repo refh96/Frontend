@@ -144,7 +144,7 @@ function HomePage() {
   useEffect(() => {
     const fetchRecomendaciones = async () => {
       try {
-        const response = await axios.get('https://fullwash.site/encuestas');
+        const response = await axios.get('https://fullwash.online/encuestas');
         if (response.data.success) {
           // Filtramos solo las encuestas que están publicadas y tienen dataSharing en "si"
           const encuestasPublicadas = response.data.encuestas.filter(

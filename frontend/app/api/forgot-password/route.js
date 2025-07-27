@@ -1,7 +1,7 @@
 export async function POST(req) {
     const body = await req.json();
     try {
-      const res = await fetch('https://fullwash.site/forgot-password', {
+      const res = await fetch('https://fullwash.online/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),

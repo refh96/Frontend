@@ -54,7 +54,7 @@ function NuevoServicio() {
         }
 
         const res = await axios.post(
-          "https://fullwash.site/profile",
+          "https://fullwash.online/profile",
           {},
           {
             headers: {
@@ -82,7 +82,7 @@ function NuevoServicio() {
 
   const fetchServicios = async () => {
     try {
-      const res = await axios.get("https://fullwash.site/servicios");
+      const res = await axios.get("https://fullwash.online/servicios");
       setServicios(res.data.data);
     } catch (error) {
       console.error("Error fetching services:", error.message);
@@ -108,7 +108,7 @@ function NuevoServicio() {
     try {
       if (editingId) {
         await axios.put(
-          `https://fullwash.site/servicios/${editingId}`,
+          `https://fullwash.online/servicios/${editingId}`,
           {
             ...servicio,
             detalles_incluidos: servicio.detalles_incluidos,
@@ -129,7 +129,7 @@ function NuevoServicio() {
         });
       } else {
         await axios.post(
-          "https://fullwash.site/servicios",
+          "https://fullwash.online/servicios",
           {
             ...servicio,
             detalles_incluidos: servicio.detalles_incluidos, // Envía directamente como string
@@ -187,7 +187,7 @@ function NuevoServicio() {
         return;
       }
 
-      await axios.delete(`https://fullwash.site/servicios/${id}`, {
+      await axios.delete(`https://fullwash.online/servicios/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

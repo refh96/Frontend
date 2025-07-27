@@ -60,7 +60,7 @@ const EstadisticasReservas = () => {
 
         try {
           const profileRes = await axios.post(
-            "https://fullwash.site/profile",
+            "https://fullwash.online/profile",
             {},
             {
               headers: {
@@ -81,7 +81,7 @@ const EstadisticasReservas = () => {
             return;
           }
 
-          const response = await axios.get('https://fullwash.site/reservas', {
+          const response = await axios.get('https://fullwash.online/reservas', {
             headers: {
               Authorization: `Bearer ${token}`,
             },
